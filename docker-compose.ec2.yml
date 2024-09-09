@@ -1,0 +1,39 @@
+version: '3'
+services:
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - react-app
+      - spring-app
+      - postgres
+    networks:
+      - app-network
+    
+  react-app:
+    build: 
+      context: ./frontend/here-law
+    expose:
+      - "80"
+    networks:
+      - app-network
+
+  spring-app:
+    build:
+      context: ./backend/spring
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+    environment:
+    # 추후 수정 요망
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydb
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+  
