@@ -1,32 +1,7 @@
 version: '3.8'
 services:
-  react:
-    build: ./frontend/here-law
-    ports:
-      - "3000:80"
-    networks:
-      - app-network
-
-  spring:
-    build: ./backend/spring
-    ports:
-      - "8080:8080"
-    networks:
-      - app-network
-    depends_on:
-      - postgres
-  
-  fastapi:
-    build: ./backend/fastapi
-    ports:
-      - "8000:8000"
-    networks:
-      - app-network
-    depends_on:
-      - postgres
-    
   nginx:
-    build: ./nginx
+    image: nginx:alpine
     ports:
       - "80:80"
       - "443:443"
@@ -38,9 +13,31 @@ services:
       - fastapi
     networks:
       - app-network
+
+  react:
+    build: ./frontend/here-law
+    expose:
+      - "3000"
+    networks:
+      - app-network
+
+  spring:
+    build: ./backend/spring
+    expose:
+      - "8080"
+    networks:
+      - app-network
+    # depends_on:
+    #   - postgres
+  
+  fastapi:
+    build: ./backend/fastapi
+    expose:
+      - "8000"
+    networks:
+      - app-network
+    # depends_on:
+    #   - postgres
     
 networks:
   app-network:
-
-volumes:
-  postgres-data:
