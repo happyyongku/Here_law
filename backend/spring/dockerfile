@@ -1,15 +1,18 @@
 FROM amazoncorretto:17
+
 WORKDIR /app
 
-COPY gradlew gradlew
-COPY gradlew.bat gradlew.bat
+COPY gradelw* ./
 COPY gradle/ gradle/
 
 COPY build.gradle settings.gradle ./
+
+RUN ./gradlew build --no-daemon
+
 COPY src/ src/
 
-RUN ./gradlew build
+RUN ./gradlew build --no-daemon
 
-CMD ["java", "-jar", "build/libs/myapp.jar"]
+CMD ["java", "-jar", "build/libs/here-law.jar"]
 
 EXPOSE 8080
