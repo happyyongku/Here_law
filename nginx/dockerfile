@@ -1,0 +1,8 @@
+FROM nginx:alpine
+
+COPY nginx.conf /etc/server/nginx.conf
+
+EXPOSE 80
+EXPOSE 443
+
+CMD [ "nginx", "-g", "daemon off;" ]

@@ -1,0 +1,50 @@
+pipelinne {
+    agent any
+    stages {
+        stage('Clone GitLab Repository') {
+            steps {
+                git branch: 'master',
+                    url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git',
+                    credentialsId: 'igzg9XEyR3xu4uKRMk4n'
+            }
+        }
+        stage('Build Spring') {
+            steps {
+                dir('backend/spring') {
+                    sh './gradlew clean build'
+                }
+            }
+        }
+        stage('Build Frontend') {
+            steps {
+                dir('frontend/here_law') {
+                    sh 'npm install'
+                    sh 'npm run build'
+                }
+            }
+        }
+        stage('Build Docker EC2 Services') {
+            steps {
+                sh 'docker-compose -f docker-compose.ec2.yml up --build -d'
+            }
+        }
+        stage('Deploy FastAPI to Remote Server') {
+            steps {
+                sshagent(['remote-server-credentials']) {
+                    
+                    sh '''
+                    scp -r backend/fastapi/* user@<fastapi-server-ip>:/path/to/deploy/fastapi/
+                    ssh user@<fastapi-server-ip> "cd /path/to/deploy/fastapi && docker-compose -f docker-compose.fastapi.yml up --build -d"
+                    '''
+                }
+            }
+        }
+        stage('Reload Nginx') {
+            steps {
+                dir('server') {
+                    sh 'sudo nginx -s reload'
+                }
+            }
+        }
+    }
+}
