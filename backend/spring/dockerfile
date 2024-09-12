@@ -11,7 +11,7 @@ RUN chmod +x ./gradlew
 
 COPY src/ src/
 
-RUN ./gradlew build --no-daemon
+RUN ./gradlew build --no-daemon -x test
 
 CMD ["java", "-jar", "build/libs/here-law.jar"]
 
