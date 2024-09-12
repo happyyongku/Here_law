@@ -2,7 +2,7 @@ FROM amazoncorretto:17
 
 WORKDIR /app
 
-COPY gradelw* ./
+COPY gradlew* ./
 COPY gradle/ gradle/
 
 COPY build.gradle settings.gradle ./
