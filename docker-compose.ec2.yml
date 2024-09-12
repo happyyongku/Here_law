@@ -31,7 +31,7 @@ services:
     #   - postgres
   
   fastapi:
-    build: ./backend/fastapi
+    build: ./backend/fastapi_ec2
     expose:
       - "8000"
     networks:
