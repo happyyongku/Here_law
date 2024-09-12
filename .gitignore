@@ -2,3 +2,7 @@
 .vscode
 .env
 data
+
+## python
+
+__pycache__

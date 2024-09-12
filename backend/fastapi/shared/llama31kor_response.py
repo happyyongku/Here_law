@@ -1,0 +1,4 @@
+from llama_cpp.llama_types import CreateChatCompletionResponse
+from pydantic import RootModel
+
+CreateChatCompletionResponseModel = RootModel[CreateChatCompletionResponse]
