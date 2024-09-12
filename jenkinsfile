@@ -1,6 +1,13 @@
 pipelinne {
     agent any
     stages {
+        stage('Clone GitLab Repository') {
+            steps {
+                git branch: 'master',
+                    url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git',
+                    credentialsId: 'igzg9XEyR3xu4uKRMk4n'
+            }
+        }
         stage('Build Spring') {
             steps {
                 dir('backend/spring') {
