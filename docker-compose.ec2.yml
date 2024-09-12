@@ -15,7 +15,7 @@ services:
       - app-network
 
   react:
-    build: ./frontend/here-law
+    build: ./frontend/here_law
     expose:
       - "3000"
     networks:
