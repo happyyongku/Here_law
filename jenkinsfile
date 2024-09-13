@@ -1,13 +1,13 @@
 pipelinne {
     agent any
     stages {
-        stage('Clone GitLab Repository') {
-            steps {
-                git branch: 'master',
-                    url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git',
-                    credentialsId: 'igzg9XEyR3xu4uKRMk4n'
-            }
-        }
+        // stage('Clone GitLab Repository') {
+        //     steps {
+        //         git branch: 'master',
+        //             url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git',
+        //             credentialsId: 'igzg9XEyR3xu4uKRMk4n'
+        //     }
+        // }
         stage('Build Spring') {
             steps {
                 dir('backend/spring') {
@@ -23,22 +23,30 @@ pipelinne {
                 }
             }
         }
+        stage('Build Fast_API') {
+            steps {
+                dir('backend/fastapi_ec2') {
+                    sh 'pip install -r requirements.txt'
+                    sh 'docker build -t fastapi-app .'
+                }
+            }
+        }
         stage('Build Docker EC2 Services') {
             steps {
                 sh 'docker-compose -f docker-compose.ec2.yml up --build -d'
             }
         }
-        stage('Deploy FastAPI to Remote Server') {
-            steps {
-                sshagent(['remote-server-credentials']) {
+        // stage('Deploy FastAPI to Remote Server') {
+        //     steps {
+        //         sshagent(['remote-server-credentials']) {
                     
-                    sh '''
-                    scp -r backend/fastapi/* user@<fastapi-server-ip>:/path/to/deploy/fastapi/
-                    ssh user@<fastapi-server-ip> "cd /path/to/deploy/fastapi && docker-compose -f docker-compose.fastapi.yml up --build -d"
-                    '''
-                }
-            }
-        }
+        //             sh '''
+        //             scp -r backend/fastapi/* user@<fastapi-server-ip>:/path/to/deploy/fastapi/
+        //             ssh user@<fastapi-server-ip> "cd /path/to/deploy/fastapi && docker-compose -f docker-compose.fastapi.yml up --build -d"
+        //             '''
+        //         }
+        //     }
+        // }
         stage('Reload Nginx') {
             steps {
                 dir('server') {
