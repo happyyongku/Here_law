@@ -40,6 +40,13 @@ pipeline {
                 }
             }
         }
+        stage('Build Nginx images') {
+            steps {
+                script {
+                    sh 'docker build -t happyyongku/j11b109:nginx .'
+                }
+            }
+        }
         stage('Test') {
             steps {
                 script {
@@ -56,6 +63,7 @@ pipeline {
                         sh 'docker push happyyongku/j11b109:react'
                         sh 'docker push happyyongku/j11b109:spring'
                         sh 'docker push happyyongku/j11b109:fastapi'
+                        sh 'docker push happyyongku/j11b109:nginx'
                     }
                 }
             }
@@ -63,7 +71,7 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 script {
-                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /path/to/your/project && docker-compose -f docker-compose.ec2.yml up -d"'
+                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 && docker-compose -f docker-compose.ec2.yml up -d"'
                 }
             }
         }
@@ -71,7 +79,7 @@ pipeline {
             steps {
                 script {
                     echo 'Deployin NGINX ...'
-                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /path/to/your/project && docker-compose -f docker-compose.ec2.yml up -d --build nginx'
+                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 && docker-compose -f docker-compose.ec2.yml up -d --build nginx'
                 }
             }
         }
