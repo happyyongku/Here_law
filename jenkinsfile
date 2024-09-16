@@ -67,6 +67,14 @@ pipeline {
                 }
             }
         }
+        stage('Deploy NGINX') {
+            steps {
+                script {
+                    echo 'Deployin NGINX ...'
+                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /path/to/your/project && docker-compose -f docker-compose.ec2.yml up -d --build nginx'
+                }
+            }
+        }
     }
 
     post {

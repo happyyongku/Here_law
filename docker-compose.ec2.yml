@@ -13,6 +13,11 @@ services:
       - fastapi
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost || exit 1"]
+      interval: 30s
+      retries: 3
+
 
   react:
     build: ./frontend/here_law
