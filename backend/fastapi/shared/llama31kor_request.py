@@ -5,7 +5,9 @@ from llama_cpp.llama_types import (
     ChatCompletionRequestMessage,
     ChatCompletionTool,
     ChatCompletionToolChoiceOption,
-    ChatCompletionRequestResponseFormat
+    ChatCompletionRequestResponseFormat,
+    ChatCompletionFunction,
+    ChatCompletionRequestFunctionCall
 )
 
 class Llama31KorChatRequest(BaseModel):
@@ -15,6 +17,8 @@ class Llama31KorChatRequest(BaseModel):
     '''
     messages: List[ChatCompletionRequestMessage]
     temperature: Optional[float] = None
+    functions: Optional[List[ChatCompletionFunction]] = None
+    function_call: Optional[ChatCompletionRequestFunctionCall] = None
     stream: Optional[bool] = None
     presence_penalty: Optional[float] = None
     frequency_penalty: Optional[float] = None
@@ -24,4 +28,4 @@ class Llama31KorChatRequest(BaseModel):
     stop: Optional[Union[str, List[str]]] = None
     seed: Optional[int] = None
     response_format: Optional[ChatCompletionRequestResponseFormat] = None
-    max_tokens: Optional[int] = None
+    max_tokens: Optional[int] = None #all n_ctx

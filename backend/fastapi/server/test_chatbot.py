@@ -13,12 +13,15 @@ class TestChatbot:
         promptTemplate=[
             (
                 "system",
-                "You are a helpful assistant",
+                "You are a helpful assistant. use korean.",
             ),
             MessagesPlaceholder(variable_name="messages"),
         ],
+        **kwargs
     ):
         self.llm = Llama31Proxy(url = "http://0.0.0.0:8000")
+        for key, value in kwargs.items():
+            setattr(self.llm, key, value)
         self.promptTemplate = promptTemplate
         self.history = ChatMessageHistory()
         prompt = ChatPromptTemplate.from_messages(
