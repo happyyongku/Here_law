@@ -13,9 +13,14 @@ services:
       - fastapi
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost || exit 1"]
+      interval: 30s
+      retries: 3
+
 
   react:
-    build: ./frontend/here-law
+    build: ./frontend/here_law
     expose:
       - "3000"
     networks:
@@ -31,7 +36,7 @@ services:
     #   - postgres
   
   fastapi:
-    build: ./backend/fastapi
+    build: ./backend/fastapi_ec2
     expose:
       - "8000"
     networks:
