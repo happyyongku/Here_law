@@ -77,6 +77,8 @@ pipeline {
                 script {
                     echo 'Deploying EC2 and NGINX ...'
                     sshagent (credentials: [env.SSH_KEY]) {
+                        echo 'Check SSH -------------------------------------------'
+                        sh 'ssh-add -l'
                         sh 'ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 && docker-compose -f docker-compose.ec2.yml up -d --build nginx"'
                     }
                 }
