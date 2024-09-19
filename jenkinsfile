@@ -3,6 +3,7 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS_ID = '53c0e6f0-2c1e-43b2-a1a1-3d3e56fd1cae'
         GITLAB_CREDENTIALS_ID = '2f379a74-002d-471d-a051-6bd615828532'
+        SSH_KEY='f7745d84-3b92-4a34-9da8-ab8b48c2f6bf'
     }
     stages {
         stage('Checkout Code'){
@@ -75,7 +76,9 @@ pipeline {
             steps {
                 script {
                     echo 'Deploying EC2 and NGINX ...'
-                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 && docker-compose -f docker-compose.ec2.yml up -d --build nginx"'
+                    sshagent (credentials: [env.SSH_KEY]) {
+                        sh 'ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 && docker-compose -f docker-compose.ec2.yml up -d --build nginx"'
+                    }
                 }
             }
         }
