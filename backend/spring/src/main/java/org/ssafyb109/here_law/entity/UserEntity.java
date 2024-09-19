@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class UserEntity  {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +28,10 @@ public class UserEntity  {
 
     @ElementCollection
     private List<String> interests;
+
+    private Boolean isEmailVerified = false;  // 이메일 인증 여부
+    private String emailToken;    // 이메일 인증 토큰
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VerificationTokenEntity> tokens;  // VerificationTokenEntity와의 관계 설정
 }

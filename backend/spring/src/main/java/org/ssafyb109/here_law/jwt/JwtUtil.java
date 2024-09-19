@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class JwtUtil {
@@ -26,14 +28,14 @@ public class JwtUtil {
                 .setSubject(email)  // 토큰에 email 정보 저장
                 .setIssuedAt(new Date())  // 토큰 발급 시간
                 .setExpiration(expiryDate)  // 토큰 만료 시간
-                .signWith(SignatureAlgorithm.HS512, JWT_SECRET)  // 서명 알고리즘 및 비밀키 설정
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)  // SecretKeySpec을 사용해 서명
                 .compact();
     }
 
     // JWT 토큰에서 사용자 이메일 추출
     public String getUserEmailFromJWT(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(JWT_SECRET)
+                .setSigningKey(getSigningKey())  // SecretKeySpec을 사용
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
@@ -44,7 +46,7 @@ public class JwtUtil {
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(JWT_SECRET)
+                    .setSigningKey(getSigningKey())  // SecretKeySpec을 사용
                     .build()
                     .parseClaimsJws(token);
             return true;
@@ -55,9 +57,14 @@ public class JwtUtil {
         }
     }
 
-    // 비밀키를 바이트 배열로 변환
-    private SecretKeySpec getSigningKey() {
+    // 비밀키를 SecretKeySpec으로 변환
+    private Key getSigningKey() {
         byte[] keyBytes = JWT_SECRET.getBytes(StandardCharsets.UTF_8);
         return new SecretKeySpec(keyBytes, SignatureAlgorithm.HS512.getJcaName());
+    }
+
+    // 이메일 인증
+    public String generateEmailToken() {
+        return UUID.randomUUID().toString();
     }
 }

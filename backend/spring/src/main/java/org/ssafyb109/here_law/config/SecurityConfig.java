@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -33,19 +32,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/spring_api/**")  // REST API 경로에 대해 CSRF 비활성화
-                )
+                .csrf(csrf -> csrf.disable())  // CSRF 비활성화
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/spring_api/register", "/spring_api/login").permitAll()
-                        // 회원가입 및 로그인 API는 누구나 접근 가능
-                        .requestMatchers("/spring_api/register", "/spring_api/login").permitAll()
-                        // 변호사 전용 API는 LAWYER 권한이 있어야 접근 가능
-                        .requestMatchers("/spring_api/lawyer/**").hasRole("LAWYER")
-                        // 그 외의 모든 요청은 인증된 사용자만 접근 가능
-                        .anyRequest().authenticated()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui.html").permitAll()  // Swagger 관련 경로 허용
+                        .requestMatchers("/spring_api/register", "/spring_api/login", "/spring_api/user/verify-email").permitAll()  // 로그인 및 회원가입 API 허용
+                        .requestMatchers("/spring_api/lawyer/**").hasRole("LAWYER")  // 변호사 전용 API는 LAWYER 권한 필요
+                        .anyRequest().authenticated()  // 나머지 모든 요청은 인증 필요
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);  // JWT 필터 추가
 
         return http.build();
     }

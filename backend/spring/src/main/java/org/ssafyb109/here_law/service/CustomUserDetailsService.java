@@ -10,8 +10,13 @@ import org.ssafyb109.here_law.repository.UserRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    @Autowired
-    private UserRepository userRepository;
+
+    private final UserRepository userRepository;
+
+    // 생성자 주입
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -19,6 +24,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
-        return new CustomUserDetails(user);  // UserEntity를 기반으로 UserDetails 반환
+
+        // UserEntity를 기반으로 CustomUserDetails 객체 반환
+        return new CustomUserDetails(user);
     }
 }
