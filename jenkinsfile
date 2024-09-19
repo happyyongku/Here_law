@@ -89,7 +89,9 @@ pipeline {
                     sshagent (credentials: [env.SSH_KEY]) {
                         sh '''
                             ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 &&
+                            echo "start pull" &&
                             docker-compose -f docker-compose.ec2.yml pull &&
+                            echo "start up" &&
                             docker-compose -f docker-compose.ec2.yml up -d nginx"
                         '''
                     }
