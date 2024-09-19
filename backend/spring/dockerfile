@@ -12,7 +12,7 @@ RUN chmod +x ./gradlew
 COPY src/ src/
 
 # 지금 -x test로 테스트 건너뛰게 되있는데, 나중에 수정해야함
-RUN ./gradlew build --no-daemon -x test
+RUN ./gradlew clean build --no-daemon -x test
 
 RUN ls build/libs/here-law.jar || (echo "JAR file not found!!" && exit 1)
 
