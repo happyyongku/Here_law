@@ -43,7 +43,9 @@ pipeline {
         stage('Build Nginx images') {
             steps {
                 script {
-                    sh 'docker build -t happyyongku/j11b109:nginx .'
+                    dir('nginx') {
+                        sh 'docker build -t happyyongku/j11b109:nginx .'
+                    }
                 }
             }
         }
