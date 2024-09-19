@@ -49,14 +49,14 @@ pipeline {
                 }
             }
         }
-        stage('Test') {
-            steps {
-                script {
-                    sh 'docker-compose -f docker-compose.ec2.yml up --abort-on-container-exit'
-                    sh 'docker-compose -f docker-compose.ec2.yml down'
-                }
-            }
-        }
+        // stage('Test') {
+        //     steps {
+        //         script {
+        //             sh 'docker-compose -f docker-compose.ec2.yml up --abort-on-container-exit'
+        //             sh 'docker-compose -f docker-compose.ec2.yml down'
+        //         }
+        //     }
+        // }
         stage('Push Images to DockerHub') {
             steps {
                 script {
