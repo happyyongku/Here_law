@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout Code'){
             steps {
-                git url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git', branch: 'master', credentialsId: GITLAB_CREDENTIALS_ID
+                git url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git', branch: 'master', credentialsId: env.GITLAB_CREDENTIALS_ID
             }
         }
         stage ('Build Backend Images') {
@@ -18,7 +18,7 @@ pipeline {
                     // Build spring image
                     dir('backend/spring') {
                         sh 'chmod +x gradlew'
-                        sh './gradlew build --build-cache -x test'
+                        sh './gradlew clean build --build-cache -x test'
                         sh 'docker build -t happyyongku/j11b109:spring .'
                     }
                     // Build fastapi image
