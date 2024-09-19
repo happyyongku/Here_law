@@ -78,7 +78,6 @@ pipeline {
             }
         }
     }
-
     post {
         success {
             echo 'Successful Built and Deployed'
