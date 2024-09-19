@@ -31,6 +31,7 @@ llm = Llama31KorChatbot(n_ctx=4000, n_batch = 512, n_gpu_layers =-1)
 llm_tokenizer = AutoTokenizer.from_pretrained(
     "meetkai/functionary-small-v3.2", legacy=True #TODO: parameterize
 )
+
 prompt_template = get_prompt_template_from_tokenizer(llm_tokenizer)
 
 app = FastAPI()
@@ -78,6 +79,7 @@ async def chat_endpoint(request: Llama31KorChatRequest):
         tempppp = getattr(request, "temperature")
         if tempppp is not None:
             inputargs["temp"] = tempppp
+        inputargs["repeat_penalty"] = 1.1
 
         prompt_str = prompt_template.get_prompt_from_messages(request.messages, request.tools)
         token_ids = llm_tokenizer.encode(prompt_str)
@@ -96,6 +98,7 @@ async def chat_endpoint(request: Llama31KorChatRequest):
                 finish_reason = token_id
                 break
             gen_tokens.append(token_id)
+            # print(llm_tokenizer.decode(token_id))
 
         llm_output = llm_tokenizer.decode(gen_tokens)
         parsed = prompt_template.parse_assistant_response(llm_output)
