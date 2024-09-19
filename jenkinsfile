@@ -21,7 +21,7 @@ pipeline {
                         sh 'docker build -t happyyongku/j11b109:spring .'
                     }
                     // Build fastapi image
-                    dir('backend/fastapi') {
+                    dir('backend/fastapi_ec2') {
                         sh 'docker build -t happyyongku/j11b109:fastapi .'
                     }
                 }
