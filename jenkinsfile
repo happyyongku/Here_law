@@ -12,20 +12,26 @@ pipeline {
                 script {
                     sshagent (credentials: [env.SSH_KEY]) {
                         sh '''
-                            if [ ! -d "/home/ubuntu/j11b109" ]; then
-                                echo "Directory does not exists. Creating directory ..."
-                                mkdir -p /home/ubuntu/j11b109
-                                chown -R ubuntu:ubuntu /home/ubuntu/j1b109
-                            
+                            TARGET_DIR="/home/ubuntu/j11b1109"
+
+                            if [ ! -d "$TARGET_DIR" ]; then
+                                echo "Directory does not exits. Creating directory ..."
+                                mkdir -p $TARGET_DIR
+                                chown -R ubuntu:ubuntu $TARGET_DIR
                             fi
 
-                            if [ -d "/home/ubuntu/j11b109/.git" ]; then
-                                echo "Repository exists. Pulling latest changes ..."
-                                cd /home/ubuntu/j11b109
+                            cd $TARGET_DIR
+
+                            if [ ! -d ".git" ]; then
+                                echo "Repository does not exist. Initializing sparse-checkout ..."
+                                git init
+                                git remote add origin https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git
+                                git config core.sparseCheckout true
+                                echo "docker-compose.ec2.yml" >> .git/info/sparse-checkout
                                 git pull origin master
                             else
-                                echo "Cloning repository for the first time ..."
-                                git clone https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git /home/ubuntu/j11b109
+                                echo "Repository existss. Pulling latest changes for docker-compose.ec2.yml ..."
+                                git pull origin master
                             fi
                         '''
                     }
