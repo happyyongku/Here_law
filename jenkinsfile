@@ -64,6 +64,7 @@ pipeline {
                         sh 'docker push happyyongku/j11b109:spring'
                         sh 'docker push happyyongku/j11b109:fastapi'
                         sh 'docker push happyyongku/j11b109:nginx'
+                        echo 'Push Docker hub'
                     }
                 }
             }
@@ -71,7 +72,7 @@ pipeline {
         stage('Deploy EC2 and NGINX') {
             steps {
                 script {
-                    echo 'Deployin EC2 and sNGINX ...'
+                    echo 'Deploying EC2 and NGINX ...'
                     sh 'ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 && docker-compose -f docker-compose.ec2.yml up -d --build nginx"'
                 }
             }
