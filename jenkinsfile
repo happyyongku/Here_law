@@ -92,7 +92,7 @@ pipeline {
                             echo "start pull" &&
                             docker-compose -f docker-compose.ec2.yml pull &&
                             echo "start up" &&
-                            docker-compose -f docker-compose.ec2.yml up -d nginx"
+                            docker-compose -f docker-compose.ec2.yml up -d"
                         '''
                     }
                 }
