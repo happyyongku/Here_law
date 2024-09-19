@@ -5,29 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="64d61808-d907-410b-b32d-c46def7822d7" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/config/SecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/controller/AuthController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/controller/UserProfileController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/dto/jwt/JwtLoginResponseDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/dto/jwt/LawyerResponseDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/dto/jwt/LoginRequestDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/dto/user/LawyerDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/dto/user/LawyerUpdateDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/dto/user/UserDeleteDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/dto/user/UserUpdateDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/entity/LawyerEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/entity/UserEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/jwt/JwtBlacklistService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/jwt/JwtFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/jwt/JwtUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/service/CustomUserDetails.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/service/CustomUserDetailsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/config/CorsMvcConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/controller/CaseController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/entity/CaseEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/entity/VerificationTokenEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/repository/CaseRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/repository/VerificationTokenRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/service/CaseService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/service/EmailService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/service/TemporaryUserService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/spring.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/HereLawApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/HereLawApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/controller/UserProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/controller/UserProfileController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/entity/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/entity/UserEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/jwt/JwtFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/jwt/JwtFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/jwt/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/jwt/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/service/CustomUserDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/ssafyb109/here_law/service/CustomUserDetailsService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -52,23 +52,6 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="here-law" type="f1a62948:ProjectNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="here-law" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="here-law" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="application" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="here-law" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
               </path>
             </expand>
             <select />
@@ -105,43 +88,43 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.Build spring.executor": "Run",
-    "Gradle.Download Sources.executor": "Run",
-    "Gradle.spring [:HereLawApplication.main()].executor": "Run",
-    "Gradle.spring [:org.ssafyb109.here_law.HereLawApplication.main()].executor": "Run",
-    "Gradle.spring [bootRun].executor": "Run",
-    "Gradle.spring [build].executor": "Run",
-    "Gradle.spring [clean].executor": "Run",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Spring Boot.HereLawApplication (2).executor": "Run",
-    "Spring Boot.HereLawApplication.executor": "Run",
-    "git-widget-placeholder": "master",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/SSAFY/Desktop/B109/S11P21B109/backend/spring/src/main/resources/.env",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Problems",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "File.Encoding",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Build spring.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.spring [:HereLawApplication.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.spring [:org.ssafyb109.here_law.HereLawApplication.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.spring [bootRun].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.spring [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.spring [clean].executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Spring Boot.HereLawApplication (2).executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.HereLawApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;backend/spring/initial&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/SSAFY/Desktop/herelaw/S11P21B109/backend/spring/build.gradle&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Problems&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;File.Encoding&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="org.ssafyb109.here_law.dto" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.spring [bootRun]">
+  <component name="RunManager" selected="Application.HereLawApplication">
     <configuration name="HereLawApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.ssafyb109.here_law.HereLawApplication" />
       <module name="here-law.main" />
@@ -301,7 +284,6 @@
       <list>
         <item itemvalue="Gradle.spring [build]" />
         <item itemvalue="Gradle.spring [clean]" />
-        <item itemvalue="Spring Boot.HereLawApplication (2)" />
         <item itemvalue="Application.HereLawApplication" />
       </list>
     </recent_temporary>
@@ -324,6 +306,8 @@
       <updated>1725843334741</updated>
       <workItem from="1725843335929" duration="3000" />
       <workItem from="1726115184937" duration="1197000" />
+      <workItem from="1726658312522" duration="4446000" />
+      <workItem from="1726704799836" duration="8666000" />
     </task>
     <servers />
   </component>

@@ -1,5 +1,7 @@
 package org.ssafyb109.here_law.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -15,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
+@Tag(name = "회원 정보")
 @RestController
 @RequestMapping("/spring_api")
 public class UserProfileController {
@@ -25,6 +28,7 @@ public class UserProfileController {
     @Autowired
     private LawyerRepository lawyerRepository;
 
+    @Operation(summary = "회원 정보 조회", description = "회원 정보 조회")
     @GetMapping("/user/profile") // 회원 정보 조회
     public ResponseEntity<Object> getUserProfile(Authentication authentication) {
         UserEntity user = userRepository.findByEmail(authentication.getName());
@@ -47,10 +51,16 @@ public class UserProfileController {
         }
     }
 
+    @Operation(summary = "회원 정보 수정", description = "회원 정보 수정")
     @PutMapping("/user/profile") // 회원 정보 수정
     public ResponseEntity<Object> updateUserProfile(Authentication authentication, @RequestBody UserDTO updatedUserDTO) {
         // 사용자 인증을 통해 현재 사용자 정보 가져오기
         UserEntity user = userRepository.findByEmail(authentication.getName());
+
+        // 닉네임 중복 확인
+        if (!user.getNickname().equals(updatedUserDTO.getNickname()) && userRepository.existsByNickname(updatedUserDTO.getNickname())) {
+            return ResponseEntity.badRequest().body("해당 닉네임은 이미 사용 중입니다.");
+        }
 
         // 일반 사용자 정보 수정
         user.setNickname(updatedUserDTO.getNickname());
