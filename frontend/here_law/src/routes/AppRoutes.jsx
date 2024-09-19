@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Landing from "../pages/Landing";
 import Login from "../pages/Login";
+import Header from "../components/common/Header";
 
 function AppRoutes() {
   return (

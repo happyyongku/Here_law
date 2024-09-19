@@ -1,0 +1,113 @@
+.login-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.contents-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 93px;
+}
+
+.login-input-container {
+  margin-top: 35px;
+}
+
+.login-header {
+  font-size: 34px;
+  color: black;
+  width: 440px;
+}
+
+.login-subtitle {
+  width: 440px;
+  font-size: 16px;
+  opacity: 0.5;
+}
+
+.login-input-title {
+  font-size: 14px;
+  margin-bottom: 11px;
+}
+
+.login-input-box {
+  display: flex;
+  border-radius: 5px;
+  padding: 12px;
+  background-color: white;
+  border: 1px solid #d7dedd;
+  margin-bottom: 15px;
+}
+
+.login-input-box:focus-within {
+  border: 1px solid #ff5e00;
+}
+
+.input-tag {
+  padding: 0px;
+  width: 100%;
+  outline: none;
+  border: none;
+  height: 17px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.input-tag::placeholder {
+  color: #d7dedd;
+}
+
+.login-button {
+  width: 440px;
+  height: 48px;
+  border: none;
+  font-size: 15px;
+  font-weight: bold;
+  background-color: #ff5e00;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  margin-top: 44px;
+  margin-bottom: 20px;
+}
+
+.login-checkbox {
+  width: 440px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 64px;
+}
+
+.check-ele {
+  font-size: 14px;
+}
+
+.login-buttons {
+  display: flex;
+  flex-direction: column;
+  margin-top: 43px;
+}
+
+.lawyer-signup-button {
+  width: 440px;
+  height: 44px;
+  border-radius: 5px;
+  border: 1px solid #d7dedd;
+  background-color: white;
+  color: #ff5e00;
+  font-weight: bold;
+  margin-bottom: 21px;
+  cursor: pointer;
+}
+
+.common-signup-button {
+  width: 440px;
+  height: 44px;
+  border-radius: 5px;
+  border: 1px solid #d7dedd;
+  background-color: white;
+  cursor: pointer;
+}
