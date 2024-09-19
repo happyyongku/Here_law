@@ -82,6 +82,7 @@ pipeline {
     post {
         success {
             echo 'Successful Built and Deployed'
+            sh 'echo "successed yongku"'
         }
         failure {
             echo 'Build or Deployment failed'
