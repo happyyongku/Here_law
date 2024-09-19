@@ -18,7 +18,7 @@ pipeline {
                                 git pull origin master
                             else
                                 echo "Cloning repository for the first time ..."
-                                sudo git clone https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git /home/ubuntu/j11b109
+                                git clone https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git /home/ubuntu/j11b109
                             fi
                         '''
                     }
