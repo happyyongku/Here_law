@@ -14,12 +14,6 @@ pipeline {
                         sh '''
                             TARGET_DIR="/home/ubuntu/j11b109"
 
-                            if [ ! -d "$TARGET_DIR" ]; then
-                                echo "Directory does not exits. Creating directory ..."
-                                mkdir -p $TARGET_DIR
-                                chown -R ubuntu:ubuntu $TARGET_DIR
-                            fi
-
                             cd $TARGET_DIR
 
                             if [ ! -d ".git" ]; then
