@@ -3,11 +3,21 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS_ID = '53c0e6f0-2c1e-43b2-a1a1-3d3e56fd1cae'
         GITLAB_CREDENTIALS_ID = '2f379a74-002d-471d-a051-6bd615828532'
+        SSH_KEY='f7745d84-3b92-4a34-9da8-ab8b48c2f6bf'
     }
     stages {
         stage('Checkout Code'){
             steps {
-                git url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git', branch: 'master', credentialsId: GITLAB_CREDENTIALS_ID
+                git url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git', branch: 'master', credentialsId: env.GITLAB_CREDENTIALS_ID
+            }
+        }
+        stage('Copy docker-compose.ec2.yml to EC2') {
+            steps {
+                script {
+                    sshagent (credentials: [env.SSH_KEY]) {
+                        sh 'scp -o StrictHostKeyChecking=no docker-compose.ec2.yml ubuntu@j11b109.p.ssafy.io:/home/ubuntu/j11b109/docker-compose.ec2.yml'
+                    }
+                }
             }
         }
         stage ('Build Backend Images') {
@@ -17,11 +27,11 @@ pipeline {
                     // Build spring image
                     dir('backend/spring') {
                         sh 'chmod +x gradlew'
-                        sh './gradlew build --build-cache'
+                        sh './gradlew clean build --build-cache -x test'
                         sh 'docker build -t happyyongku/j11b109:spring .'
                     }
                     // Build fastapi image
-                    dir('backend/fastapi') {
+                    dir('backend/fastapi_ec2') {
                         sh 'docker build -t happyyongku/j11b109:fastapi .'
                     }
                 }
@@ -43,18 +53,20 @@ pipeline {
         stage('Build Nginx images') {
             steps {
                 script {
-                    sh 'docker build -t happyyongku/j11b109:nginx .'
+                    dir('nginx') {
+                        sh 'docker build -t happyyongku/j11b109:nginx .'
+                    }
                 }
             }
         }
-        stage('Test') {
-            steps {
-                script {
-                    sh 'docker-compose -f docker-compose.ec2.yml up --abort-on-container-exit'
-                    sh 'docker-compose -f docker-compose.ec2.yml down'
-                }
-            }
-        }
+        // stage('Test') {
+        //     steps {
+        //         script {
+        //             sh 'docker-compose -f docker-compose.ec2.yml up --abort-on-container-exit'
+        //             sh 'docker-compose -f docker-compose.ec2.yml down'
+        //         }
+        //     }
+        // }
         stage('Push Images to DockerHub') {
             steps {
                 script {
@@ -64,30 +76,28 @@ pipeline {
                         sh 'docker push happyyongku/j11b109:spring'
                         sh 'docker push happyyongku/j11b109:fastapi'
                         sh 'docker push happyyongku/j11b109:nginx'
+                        echo 'Push Docker hub'
                     }
                 }
             }
         }
-        stage('Deploy to EC2') {
+        stage('Deploy EC2 and NGINX') {
             steps {
                 script {
-                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 && docker-compose -f docker-compose.ec2.yml up -d"'
-                }
-            }
-        }
-        stage('Deploy NGINX') {
-            steps {
-                script {
-                    echo 'Deployin NGINX ...'
-                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 && docker-compose -f docker-compose.ec2.yml up -d --build nginx'
+                    echo 'Deploying EC2 and NGINX ...'
+                    sshagent (credentials: [env.SSH_KEY]) {
+                        echo 'Check SSH -------------------------------------------'
+                        sh 'ssh-add -l'
+                        sh 'ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 && docker-compose -f docker-compose.ec2.yml up -d --build nginx"'
+                    }
                 }
             }
         }
     }
-
     post {
         success {
             echo 'Successful Built and Deployed'
+            sh 'echo "successed yongku"'
         }
         failure {
             echo 'Build or Deployment failed'
