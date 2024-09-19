@@ -1,9 +1,7 @@
 version: '3.8'
 services:
   nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
+    image: happyyongku/j11b109:nginx
     ports:
       - "80:80"
       - "443:443"
@@ -23,14 +21,14 @@ services:
 
 
   react:
-    build: ./frontend/here_law
+    image: happyyongku/j11b109:react
     expose:
       - "3000"
     networks:
       - app-network
 
   spring:
-    build: ./backend/spring
+    image: happyyongku/j11b109:spring
     expose:
       - "8080"
     networks:
@@ -39,7 +37,7 @@ services:
     #   - postgres
   
   fastapi:
-    build: ./backend/fastapi_ec2
+    image: happyyongku/j11b109:fastapi
     expose:
       - "8000"
     networks:
