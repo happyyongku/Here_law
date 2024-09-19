@@ -9,30 +9,17 @@ pipeline {
         stage('Checkout or Update Code'){
             steps {
                 git url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git', branch: 'master', credentialsId: env.GITLAB_CREDENTIALS_ID
-                // script {
-                //     sshagent (credentials: [env.SSH_KEY]) {
-                //         sh '''
-                //             TARGET_DIR="/home/ubuntu/j11b109"
-
-                //             cd $TARGET_DIR
-
-                //             if [ ! -d ".git" ]; then
-                //                 echo "Repository does not exist. Initializing sparse-checkout ..."
-                //                 git init
-                //                 git remote add origin https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git
-                //                 git config core.sparseCheckout true
-                //                 echo "docker-compose.ec2.yml" >> .git/info/sparse-checkout
-                //                 git pull origin master
-                //             else
-                //                 echo "Repository existss. Pulling latest changes for docker-compose.ec2.yml ..."
-                //                 git pull origin master
-                //             fi
-                //         '''
-                //     }
-                // }
             }
         }
-        
+        stage('Copy docker-compose File to EC2') {
+            steps {
+                script {
+                    sshagent (credentials: [env.SSH_KEY]) {
+                        sh 'scp -o StrictHostKeyChecking=no docker-compose.ec2.yml ubuntu@j11b109.p.ssafy.io:/home/ubuntu/j11b109/docker-compose.ec2.yml'
+                    }
+                }
+            }
+        }
         stage ('Build Backend Images') {
             steps {
                 echo 'Building Backend Docker Images ...'
