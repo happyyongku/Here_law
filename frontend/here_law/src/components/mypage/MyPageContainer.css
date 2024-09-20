@@ -1,0 +1,14 @@
+.MyPageContainer {
+  background-color: #f8f8f8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* height: 100vh; */
+  gap: 15px;
+  padding-bottom: 100px;
+}
+
+.adimg {
+  width: 550px;
+  height: 80px;
+}

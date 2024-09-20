@@ -1,0 +1,28 @@
+.Subscribe-container {
+  background-color: white;
+  width: 550px;
+  border-radius: 10px;
+  padding: 15px 30px;
+}
+
+.Subscribe-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 13px;
+}
+
+.Subscribe-header-title {
+  font-size: 17px;
+}
+
+.add-Subscribe-item {
+  width: 24px;
+  height: 24px;
+}
+
+.Subscribe-list {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+}
