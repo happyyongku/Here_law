@@ -146,7 +146,7 @@ public class UserController {
                 lawyer.setDescription(lawyerDTO.getDescription());
                 lawyer.setUser(user);  // 변호사 정보와 사용자 정보를 연결
 
-                lawyerRepository.save(lawyer);  // 변호사 정보 저장
+                lawyerRepository.save(lawyer);  // 변호사 저장
             }
 
             // 임시 저장된 사용자 정보 삭제

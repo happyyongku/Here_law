@@ -1,50 +1,110 @@
-pipelinne {
+pipeline {
     agent any
+    environment {
+        DOCKER_CREDENTIALS_ID = '53c0e6f0-2c1e-43b2-a1a1-3d3e56fd1cae'
+        GITLAB_CREDENTIALS_ID = '2f379a74-002d-471d-a051-6bd615828532'
+        SSH_KEY='f7745d84-3b92-4a34-9da8-ab8b48c2f6bf'
+    }
     stages {
-        stage('Clone GitLab Repository') {
+        stage('Checkout or Update Code'){
             steps {
-                git branch: 'master',
-                    url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git',
-                    credentialsId: 'igzg9XEyR3xu4uKRMk4n'
+                git url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git', branch: 'master', credentialsId: env.GITLAB_CREDENTIALS_ID
             }
         }
-        stage('Build Spring') {
+        stage('Copy docker-compose File to EC2') {
             steps {
-                dir('backend/spring') {
-                    sh './gradlew clean build'
+                script {
+                    sshagent (credentials: [env.SSH_KEY]) {
+                        sh 'scp -o StrictHostKeyChecking=no docker-compose-ec2.yml ubuntu@j11b109.p.ssafy.io:/home/ubuntu/j11b109/docker-compose-ec2.yml'
+                    }
                 }
             }
         }
-        stage('Build Frontend') {
+        stage ('Build Backend Images') {
             steps {
-                dir('frontend/here_law') {
-                    sh 'npm install'
-                    sh 'npm run build'
+                echo 'Building Backend Docker Images ...'
+                script { 
+                    // Build spring image
+                    dir('backend/spring') {
+                        sh 'chmod +x gradlew'
+                        sh './gradlew clean build --build-cache -x test'
+                        sh 'docker build -t happyyongku/j11b109:spring .'
+                    }
+                    // Build fastapi image
+                    dir('backend/fastapi_ec2') {
+                        sh 'docker build -t happyyongku/j11b109:fastapi .'
+                    }
                 }
             }
         }
-        stage('Build Docker EC2 Services') {
+        stage('Build Frontend images') {
             steps {
-                sh 'docker-compose -f docker-compose.ec2.yml up --build -d'
-            }
-        }
-        stage('Deploy FastAPI to Remote Server') {
-            steps {
-                sshagent(['remote-server-credentials']) {
-                    
-                    sh '''
-                    scp -r backend/fastapi/* user@<fastapi-server-ip>:/path/to/deploy/fastapi/
-                    ssh user@<fastapi-server-ip> "cd /path/to/deploy/fastapi && docker-compose -f docker-compose.fastapi.yml up --build -d"
-                    '''
+                echo 'Build Frontend Docker Images ...'
+                script {
+                    //Build Frontend Images
+                    dir('frontend/here_law') {
+                        sh 'npm install'
+                        sh 'npm run build'
+                        sh 'docker build -t happyyongku/j11b109:react .'
+                    }
                 }
             }
         }
-        stage('Reload Nginx') {
+        stage('Build Nginx images') {
             steps {
-                dir('server') {
-                    sh 'sudo nginx -s reload'
+                script {
+                    dir('nginx') {
+                        sh 'docker build -t happyyongku/j11b109:nginx .'
+                    }
                 }
             }
+        }
+        // stage('Test') {
+        //     steps {
+        //         script {
+        //             sh 'docker-compose -f docker-compose.ec2.yml up --abort-on-container-exit'
+        //             sh 'docker-compose -f docker-compose.ec2.yml down'
+        //         }
+        //     }
+        // }
+        stage('Push Images to DockerHub') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                        sh 'docker push happyyongku/j11b109:react'
+                        sh 'docker push happyyongku/j11b109:spring'
+                        sh 'docker push happyyongku/j11b109:fastapi'
+                        sh 'docker push happyyongku/j11b109:nginx'
+                        echo 'Push Docker hub'
+                    }
+                }
+            }
+        }
+        stage('Deploy EC2 and NGINX') {
+            steps {
+                script {
+                    echo 'Deploying EC2 and NGINX ...'
+                    sshagent (credentials: [env.SSH_KEY]) {
+                        sh '''
+                            ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 &&
+                            echo "start pull" &&
+                            docker-compose -f docker-compose-ec2.yml pull &&
+                            echo "start up" &&
+                            docker-compose -f docker-compose-ec2.yml up -d"
+                        '''
+                    }
+                }
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Successful Built and Deployed'
+            sh 'echo "successed yongku"'
+        }
+        failure {
+            echo 'Build or Deployment failed'
         }
     }
 }
