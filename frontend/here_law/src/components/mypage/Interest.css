@@ -1,0 +1,28 @@
+.interest-container {
+  background-color: white;
+  width: 550px;
+  border-radius: 10px;
+  padding: 15px 30px;
+}
+
+.interest-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 13px;
+}
+
+.interest-header-title {
+  font-size: 17px;
+}
+
+.add-interest {
+  width: 24px;
+  height: 24px;
+}
+
+.interest-items {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+}
