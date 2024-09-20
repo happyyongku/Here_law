@@ -28,8 +28,8 @@ pipeline {
                     // Build spring image
                     dir('backend/spring') {
                         sh 'chmod +x gradlew'
-                        // sh './gradlew clean build --build-cache'
-                        sh './gradlew clean build --build-cache -x test'
+                        sh './gradlew clean build --build-cache'
+                        // sh './gradlew clean build --build-cache -x test'
                         sh 'docker build -t happyyongku/j11b109:spring .'
                     }
                     // Build fastapi image
