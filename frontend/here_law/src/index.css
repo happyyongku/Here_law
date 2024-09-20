@@ -6,11 +6,11 @@
 
 * {
   box-sizing: border-box;
+  margin: 0;
 }
 
-html,
 body {
   font-family: "NotoSans";
   margin: 0;
-  padding: 0 0 60px 0;
+  /* padding: 0 0 60px 0; */
 }
