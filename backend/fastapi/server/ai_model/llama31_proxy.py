@@ -24,6 +24,7 @@ class Llama31Proxy(ChatLlamaCpp):
                 "use this embedding model: pip install llama-cpp-python"
             )
         the_url = values["url"]
+        # For backwards compatibility, only include if non-null.
         try:
             values["client"] = Llama31Client(the_url)
         except Exception as e:

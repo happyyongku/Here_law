@@ -22,9 +22,10 @@ class Llama31Client:
                 messages=[{"role": "user", "content": "Hello"}],
                 max_tokens=10,
             )
+            print("checking connection using: ", test_request.model_dump_json())
             response = requests.post(f"{self.url}/chat", 
                                      json=test_request.model_dump(), 
-                                     timeout=10)
+                                     timeout=20)
             if response.status_code != 200:
                 raise Llama31ConnectionError(f"Server returned status code {response.status_code}")
             # Try to parse the response to ensure it's valid
@@ -43,7 +44,9 @@ class Llama31Client:
         '''
         kwargs["messages"] = messages
         print(kwargs)
+        print("-----------------------------------------------")
         arg_model = Llama31KorChatRequest(**kwargs)
+        print(arg_model.model_dump_json())
         if arg_model.stream:
             return self._stream_chat_responses(arg_model)
         return self._chat_responses(arg_model)
