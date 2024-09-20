@@ -5,7 +5,7 @@ services:
     expose:
       - "3000"
     networks:
-      - app-networks
+      - app-network
     volumes:
       - ./dist:/app/dist
     command: npm run build
