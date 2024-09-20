@@ -26,7 +26,6 @@ services:
       - "3000"
     networks:
       - app-network
-    command: ["npm", "start"]
 
   spring:
     image: happyyongku/j11b109:spring
