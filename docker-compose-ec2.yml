@@ -36,6 +36,11 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./certs:/etc/letsencrypt
       # - ./dist:/usr/share/nginx/html
+    command: /bin/sh -c "chgrp -R www-data /etc/letsencrypt/live $$\
+                        chmod 750 /etc/letsencrypt/live && \
+                        chomd 640 /etc/letsencrypt/live/j11b109.p.ssafy.io/fullchain.pem && \
+                        chomd 640 /etc/letsencrypt/live/j11b109.p.ssafy.io/privkey.pem && \
+                        "
     depends_on:
       - react
     #   - spring
