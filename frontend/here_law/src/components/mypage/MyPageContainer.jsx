@@ -12,7 +12,7 @@ import "./MyPageContainer.css";
 function MyPageContainer() {
   // 여기서 axios로 user 정보 호출
   // usertype 임시 데이터
-  const [userType, setUserType] = useState("lawyer");
+  const [userType, setUserType] = useState("normal");
 
   return (
     <div className="MyPageContainer">
