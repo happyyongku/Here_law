@@ -8,7 +8,6 @@ services:
       - app-network
     volumes:
       - ./dist:/app/dist
-    command: npm run build
 
   spring:
     image: happyyongku/j11b109:spring
