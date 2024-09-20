@@ -8,10 +8,10 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./certs:/etc/letsencrypt
-    # depends_on:
-    #   - react
+    depends_on:
+      - react
     #   - spring
-    #   - fastapi
+      - fastapi
     networks:
       - app-network
     healthcheck:
