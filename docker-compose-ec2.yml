@@ -26,6 +26,8 @@ services:
       - "3000"
     networks:
       - app-network
+    volumes:
+      - ./react/build:/app/build
 
   spring:
     image: happyyongku/j11b109:spring
