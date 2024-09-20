@@ -9,23 +9,17 @@ pipeline {
         stage('Checkout or Update Code'){
             steps {
                 git url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git', branch: 'master', credentialsId: env.GITLAB_CREDENTIALS_ID
+            }
+        }
+        stage('Copy docker-compose File to EC2') {
+            steps {
                 script {
                     sshagent (credentials: [env.SSH_KEY]) {
-                        sh '''
-                            if [ -d "/home/ubuntu/j11b109/.git" ]; then
-                                echo "Repository exists. Pulling latest changes ..."
-                                cd /home/ubuntu/j11b109
-                                git pull origin master
-                            else
-                                echo "Cloning repository for the first time ..."
-                                git clone https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git /home/ubuntu/j11b109
-                            fi
-                        '''
+                        sh 'scp -o StrictHostKeyChecking=no docker-compose-ec2.yml ubuntu@j11b109.p.ssafy.io:/home/ubuntu/j11b109/docker-compose-ec2.yml'
                     }
                 }
             }
         }
-        
         stage ('Build Backend Images') {
             steps {
                 echo 'Building Backend Docker Images ...'
@@ -92,9 +86,13 @@ pipeline {
                 script {
                     echo 'Deploying EC2 and NGINX ...'
                     sshagent (credentials: [env.SSH_KEY]) {
-                        echo 'Check SSH -------------------------------------------'
-                        sh 'ssh-add -l'
-                        sh 'ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 && docker-compose -f docker-compose.ec2.yml up -d --build nginx"'
+                        sh '''
+                            ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 &&
+                            echo "start pull" &&
+                            docker-compose -f docker-compose-ec2.yml pull &&
+                            echo "start up" &&
+                            docker-compose -f docker-compose-ec2.yml up -d"
+                        '''
                     }
                 }
             }
