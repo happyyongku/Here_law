@@ -1,0 +1,17 @@
+.subscribecard-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.subscribe-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50px;
+}
+
+.subscribe-cate {
+  font-size: 13px;
+  font-weight: bold;
+}
