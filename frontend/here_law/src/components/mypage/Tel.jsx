@@ -1,10 +1,10 @@
 import "./Tel.css";
 
-function Tel() {
+function Tel({ phoneNumber }) {
   return (
     <div className="tel-container">
       <h3 className="tel-container-title">전화번호</h3>
-      <p className="tel-number">042-645-0204</p>
+      <p className="tel-number">{phoneNumber}</p>
     </div>
   );
 }

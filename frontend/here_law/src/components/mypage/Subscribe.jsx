@@ -3,8 +3,7 @@ import SubscribeCard from "./SubscribeCard";
 import "./Subscribe.css";
 import addsubscribe from "../../assets/mypage/addexpertise.png";
 
-function Subscribe() {
-  const items = ["형사"];
+function Subscribe({ subscribe }) {
   return (
     <div className="Subscribe-container">
       <div className="Subscribe-header">
@@ -12,7 +11,7 @@ function Subscribe() {
         <img className="add-Subscribe-item" src={addsubscribe} alt="addimg" />
       </div>
       <div className="Subscribe-list">
-        {items.map((item, index) => (
+        {subscribe.map((item, index) => (
           <SubscribeCard key={index} item={item} />
         ))}
       </div>

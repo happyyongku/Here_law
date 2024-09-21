@@ -2,9 +2,7 @@ import addexpertise from "../../assets/mypage/addexpertise.png";
 import ExpertiseCard from "./ExpertiseCard";
 import "./Expertise.css";
 
-function Expertise() {
-  const items = ["이혼", "형사", "노동", "부동산"];
-
+function Expertise({ expertise }) {
   return (
     <div className="expertise-container">
       <div className="expertise-header">
@@ -12,7 +10,7 @@ function Expertise() {
         <img className="add-expertis-item" src={addexpertise} alt="addimg" />
       </div>
       <div className="expert-list">
-        {items.map((item, index) => (
+        {expertise.map((item, index) => (
           <ExpertiseCard key={index} item={item} />
         ))}
       </div>
