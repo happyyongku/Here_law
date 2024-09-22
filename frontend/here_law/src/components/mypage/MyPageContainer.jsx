@@ -47,7 +47,7 @@ function MyPageContainer() {
     save: ["", "", ""],
   };
 
-  const [userType, setUserType] = useState(data2.userType);
+  const [userType, setUserType] = useState(data1.userType);
 
   return (
     <div className="MyPageContainer">

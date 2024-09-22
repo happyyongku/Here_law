@@ -28,11 +28,6 @@ function LawyerInfo({
             <div className="lawyer-common-info">
               <p className="user-name">{nickname}</p>
               <img className="lawyer-mark" src={lawyermark} alt="lawyer-mark" />
-              <img
-                className="profile-img-updateimg"
-                src={updateimg}
-                alt="updateimg"
-              />
             </div>
             <div className="user-point">
               POINT <span className="user-point-number">{point}</span>
@@ -40,7 +35,18 @@ function LawyerInfo({
             <div className="lawyer-description">{description}</div>
             <p className="lawyer-email">{email}</p>
           </div>
-          <img className="user-setting-button" src={usersetting} alt="" />
+          <div className="update-box">
+            <img
+              className="profile-img-updateimg"
+              src={updateimg}
+              alt="updateimg"
+            />
+            <img
+              className="user-setting-button"
+              src={usersetting}
+              alt="settingbutton"
+            />
+          </div>
         </div>
         <hr />
         <div className="lawyer-number-things">

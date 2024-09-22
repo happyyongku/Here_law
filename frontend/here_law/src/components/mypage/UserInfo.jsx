@@ -20,19 +20,21 @@ function UserInfo({ nickname, profileImg, email, write, like, save }) {
           />
           <div className="name-and-update">
             <p className="normal-user-name">{nickname}</p>
-            <img
-              className="normal-user-name-change"
-              src={updateimg}
-              alt="updateimg"
-            />
           </div>
           <p className="normal-user-email">{email}</p>
         </div>
-        <img
-          className="normal-user-setting"
-          src={usersetting}
-          alt="usersettingimg"
-        />
+        <div className="update-box">
+          <img
+            className="normal-user-name-change"
+            src={updateimg}
+            alt="updateimg"
+          />
+          <img
+            className="normal-user-setting"
+            src={usersetting}
+            alt="usersettingimg"
+          />
+        </div>
       </div>
 
       <hr />
