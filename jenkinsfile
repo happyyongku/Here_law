@@ -28,7 +28,7 @@ pipeline {
                     sh 'echo DB_PORT=$DB_PORT >> .env'
                     sh 'echo DB_PORT_FASTAPI=$DB_PORT_FASTAPI >> .env'
                     sh 'echo DB_NAME=$DB_NAME >> .env'
-                    sh 'echo DB_USERNAME=$DB_USERNNAME >> .env'
+                    sh 'echo DB_USERNAME=$DB_USERNAME >> .env'
                     sh 'echo DB_PASSWORD=$DB_PASSWORD >> .env'
                 }
             }
