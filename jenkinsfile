@@ -26,6 +26,8 @@ pipeline {
                 script{
                     sh '''
                         pwd
+                        echo "DB_DOMAIN=$DB_DOMAIN"
+
                         echo DB_DOMAIN=$DB_DOMAIN > .env
                         echo DB_PORT=$DB_PORT >> .env
                         echo DB_PORT_FASTAPI=$DB_PORT_FASTAPI >> .env
