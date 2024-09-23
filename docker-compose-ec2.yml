@@ -65,7 +65,9 @@ services:
       - "5432:5432"
       - "2345:5432"
     volumes:
-      - database: /var/lib/postgres/data
+      - type: volume
+        source: database
+        target: /var/lib/postgres/data
     environment:
       DB_NAME: ${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
