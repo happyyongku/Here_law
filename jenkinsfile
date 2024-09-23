@@ -77,7 +77,7 @@ pipeline {
             steps {
                 script {
                     dir('DB') {
-                        sh 'docker build -t happyyongku/j11b109:postgres'
+                        sh 'docker build -t happyyongku/j11b109:postgres .'
                     }
                 }
             }
