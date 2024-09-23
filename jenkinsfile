@@ -26,7 +26,7 @@ pipeline {
                 script{
                     sh '''
                         pwd
-                        echo "DB_DOMAIN=$DB_DOMAIN"
+                        ls /var/jenkins_home/workspace/J11B109_pipeline
 
                         echo DB_DOMAIN=$DB_DOMAIN > .env
                         echo DB_PORT=$DB_PORT >> .env
