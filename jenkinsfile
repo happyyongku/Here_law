@@ -34,7 +34,7 @@ pipeline {
                         echo DB_PASSWORD=$DB_PASSWORD >> .env
 
                         ls /var/jenkins_home/workspace/J11B109_pipeline
-                        find /var/jenkins_home/workspace/J11B09_pipeline -name ".env"
+                        ls -la
                     '''
                 }
             }
