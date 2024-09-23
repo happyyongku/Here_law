@@ -24,8 +24,7 @@ pipeline {
         stage('Create .env') {
             steps {
                 script{
-                    sh 'sudo chown -R jenkins:jenkins /home/ubuntu/j11b109'
-                    sh 'cd /home/ubuntu/j11b109 && echo DB_DOMAIN=$DB_DOMAIN > .env'
+                    sh 'echo DB_DOMAIN=$DB_DOMAIN > .env'
                     sh 'echo DB_PORT=$DB_PORT >> .env'
                     sh 'echo DB_PORT_FASTAPI=$DB_PORT_FASTAPI >> .env'
                     sh 'echo DB_NAME=$DB_NAME >> .env'
