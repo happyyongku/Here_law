@@ -46,6 +46,9 @@ services:
     networks:
       - app-network
 
+volumes:
+  certs:
+    driver: local
     
 networks:
   app-network:
