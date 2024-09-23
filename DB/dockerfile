@@ -1,3 +1,6 @@
 FROM postgres:12.20
 
-ENV POSTGRES_USER=
+COPY init.sql /docker-entrypoint-initdb.d/
+
+EXPOSE 5432
+EXPOSE 2345

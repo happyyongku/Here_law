@@ -15,6 +15,13 @@ services:
       - "8080"
     networks:
       - app-network
+    environment:
+      DB_DOMAIN: ${DB_DOMAIN}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+
     # depends_on:
     #   - postgres
   
@@ -24,6 +31,12 @@ services:
       - "8000"
     networks:
       - app-network
+    environment:
+      DB_DOMAIN: ${DB_DOMAIN}
+      DB_PORT: ${DB_PORT_FASTAPI}
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
     # depends_on:
     #   - postgres
 
@@ -45,10 +58,24 @@ services:
       - fastapi
     networks:
       - app-network
+  
+  postgres:
+    image: happyyongku/j11b109:postgres
+    ports:
+      - "5432:5432"
+      - "2345:5432"
+    volumes:
+      - database: /var/lib/postgres/data
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+
 
 volumes:
   certs:
     driver: local
-    
+  database:
+    driver: local
 networks:
   app-network:

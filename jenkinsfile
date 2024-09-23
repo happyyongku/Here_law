@@ -21,6 +21,18 @@ pipeline {
                 }
             }
         }
+        stage('Create .env') {
+            steps {
+                script{
+                    sh 'echo DB_DOMAIN=$DB_DOMAIN > .env'
+                    sh 'echo DB_PORT=$DB_PORT >> .env'
+                    sh 'echo DB_PORT_FASTAPI=$DB_PORT_FASTAPI >> .env'
+                    sh 'echo DB_NAME=$DB_NAME >> .env'
+                    sh 'echo DB_USERNAME=$DB_USERNNAME >> .env'
+                    sh 'echo DB_PASSWORD=$DB_PASSWORD >> .env'
+                }
+            }
+        }
         stage ('Build Backend Images') {
             steps {
                 echo 'Building Backend Docker Images ...'
@@ -61,14 +73,16 @@ pipeline {
                 }
             }
         }
-        // stage('Test') {
-        //     steps {
-        //         script {
-        //             sh 'docker-compose -f docker-compose.ec2.yml up --abort-on-container-exit'
-        //             sh 'docker-compose -f docker-compose.ec2.yml down'
-        //         }
-        //     }
-        // }
+        stage('Build postgreSQL images') {
+            steps {
+                script {
+                    dir('DB') {
+                        sh 'docker build -t happyyongku/j11b109:postgres'
+                    }
+                }
+            }
+        }
+        
         stage('Push Images to DockerHub') {
             steps {
                 script {
@@ -78,6 +92,7 @@ pipeline {
                         sh 'docker push happyyongku/j11b109:spring'
                         sh 'docker push happyyongku/j11b109:fastapi'
                         sh 'docker push happyyongku/j11b109:nginx'
+                        sh 'docker push happyyongku/j11b109:postgres'
                         echo 'Push Docker hub'
                     }
                 }
