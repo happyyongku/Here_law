@@ -1,4 +1,5 @@
 import { useState } from "react";
+import BasicInfoModal from "./BasicInfoModal";
 import normaluserimg from "../../assets/mypage/normaluserimg.png";
 import usersetting from "../../assets/mypage/usersetting.png";
 import updateimg from "../../assets/mypage/updateimg.png";
@@ -8,6 +9,10 @@ function UserInfo({ nickname, profileImg, email, write, like, save }) {
   const [writePost, setWritePost] = useState(write.length);
   const [likePost, setLikePost] = useState(like.length);
   const [saveEx, setSaveEx] = useState(save.length);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <div className="user-info-container">
@@ -28,6 +33,7 @@ function UserInfo({ nickname, profileImg, email, write, like, save }) {
             className="normal-user-name-change"
             src={updateimg}
             alt="updateimg"
+            onClick={openModal}
           />
           <img
             className="normal-user-setting"
@@ -53,6 +59,17 @@ function UserInfo({ nickname, profileImg, email, write, like, save }) {
           <div className="normal-user-number-text">스크랩한 판례</div>
         </div>
       </div>
+      {isModalOpen ? (
+        <BasicInfoModal
+          profileImg={profileImg}
+          nickname={nickname}
+          email={email}
+          isModalOpen={isModalOpen}
+          closeModal={closeModal}
+        />
+      ) : (
+        <></>
+      )}
     </div>
   );
 }

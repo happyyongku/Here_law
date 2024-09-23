@@ -1,4 +1,5 @@
 import { useState } from "react";
+import LawyerInfoModal from "./LawyerInfoModal";
 import lawyermark from "../../assets/mypage/lawyermark.png";
 import usersetting from "../../assets/mypage/usersetting.png";
 import defaultimg from "../../assets/mypage/defaultimg.png";
@@ -10,6 +11,7 @@ function LawyerInfo({
   profileImg,
   point,
   description,
+  phoneNumber,
   email,
   write,
   like,
@@ -18,6 +20,10 @@ function LawyerInfo({
   const [writePost, setWritePost] = useState(write.length);
   const [likePost, setLikePost] = useState(like.length);
   const [saveEx, setSaveEx] = useState(save.length);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <>
@@ -40,6 +46,7 @@ function LawyerInfo({
               className="profile-img-updateimg"
               src={updateimg}
               alt="updateimg"
+              onClick={openModal}
             />
             <img
               className="user-setting-button"
@@ -63,6 +70,19 @@ function LawyerInfo({
             <p className="text-size">스크랩한 판례</p>
           </div>
         </div>
+        {isModalOpen ? (
+          <LawyerInfoModal
+            profileImg={profileImg}
+            nickname={nickname}
+            description={description}
+            phoneNumber={phoneNumber}
+            email={email}
+            isModalOpen={isModalOpen}
+            closeModal={closeModal}
+          />
+        ) : (
+          <></>
+        )}
       </div>
     </>
   );

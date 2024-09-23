@@ -47,7 +47,7 @@ function MyPageContainer() {
     save: ["", "", ""],
   };
 
-  const [userType, setUserType] = useState(data1.userType);
+  const [userType, setUserType] = useState(data2.userType);
 
   return (
     <div className="MyPageContainer">
@@ -58,6 +58,7 @@ function MyPageContainer() {
           point={data2.point}
           description={data2.description}
           email={data2.email}
+          phoneNumber={data2.phoneNumber}
           write={data2.write}
           like={data2.like}
           save={data2.save}
