@@ -25,6 +25,16 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
+        String requestURI = request.getRequestURI();
+
+        // 이메일 인증 관련 엔드포인트는 JWT 검증 제외
+        if (requestURI.equals("/spring_api/send-verification-code") || requestURI.equals("/spring_api/verify-code")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+
         String token = getJwtFromRequest(request);
 
         if (token != null && tokenProvider.validateToken(token)) {

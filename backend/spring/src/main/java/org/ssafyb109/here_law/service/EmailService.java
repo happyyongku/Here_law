@@ -36,7 +36,7 @@ public class EmailService {
     // 이메일 전송 메서드 수정 (보낸 사람 이름 설정)
     public void sendVerificationEmail(String toEmail, String token) throws MessagingException {
         String subject = "이메일 인증";
-        String verificationLink = "http://localhost:8080/spring_api/user/verify-email?token=" + token;
+        String verificationLink = token;
 
         // MimeMessage 사용
         MimeMessage message = mailSender.createMimeMessage();
