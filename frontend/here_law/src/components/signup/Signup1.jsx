@@ -1,3 +1,5 @@
+import axiosInstance from "../../utils/axiosInstance";
+
 import React, { useState, useEffect } from "react";
 
 function Signup1({ email, password, handleEmail, handlePassword, onNext }) {
@@ -48,6 +50,27 @@ function Signup1({ email, password, handleEmail, handlePassword, onNext }) {
     }
   }, [emailValid, pwValid, password, passwordConfirm, emailCode]);
 
+  // 이메일-인증번호 요청 axios
+  const emailSend = async () => {
+    const emailData = {
+      email: email,
+    };
+    try {
+      const response = await axiosInstance.post(
+        "/spring_api/send-verification-code",
+        emailData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error("요청 실패", error);
+    }
+  };
+
   return (
     <div>
       <div className="signup-input-title">이메일 주소</div>
@@ -59,7 +82,9 @@ function Signup1({ email, password, handleEmail, handlePassword, onNext }) {
           value={email}
           onChange={handleEmailChange}
         />
-        <button className="signup-verify-button-black">인증 요청</button>
+        <button className="signup-verify-button-black" onClick={emailSend}>
+          인증 요청
+        </button>
       </div>
       <div className="error-message-wrap">
         {!emailValid && email.length > 0 && (
