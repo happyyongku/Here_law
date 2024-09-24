@@ -24,20 +24,20 @@ pipeline {
         stage('Create .env') {
             steps {
                 script{
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "
-                        pwd
-                        echo DB_DOMAIN=$DB_DOMAIN > .env || echo "Failed to create .env"
-                        echo DB_PORT=$DB_PORT >> .env || echo "Failed to append DB_PORT"
-                        echo DB_PORT_FASTAPI=$DB_PORT_FASTAPI >> .env
-                        echo DB_NAME=$DB_NAME >> .env
-                        echo DB_USERNAME=$DB_USERNAME >> .env
-                        echo DB_PASSWORD=$DB_PASSWORD >> .env
-                        
-                        ls /var/jenkins_home/workspace/J11B109_pipeline
-                        ls -la
-                        "
-                    '''
+                    sshagent (credentials: [env.SSH_KEY]) {
+                        sh '''
+                            pwd
+                            echo DB_DOMAIN=$DB_DOMAIN > .env || echo "Failed to create .env"
+                            echo DB_PORT=$DB_PORT >> .env || echo "Failed to append DB_PORT"
+                            echo DB_PORT_FASTAPI=$DB_PORT_FASTAPI >> .env
+                            echo DB_NAME=$DB_NAME >> .env
+                            echo DB_USERNAME=$DB_USERNAME >> .env
+                            echo DB_PASSWORD=$DB_PASSWORD >> .env
+
+                            ls /var/jenkins_home/workspace/J11B109_pipeline
+                            ls -la
+                        '''
+                    }
                 }
             }
         }
