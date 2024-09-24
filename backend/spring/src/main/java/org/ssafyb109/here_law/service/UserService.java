@@ -5,12 +5,16 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.ssafyb109.here_law.document.UserDocument;
 import org.ssafyb109.here_law.entity.UserEntity;
 import org.ssafyb109.here_law.jwt.JwtUtil;
-import org.ssafyb109.here_law.repository.UserRepository;
-import org.ssafyb109.here_law.repository.VerificationTokenRepository;
+import org.ssafyb109.here_law.repository.elasticsearch.UserElasticsearchRepository;
+import org.ssafyb109.here_law.repository.jpa.UserJpaRepository;
+import org.ssafyb109.here_law.repository.jpa.VerificationTokenRepository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -22,7 +26,10 @@ public class UserService {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserJpaRepository userJpaRepository;
+
+    @Autowired
+    private UserElasticsearchRepository userElasticsearchRepository;
 
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
@@ -47,13 +54,32 @@ public class UserService {
     // 회원 삭제 메서드
     @Transactional
     public void deleteUser(Long userId) {
-        Optional<UserEntity> user = userRepository.findById(userId);
+        Optional<UserEntity> user = userJpaRepository.findById(userId);
         if (user.isPresent()) {
             // VerificationTokenEntity를 먼저 삭제
             verificationTokenRepository.deleteByUser(user.get());
             // 그 후 UserEntity를 삭제
-            userRepository.deleteById(userId);
+            userJpaRepository.deleteById(userId);
         }
+    }
+
+    // 닉네임으로 사용자 검색 (엘라스틱 서치)
+    public List<UserEntity> searchUsersByNickname(String nickname) {
+        List<UserDocument> userDocuments = userElasticsearchRepository.findByNicknameContaining(nickname);
+        // UserDocument를 UserEntity로 변환하는 로직 추가
+        return userDocuments.stream()
+                .map(this::convertToEntity)
+                .collect(Collectors.toList());
+    }
+
+    // UserDocument를 UserEntity로 변환하는 메서드
+    private UserEntity convertToEntity(UserDocument userDocument) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userDocument.getId());
+        userEntity.setNickname(userDocument.getNickname());
+        userEntity.setEmail(userDocument.getEmail());
+        // 다른 필요한 필드 설정
+        return userEntity;
     }
 }
 

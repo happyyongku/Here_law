@@ -1,11 +1,13 @@
-package org.ssafyb109.here_law.repository;
+package org.ssafyb109.here_law.repository.jpa;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import org.ssafyb109.here_law.entity.UserEntity;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
+@Repository("userJpaRepository")
+public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findByEmail(String email);
 
     boolean existsByEmail(String email);  // 이메일 중복 확인용 메서드

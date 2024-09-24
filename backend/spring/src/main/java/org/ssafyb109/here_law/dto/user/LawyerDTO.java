@@ -13,4 +13,6 @@ public class LawyerDTO {
     private String officeLocation;
     private String qualification;
     private String description;
+    private Integer point;
+    private String phoneNumber;
 }

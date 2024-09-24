@@ -10,8 +10,8 @@ import org.ssafyb109.here_law.dto.user.LawyerDTO;
 import org.ssafyb109.here_law.dto.user.UserDTO;
 import org.ssafyb109.here_law.entity.LawyerEntity;
 import org.ssafyb109.here_law.entity.UserEntity;
-import org.ssafyb109.here_law.repository.LawyerRepository;
-import org.ssafyb109.here_law.repository.UserRepository;
+import org.ssafyb109.here_law.repository.jpa.LawyerRepository;
+import org.ssafyb109.here_law.repository.jpa.UserJpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -23,7 +23,7 @@ import java.util.Optional;
 public class UserProfileController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserJpaRepository userJpaRepository;
 
     @Autowired
     private LawyerRepository lawyerRepository;
@@ -31,7 +31,7 @@ public class UserProfileController {
     @Operation(summary = "회원 정보 조회", description = "회원 정보 조회")
     @GetMapping("/user/profile") // 회원 정보 조회
     public ResponseEntity<Object> getUserProfile(Authentication authentication) {
-        UserEntity user = userRepository.findByEmail(authentication.getName());
+        UserEntity user = userJpaRepository.findByEmail(authentication.getName());
 
         // 변호사일 경우 변호사 정보를 함께 리턴
         if ("lawyer".equals(user.getUserType())) {
@@ -55,19 +55,19 @@ public class UserProfileController {
     @PutMapping("/user/profile") // 회원 정보 수정
     public ResponseEntity<Object> updateUserProfile(Authentication authentication, @RequestBody UserDTO updatedUserDTO) {
         // 사용자 인증을 통해 현재 사용자 정보 가져오기
-        UserEntity user = userRepository.findByEmail(authentication.getName());
+        UserEntity user = userJpaRepository.findByEmail(authentication.getName());
 
         // 닉네임 중복 확인
-        if (!user.getNickname().equals(updatedUserDTO.getNickname()) && userRepository.existsByNickname(updatedUserDTO.getNickname())) {
+        if (!user.getNickname().equals(updatedUserDTO.getNickname()) && userJpaRepository.existsByNickname(updatedUserDTO.getNickname())) {
             return ResponseEntity.badRequest().body("해당 닉네임은 이미 사용 중입니다.");
         }
 
         // 일반 사용자 정보 수정
         user.setNickname(updatedUserDTO.getNickname());
-        user.setPhoneNumber(updatedUserDTO.getPhoneNumber());
         user.setProfileImg(updatedUserDTO.getProfileImg());
         user.setInterests(updatedUserDTO.getInterests());
-        user.setUpdateDate(LocalDateTime.now());  // 수정 시간 업데이트
+        user.setSubscriptions(updatedUserDTO.getSubscriptions());
+        user.setUpdateDate(LocalDateTime.now());
 
         // 변호사일 경우 변호사 정보 수정
         if ("lawyer".equals(user.getUserType())) {
@@ -88,7 +88,7 @@ public class UserProfileController {
         }
 
         // 수정된 사용자 정보 저장
-        userRepository.save(user);
+        userJpaRepository.save(user);
 
         return ResponseEntity.ok("회원정보가 성공적으로 수정되었습니다.");
     }
@@ -117,13 +117,13 @@ public class UserProfileController {
         userDTO.setNickname(user.getNickname());
         userDTO.setEmail(user.getEmail());
         userDTO.setPassword(user.getPassword());
-        userDTO.setPhoneNumber(user.getPhoneNumber());
         userDTO.setProfileImg(user.getProfileImg());
         userDTO.setUserType(user.getUserType());
         userDTO.setIsFirst(user.getIsFirst());
         userDTO.setCreatedDate(user.getCreatedDate());
         userDTO.setUpdateDate(user.getUpdateDate());
         userDTO.setInterests(user.getInterests());
+        userDTO.setSubscriptions(user.getSubscriptions());
         return userDTO;
     }
 }
