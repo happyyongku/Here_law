@@ -22,8 +22,14 @@ function LawyerInfo({
   const [saveEx, setSaveEx] = useState(save.length);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const openModal = () => setIsModalOpen(true);
+  const openModal = () => {
+    setIsModalOpen(true);
+    setIsToggleOpen(false);
+  };
   const closeModal = () => setIsModalOpen(false);
+
+  const [isToggleOpen, setIsToggleOpen] = useState(false);
+  const toggleButton = () => setIsToggleOpen(!isToggleOpen);
 
   return (
     <>
@@ -52,7 +58,13 @@ function LawyerInfo({
               className="user-setting-button"
               src={usersetting}
               alt="settingbutton"
+              onClick={toggleButton}
             />
+            {isToggleOpen && (
+              <div className="settings-dropdown">
+                <div className="">회원탈퇴</div>
+              </div>
+            )}
           </div>
         </div>
         <hr />
@@ -70,7 +82,7 @@ function LawyerInfo({
             <p className="text-size">스크랩한 판례</p>
           </div>
         </div>
-        {isModalOpen ? (
+        {isModalOpen && (
           <LawyerInfoModal
             profileImg={profileImg}
             nickname={nickname}
@@ -80,8 +92,6 @@ function LawyerInfo({
             isModalOpen={isModalOpen}
             closeModal={closeModal}
           />
-        ) : (
-          <></>
         )}
       </div>
     </>

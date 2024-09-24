@@ -11,8 +11,16 @@ function UserInfo({ nickname, profileImg, email, write, like, save }) {
   const [saveEx, setSaveEx] = useState(save.length);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const openModal = () => setIsModalOpen(true);
+  const openModal = () => {
+    setIsModalOpen(true);
+    setIsToggleOpen(false);
+  };
   const closeModal = () => setIsModalOpen(false);
+
+  const [isToggleOpen, setIsToggleOpen] = useState(false);
+  const toggleButton = () => {
+    setIsToggleOpen(!isToggleOpen);
+  };
 
   return (
     <div className="user-info-container">
@@ -39,7 +47,13 @@ function UserInfo({ nickname, profileImg, email, write, like, save }) {
             className="normal-user-setting"
             src={usersetting}
             alt="usersettingimg"
+            onClick={toggleButton}
           />
+          {isToggleOpen && (
+            <div className="settings-dropdown">
+              <div className="">회원탈퇴</div>
+            </div>
+          )}
         </div>
       </div>
 
