@@ -32,14 +32,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())  // CSRF 비활성화
+                .csrf().disable()
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui.html").permitAll()  // Swagger 관련 경로 허용
-                        .requestMatchers("/spring_api/register", "/spring_api/login", "/spring_api/user/verify-email").permitAll()  // 로그인 및 회원가입 API 허용
-                        .requestMatchers("/spring_api/lawyer/**").hasRole("LAWYER")  // 변호사 전용 API는 LAWYER 권한 필요
-                        .anyRequest().authenticated()  // 나머지 모든 요청은 인증 필요
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/swagger-ui.html",
+                                "/spring_api/register",
+                                "/spring_api/login",
+                                "/spring_api/send-verification-code",
+                                "/spring_api/verify-code"
+                        ).permitAll()
+                        .requestMatchers("/spring_api/lawyer/**").hasRole("LAWYER")
+                        .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);  // JWT 필터 추가
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
