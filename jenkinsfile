@@ -116,7 +116,7 @@ pipeline {
                             echo "start pull" &&
                             docker-compose -f docker-compose-ec2.yml pull &&
                             echo "start up" &&
-                            docker-compose -f docker-compose-ec2.yml up -d" &&
+                            docker-compose --env-file .env -f docker-compose-ec2.yml up -d" &&
                             echo "print env" &&
                             env | grep DB_
                         '''
