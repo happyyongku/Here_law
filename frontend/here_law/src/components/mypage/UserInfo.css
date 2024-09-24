@@ -55,8 +55,9 @@
 }
 
 .normal-user-name-change {
-  width: 16px;
-  height: 16px;
+  width: 21px;
+  height: 21px;
+  opacity: 60%;
 }
 
 .user-info-number-box {

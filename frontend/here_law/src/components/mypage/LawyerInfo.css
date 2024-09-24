@@ -96,6 +96,31 @@
 }
 
 .profile-img-updateimg {
-  width: 16px;
-  height: 16px;
+  width: 21px;
+  height: 21px;
+  opacity: 60%;
+}
+
+.update-box {
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.settings-dropdown {
+  background: white;
+  border: 1px solid #d7dedd;
+  border-radius: 5px;
+  padding: 5px;
+  position: relative;
+  position: absolute;
+  z-index: 10;
+  top: 100%;
+  width: 80px;
+  color: red;
+  text-align: center;
+  font-size: 13px;
 }

@@ -1,0 +1,65 @@
+.basic-info-modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+}
+
+.basic-info-modal-contents-box {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 450px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.close-button-img {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+}
+
+.profile-img-update {
+  width: 80px;
+  height: 80px;
+}
+
+.basic-info-modal-item-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
+.basic-info-modal-input {
+  width: 400px;
+  height: 35px;
+  border: 1px solid #d7dedd;
+  border-radius: 5px;
+  padding: 0px 10px;
+  margin-bottom: 6px;
+}
+
+.update-complete {
+  background-color: #ff5e00;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  width: 80px;
+  height: 30px;
+  font-size: 12px;
+  margin-top: 10px;
+  cursor: pointer;
+}

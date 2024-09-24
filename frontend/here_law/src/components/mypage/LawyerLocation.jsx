@@ -1,5 +1,4 @@
 import lawyerlocationimg from "../../assets/mypage/location.png";
-
 import "./LawyerLocation.css";
 
 function LawyerLocation({ officeLocation }) {

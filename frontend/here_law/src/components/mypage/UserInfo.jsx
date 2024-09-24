@@ -1,4 +1,5 @@
 import { useState } from "react";
+import BasicInfoModal from "./BasicInfoModal";
 import normaluserimg from "../../assets/mypage/normaluserimg.png";
 import usersetting from "../../assets/mypage/usersetting.png";
 import updateimg from "../../assets/mypage/updateimg.png";
@@ -8,6 +9,18 @@ function UserInfo({ nickname, profileImg, email, write, like, save }) {
   const [writePost, setWritePost] = useState(write.length);
   const [likePost, setLikePost] = useState(like.length);
   const [saveEx, setSaveEx] = useState(save.length);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => {
+    setIsModalOpen(true);
+    setIsToggleOpen(false);
+  };
+  const closeModal = () => setIsModalOpen(false);
+
+  const [isToggleOpen, setIsToggleOpen] = useState(false);
+  const toggleButton = () => {
+    setIsToggleOpen(!isToggleOpen);
+  };
 
   return (
     <div className="user-info-container">
@@ -20,19 +33,28 @@ function UserInfo({ nickname, profileImg, email, write, like, save }) {
           />
           <div className="name-and-update">
             <p className="normal-user-name">{nickname}</p>
-            <img
-              className="normal-user-name-change"
-              src={updateimg}
-              alt="updateimg"
-            />
           </div>
           <p className="normal-user-email">{email}</p>
         </div>
-        <img
-          className="normal-user-setting"
-          src={usersetting}
-          alt="usersettingimg"
-        />
+        <div className="update-box">
+          <img
+            className="normal-user-name-change"
+            src={updateimg}
+            alt="updateimg"
+            onClick={openModal}
+          />
+          <img
+            className="normal-user-setting"
+            src={usersetting}
+            alt="usersettingimg"
+            onClick={toggleButton}
+          />
+          {isToggleOpen && (
+            <div className="settings-dropdown">
+              <div className="">회원탈퇴</div>
+            </div>
+          )}
+        </div>
       </div>
 
       <hr />
@@ -51,6 +73,17 @@ function UserInfo({ nickname, profileImg, email, write, like, save }) {
           <div className="normal-user-number-text">스크랩한 판례</div>
         </div>
       </div>
+      {isModalOpen ? (
+        <BasicInfoModal
+          profileImg={profileImg}
+          nickname={nickname}
+          email={email}
+          isModalOpen={isModalOpen}
+          closeModal={closeModal}
+        />
+      ) : (
+        <></>
+      )}
     </div>
   );
 }

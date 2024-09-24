@@ -1,4 +1,5 @@
 import { useState } from "react";
+import LawyerInfoModal from "./LawyerInfoModal";
 import lawyermark from "../../assets/mypage/lawyermark.png";
 import usersetting from "../../assets/mypage/usersetting.png";
 import defaultimg from "../../assets/mypage/defaultimg.png";
@@ -10,6 +11,7 @@ function LawyerInfo({
   profileImg,
   point,
   description,
+  phoneNumber,
   email,
   write,
   like,
@@ -18,6 +20,16 @@ function LawyerInfo({
   const [writePost, setWritePost] = useState(write.length);
   const [likePost, setLikePost] = useState(like.length);
   const [saveEx, setSaveEx] = useState(save.length);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => {
+    setIsModalOpen(true);
+    setIsToggleOpen(false);
+  };
+  const closeModal = () => setIsModalOpen(false);
+
+  const [isToggleOpen, setIsToggleOpen] = useState(false);
+  const toggleButton = () => setIsToggleOpen(!isToggleOpen);
 
   return (
     <>
@@ -28,11 +40,6 @@ function LawyerInfo({
             <div className="lawyer-common-info">
               <p className="user-name">{nickname}</p>
               <img className="lawyer-mark" src={lawyermark} alt="lawyer-mark" />
-              <img
-                className="profile-img-updateimg"
-                src={updateimg}
-                alt="updateimg"
-              />
             </div>
             <div className="user-point">
               POINT <span className="user-point-number">{point}</span>
@@ -40,7 +47,25 @@ function LawyerInfo({
             <div className="lawyer-description">{description}</div>
             <p className="lawyer-email">{email}</p>
           </div>
-          <img className="user-setting-button" src={usersetting} alt="" />
+          <div className="update-box">
+            <img
+              className="profile-img-updateimg"
+              src={updateimg}
+              alt="updateimg"
+              onClick={openModal}
+            />
+            <img
+              className="user-setting-button"
+              src={usersetting}
+              alt="settingbutton"
+              onClick={toggleButton}
+            />
+            {isToggleOpen && (
+              <div className="settings-dropdown">
+                <div className="">회원탈퇴</div>
+              </div>
+            )}
+          </div>
         </div>
         <hr />
         <div className="lawyer-number-things">
@@ -57,6 +82,17 @@ function LawyerInfo({
             <p className="text-size">스크랩한 판례</p>
           </div>
         </div>
+        {isModalOpen && (
+          <LawyerInfoModal
+            profileImg={profileImg}
+            nickname={nickname}
+            description={description}
+            phoneNumber={phoneNumber}
+            email={email}
+            isModalOpen={isModalOpen}
+            closeModal={closeModal}
+          />
+        )}
       </div>
     </>
   );
