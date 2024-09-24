@@ -17,13 +17,13 @@ services:
       - app-network
     environment:
       DB_DOMAIN: ${DB_DOMAIN}
-      DB_PORT: ${DB_PORT}
+      DB_PORT: ${DB_PORT_SPRING}
       DB_NAME: ${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
 
-    # depends_on:
-    #   - postgres
+    depends_on:
+      - postgres
   
   fastapi:
     image: happyyongku/j11b109:fastapi
@@ -37,8 +37,8 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-    # depends_on:
-    #   - postgres
+    depends_on:
+      - postgres
 
   nginx:
     image: happyyongku/j11b109:nginx
