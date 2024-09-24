@@ -2,8 +2,8 @@ version: '3.8'
 services:
   react:
     image: happyyongku/j11b109:react
-    expose:
-      - "3000"
+    ports:
+      - "3000:3000"
     networks:
       - app-network
     volumes:
@@ -11,8 +11,8 @@ services:
 
   spring:
     image: happyyongku/j11b109:spring
-    expose:
-      - "8080"
+    ports:
+      - "8080:8080"
     networks:
       - app-network
     environment:
@@ -27,8 +27,8 @@ services:
   
   fastapi:
     image: happyyongku/j11b109:fastapi
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"
     networks:
       - app-network
     environment:
