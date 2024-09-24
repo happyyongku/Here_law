@@ -84,7 +84,6 @@ pipeline {
                 script {
                     dir('DB') {
                         sh 'docker build -t happyyongku/j11b109:postgres .'
-                        sh 'echo "POSTGRES_PASSWORD=$DB_PASSWORD"'
                     }
                 }
             }
@@ -117,6 +116,7 @@ pipeline {
                             echo "start pull" &&
                             docker-compose -f docker-compose-ec2.yml pull &&
                             echo "start up" &&
+                            env | grep DB_ &&
                             docker-compose -f docker-compose-ec2.yml up -d"
                         '''
                     }
