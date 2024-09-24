@@ -62,8 +62,8 @@ services:
   postgres:
     image: happyyongku/j11b109:postgres
     ports:
-      - "5432:5432"
-      - "2345:5432"
+      - "5433:5433"
+      - "3345:5433"
     volumes:
       - type: volume
         source: database

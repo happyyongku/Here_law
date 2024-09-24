@@ -2,5 +2,5 @@ FROM postgres:12.20
 
 COPY init.sql /docker-entrypoint-initdb.d/
 
-EXPOSE 5432
-EXPOSE 2345
+EXPOSE 5433
+EXPOSE 3345
