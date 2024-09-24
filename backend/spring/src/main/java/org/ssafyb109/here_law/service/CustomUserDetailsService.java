@@ -1,26 +1,29 @@
 package org.ssafyb109.here_law.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.ssafyb109.here_law.entity.UserEntity;
-import org.ssafyb109.here_law.repository.UserRepository;
+import org.ssafyb109.here_law.repository.jpa.UserJpaRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    @Autowired
+    @Qualifier("userJpaRepository")
+    private final UserJpaRepository userJpaRepository;
 
     // 생성자 주입
-    public CustomUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomUserDetailsService(UserJpaRepository userJpaRepository) {
+        this.userJpaRepository = userJpaRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByEmail(email);
+        UserEntity user = userJpaRepository.findByEmail(email);
         if (user == null) {
             throw new UsernameNotFoundException("User not found with email: " + email);
         }

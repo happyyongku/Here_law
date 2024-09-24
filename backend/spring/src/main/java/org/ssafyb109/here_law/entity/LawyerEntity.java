@@ -23,6 +23,8 @@ public class LawyerEntity {
     private String officeLocation;
     private String qualification;
     private String description;
+    private Integer point = 0;  // 변호사의 내공, 기본값은 0
+    private String phoneNumber;  // 변호사의 전화번호
 
     @OneToOne
     @JoinColumn(name = "user_id")

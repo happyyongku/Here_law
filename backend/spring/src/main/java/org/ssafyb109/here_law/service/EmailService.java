@@ -8,7 +8,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.ssafyb109.here_law.entity.UserEntity;
 import org.ssafyb109.here_law.entity.VerificationTokenEntity;
-import org.ssafyb109.here_law.repository.VerificationTokenRepository;
+import org.ssafyb109.here_law.repository.jpa.VerificationTokenRepository;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Optional;
