@@ -77,3 +77,4 @@ volumes:
     driver: local
 networks:
   app-network:
+    driver: bridge
