@@ -84,6 +84,7 @@ pipeline {
                 script {
                     dir('DB') {
                         sh 'docker build -t happyyongku/j11b109:postgres .'
+                        sh 'echo "POSTGRES_PASSWORD=$DB_PASSWORD"'
                     }
                 }
             }
