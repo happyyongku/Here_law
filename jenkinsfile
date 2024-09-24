@@ -26,6 +26,7 @@ pipeline {
                 script{
                     sshagent (credentials: [env.SSH_KEY]) {
                         sh '''
+                            cd /home/ubuntu/j11b109
                             pwd
                             echo DB_DOMAIN=$DB_DOMAIN > .env || echo "Failed to create .env"
                             echo DB_PORT=$DB_PORT >> .env || echo "Failed to append DB_PORT"
