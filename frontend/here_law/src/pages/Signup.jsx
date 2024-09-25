@@ -58,7 +58,8 @@ function Signup() {
       email: email,
       password: password,
       profileImg: profileImg.name,
-      interest: interest,
+      interests: interest,
+      userType: "normal",
     };
 
     try {
