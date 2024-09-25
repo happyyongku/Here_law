@@ -80,7 +80,7 @@ pipeline {
                     // Build postgreSQL image
                     dir('DB') {
                         sh 'docker build -t happyyongku/j11b109:postgres .'
-                        sh 'docker push happyyongku/j11b09:postgres'
+                        sh 'docker push happyyongku/j11b109:postgres'
                     }
                     }
                 }
