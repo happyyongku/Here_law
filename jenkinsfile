@@ -28,7 +28,7 @@ pipeline {
                     // Build spring image
                     dir('backend/spring') {
                         sh 'chmod +x gradlew'
-                        sh './gradlew clean build --build-cache'
+                        // sh './gradlew clean build --build-cache'
                         // sh './gradlew clean build --build-cache -x test'
                         sh 'docker build -t happyyongku/j11b109:spring .'
                     }
@@ -45,8 +45,8 @@ pipeline {
                 script {
                     //Build Frontend Images
                     dir('frontend/here_law') {
-                        sh 'npm install'
-                        sh 'npm run build'
+                        // sh 'npm install'
+                        // sh 'npm run build'
                         sh 'docker build -t happyyongku/j11b109:react .'
                     }
                 }

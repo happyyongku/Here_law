@@ -12,6 +12,7 @@ public class UserUpdateDTO {
     private String phoneNumber;
     private String profileImg;
     private List<String> interests;
+    private List<String> subscriptions;
 
     private LawyerUpdateDTO lawyerUpdate;
 }

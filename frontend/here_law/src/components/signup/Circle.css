@@ -1,0 +1,23 @@
+/* 회원가입 동그라미 디자인*/
+
+.circle-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+.circle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin: 0 6px;
+}
+
+.orange {
+  background-color: #ff5e00;
+}
+
+.gray {
+  background-color: #c4c4c4;
+}

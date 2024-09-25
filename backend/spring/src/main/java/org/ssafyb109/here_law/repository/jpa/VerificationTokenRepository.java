@@ -1,4 +1,4 @@
-package org.ssafyb109.here_law.repository;
+package org.ssafyb109.here_law.repository.jpa;
 
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;

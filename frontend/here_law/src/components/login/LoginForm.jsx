@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./LoginForm.css";
 
 function LoginForm() {
-  const navigate = useNavigate();
+  const navigation = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -98,11 +98,12 @@ function LoginForm() {
         </div>
 
         <div className="login-checkbox">
-          <div>
+          <label className="checkbox-container">
             <input type="checkbox" />
-            <span className="check-ele">로그인 상태 유지</span>
-          </div>
-          <div className="check-ele">비밀번호 찾기</div>
+            <span className="checkmark"></span>
+            <span>로그인 상태 유지</span>
+          </label>
+          <span>비밀번호 찾기</span>
         </div>
 
         <div className="login-subtitle">
@@ -111,8 +112,18 @@ function LoginForm() {
         </div>
 
         <div className="login-buttons">
-          <button className="lawyer-signup-button">변호사 회원가입</button>
-          <button className="common-signup-button">회원가입</button>
+          <button
+            className="lawyer-signup-button"
+            onClick={() => navigation("/signuplawyer")}
+          >
+            변호사 회원가입
+          </button>
+          <button
+            className="common-signup-button"
+            onClick={() => navigation("/signup")}
+          >
+            회원가입
+          </button>
         </div>
       </div>
     </div>

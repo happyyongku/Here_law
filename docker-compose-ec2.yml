@@ -35,7 +35,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./certs:/etc/letsencrypt
-      - /etc/letsencrypt/live/j11b109.p.ssafy.io:/etc/letsencrypt/live/j11b109.p.ssafy.io:ro
+      - /etc/letsencrypt/live/j11b109.p.ssafy.io:/etc/letsencrypt/live/j11b109.p.ssafy.io
       # - ./dist:/usr/share/nginx/html
     user: "www-data"
     command: nginx -g 'daemon off;'

@@ -3,6 +3,7 @@ package org.ssafyb109.here_law.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +20,6 @@ public class UserEntity {
     private String nickname;
     private String email;
     private String password;
-    private String phoneNumber;
     private String profileImg;
     private String userType;  // "normal" or "lawyer"
     private Boolean isFirst;
@@ -28,6 +28,10 @@ public class UserEntity {
 
     @ElementCollection
     private List<String> interests;
+
+    @ElementCollection
+    @CollectionTable(name = "user_subscriptions", joinColumns = @JoinColumn(name = "user_id"))
+    private List<String> subscriptions;  // 구독한 매거진 분야 리스트
 
     private Boolean isEmailVerified = false;  // 이메일 인증 여부
     private String emailToken;    // 이메일 인증 토큰
