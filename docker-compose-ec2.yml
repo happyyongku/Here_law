@@ -3,7 +3,7 @@ services:
   react:
     image: happyyongku/j11b109:react
     ports:
-      - "3000:3000"
+      - "3000:80"
     networks:
       - app-network
     volumes:
