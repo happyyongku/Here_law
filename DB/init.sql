@@ -99,3 +99,38 @@ CREATE TABLE public.verification_token_entity (
 -- public.verification_token_entity foreign keys
 
 ALTER TABLE public.verification_token_entity ADD CONSTRAINT fk1llgpobomks3q7t6qwqtd17ef FOREIGN KEY (user_id) REFERENCES public.user_entity(id);
+
+CREATE TABLE public.law_info (
+	rule_id serial4 NOT NULL,
+	law_id varchar(255) NULL,
+	proclamation_date date NULL,
+	proclamation_number varchar(255) NULL,
+	"language" varchar(50) NULL,
+	law_type varchar(255) NULL,
+	law_name_kr varchar(255) NULL,
+	law_name_ch varchar(255) NULL,
+	law_short_name varchar(255) NULL,
+	is_title_changed varchar(1) NULL,
+	is_korean_law varchar(1) NULL,
+	part_code varchar(50) NULL,
+	related_department varchar(255) NULL,
+	phone_number varchar(50) NULL,
+	enforcement_date date NULL,
+	revision_type varchar(50) NULL,
+	is_annex_included varchar(1) NULL,
+	is_proclaimed varchar(1) NULL,
+	contact_department jsonb NULL,
+	CONSTRAINT law_info_pkey PRIMARY KEY (rule_id)
+);
+
+CREATE TABLE public.law_sections (
+	section_id serial4 NOT NULL,
+	law_id varchar(255) NULL,
+	part varchar(255) NULL,
+	chapter varchar(255) NULL,
+	"section" varchar(255) NULL,
+	article varchar(255) NULL,
+	clause varchar(255) NULL,
+	"content" text NULL,
+	CONSTRAINT law_sections_pkey PRIMARY KEY (section_id)
+);
