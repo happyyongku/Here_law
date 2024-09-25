@@ -51,7 +51,10 @@ services:
       - ./certs/live/j11b109.p.ssafy.io:/etc/letsencrypt/live/j11b109.p.ssafy.io
 
     command: nginx -g 'daemon off;'
-
+    depends_on:
+      - fastapi
+      - react
+      - spring
     networks:
       - app-network
   
