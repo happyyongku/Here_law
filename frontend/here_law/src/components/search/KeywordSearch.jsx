@@ -1,15 +1,9 @@
-import { useState } from "react";
 import Switch from "./Switch";
 import SearchIcon from "../../assets/search/searchicon.png";
+import AiSearch from "./AiSearch"; // AiSearch 컴포넌트 import
 import "./KeywordSearch.css";
 
-function KeywordSearch() {
-  const [isAiMode, setIsAiMode] = useState(false);
-
-  const handleSwitchToggle = (checked) => {
-    setIsAiMode(checked);
-  };
-
+function KeywordSearch({ isAiMode, onToggle }) {
   return (
     <div className="keyword-search-page">
       <div className="search-title">
@@ -18,13 +12,18 @@ function KeywordSearch() {
       </div>
 
       <div className="toggle-wrap">
-        <Switch onToggle={handleSwitchToggle} />
+        <Switch onToggle={onToggle} isChecked={isAiMode} />
       </div>
 
-      <div className="search-input-box">
-        <img src={SearchIcon} alt="search icon" className="search-icon" />
-        <input type="text" placeholder="키워드를 검색하세요" />
-      </div>
+      {/* isAiMode 상태에 따라 다른 컴포넌트를 렌더링 */}
+      {isAiMode ? (
+        <AiSearch />
+      ) : (
+        <div className="search-input-box">
+          <img src={SearchIcon} alt="search icon" className="search-icon" />
+          <input type="text" placeholder="키워드를 검색하세요" />
+        </div>
+      )}
     </div>
   );
 }
