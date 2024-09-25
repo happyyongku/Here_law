@@ -5,16 +5,14 @@ import Signup3 from "../components/signup/Signup3";
 import SignupSuccess from "../components/signup/SignupSuccess";
 import "../components/signup/Signup.css";
 import "../components/signup/Circle.css";
+import axiosInstance from "../utils/axiosInstance";
 
 function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [profileImg, setProfileImg] = useState(null);
   const [nickname, setNickname] = useState("");
-
   const [interest, setInterest] = useState([]);
-
   const [pageIndex, setPageIndex] = useState(1); // 현재 페이지 상태
 
   // 페이지별 핸들러
@@ -40,21 +38,39 @@ function Signup() {
     if (pageIndex < 3) setPageIndex(pageIndex + 1);
   };
 
-  const onClickSubmitButton = () => {
-    const formData = new FormData();
+  // 회원가입 axios 요청
+  const onClickSubmitButton = async () => {
+    // const formData = new FormData();
+    // formData.append("email", email);
+    // formData.append("password", password);
+    // formData.append("profileImg", profileImg);
+    // formData.append("nickname", nickname);
+    // formData.append("interest", JSON.stringify(interest));
 
-    formData.append("email", email);
-    formData.append("password", password);
+    console.log(email);
+    console.log(password);
+    console.log(profileImg.name);
+    console.log(nickname);
+    console.log(interest);
 
-    formData.append("profileImg", profileImg);
-    formData.append("nickname", nickname);
+    const formData = {
+      nickname: nickname,
+      email: email,
+      password: password,
+      profileImg: profileImg.name,
+      interest: interest,
+    };
 
-    formData.append("interest", JSON.stringify(interest));
-
-    // 회원가입 데이터 전송?
-    console.log("회원가입 데이터:", formData);
-
-    setPageIndex(4);
+    try {
+      const response = await axiosInstance.post(
+        "/spring_api/register",
+        formData
+      );
+      console.log("회원가입 성공", response.data);
+      setPageIndex(4);
+    } catch (error) {
+      console.error("요청 실패", error);
+    }
   };
 
   // 페이지 렌더링
@@ -75,6 +91,7 @@ function Signup() {
           <Signup2
             profileImg={profileImg}
             nickname={nickname}
+            setNickname={setNickname}
             handleProfileImg={handleProfileImg}
             onNext={onClickNextButton}
           />
@@ -83,6 +100,7 @@ function Signup() {
         return (
           <Signup3
             interest={interest}
+            setInterest={setInterest}
             addInterest={addInterest}
             removeInterest={removeInterest}
             onSubmit={onClickSubmitButton}

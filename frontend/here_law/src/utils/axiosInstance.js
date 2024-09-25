@@ -3,8 +3,6 @@ import axios from "axios";
 // const API_LINK = import.meta.env.VITE_API_URL;
 // const SWAGGER_LINK = import.meta.env.SWWAGER_API_URL;
 
-// console.log(SWAGGER_LINK);
-
 const axiosInstance = axios.create({
   baseURL: "http://192.168.31.65:8080",
   withCredentials: true,
