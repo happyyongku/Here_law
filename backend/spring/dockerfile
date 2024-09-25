@@ -18,4 +18,4 @@ RUN ./gradlew clean build -Pspring.profiles.active=test --no-daemon -x test
 
 CMD ["java", "-jar", "build/libs/here-law-0.0.1-SNAPSHOT.jar"]
 
-# EXPOSE 8080
+EXPOSE 8080
