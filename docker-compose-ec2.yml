@@ -59,7 +59,7 @@ services:
       - app-network
   
   postgres:
-    image: happyyongku/j11b109:postgres
+    image: ramsrib/pgvector:12
     ports:
       - "5433:5432"
       - "3345:5432"
