@@ -78,10 +78,10 @@ pipeline {
                         sh 'docker push happyyongku/j11b109:nginx'
                     }
                     // Build postgreSQL image
-                    // dir('DB') {
-                    //     sh 'docker build -t happyyongku/j11b109:postgres .'
-                    //     sh 'docker push happyyongku/j11b109:postgres'
-                    // }
+                    dir('DB') {
+                        sh 'docker build -t happyyongku/j11b109:postgres .'
+                        sh 'docker push happyyongku/j11b109:postgres'
+                    }
                     }
                 }
             }
