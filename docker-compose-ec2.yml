@@ -2,8 +2,8 @@ version: '3.8'
 services:
   react:
     image: happyyongku/j11b109:react
-    expose:
-      - "3000"
+    ports:
+      - "3000:80"
     networks:
       - app-network
     volumes:
@@ -11,21 +11,34 @@ services:
 
   spring:
     image: happyyongku/j11b109:spring
-    expose:
-      - "8080"
+    ports:
+      - "8080:8080"
     networks:
       - app-network
-    # depends_on:
-    #   - postgres
+    environment:
+      DB_DOMAIN: ${DB_DOMAIN}
+      DB_PORT: ${DB_PORT_SPRING}
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+    depends_on:
+      - postgres
   
   fastapi:
     image: happyyongku/j11b109:fastapi
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"
     networks:
       - app-network
-    # depends_on:
-    #   - postgres
+    environment:
+      DB_DOMAIN: ${DB_DOMAIN}
+      DB_PORT: ${DB_PORT_FASTAPI}
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - postgres
 
   nginx:
     image: happyyongku/j11b109:nginx
@@ -34,26 +47,40 @@ services:
       - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./certs:/etc/letsencrypt
-      - /etc/letsencrypt/live/j11b109.p.ssafy.io:/etc/letsencrypt/live/j11b109.p.ssafy.io
-      # - ./dist:/usr/share/nginx/html
-    user: "www-data"
+      # - certs:/etc/letsencrypt/live/j11b109.p.ssafy.io
+      - ./certs/live/j11b109.p.ssafy.io:/etc/letsencrypt/live/j11b109.p.ssafy.io
+
     command: nginx -g 'daemon off;'
-    # command: /bin/sh -c "chown -R www-data:www-data /etc/letsencrypt/live && \
-    #                     chmod 750 /etc/letsencrypt/live && \
-    #                     chmod 640 /etc/letsencrypt/live/j11b109.p.ssafy.io/fullchain.pem && \
-    #                     chmod 640 /etc/letsencrypt/live/j11b109.p.ssafy.io/privkey.pem && \
-    #                     nginx -g 'daemon off;'"
     depends_on:
-      - react
-    #   - spring
       - fastapi
+      - react
+      - spring
     networks:
       - app-network
-    # healthcheck:
-    #   test: ["CMD-SHELL", "curl -f http://localhost || exit 1"]
-    #   interval: 30s
-    #   retries: 3
-    
+  
+  postgres:
+    image: happyyongku/j11b109:postgres
+    ports:
+      - "5433:5432"
+      - "3345:5432"
+    volumes:
+      - type: volume
+        source: database
+        target: /var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - /home/ubuntu/j11b109/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    # command: bash -c "psql -U $POSTGRES_USER -d $POSTGRES_DB -f /docker-entrypoint-initdb.d/init.sql && postgres"
+
+
+volumes:
+  certs:
+    driver: local
+  database:
+    driver: local
 networks:
   app-network:
+    driver: bridge
