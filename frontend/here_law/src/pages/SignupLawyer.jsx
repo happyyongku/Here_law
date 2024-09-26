@@ -5,9 +5,10 @@ import SignupLawyer3 from "../components/signup/SignupLawyer3";
 import SignupSuccess from "../components/signup/SignupSuccess";
 import "../components/signup/Signup.css";
 import "../components/signup/Circle.css";
+import axiosInstance from "../utils/axiosInstance";
 
 function SignupLawyer() {
-  const [name, setName] = useState("");
+  const [nickname, setNickname] = useState(""); // 이름
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -15,54 +16,88 @@ function SignupLawyer() {
   const [description, setDescription] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
+  const [interest, setInterest] = useState([]);
   const [expertise, setExpertise] = useState([]);
-  const [location, setLocation] = useState("");
-  const [qualification, setQualification] = useState("");
+  const [officeLocation, setOfficeLocation] = useState("");
+  // const [qualification, setQualification] = useState("");
 
   const [pageIndex, setPageIndex] = useState(1); // 현재 페이지 상태
 
   // 페이지별 핸들러
+  const handleNickname = (e) => setNickname(e.target.value);
   const handleEmail = (e) => setEmail(e.target.value);
   const handlePassword = (e) => setPassword(e.target.value);
-  const handleName = (e) => setName(e.target.value);
+
   const handleProfileImg = (file) => setProfileImg(file);
   const handleDescription = (e) => setDescription(e.target.value);
   const handlePhoneNumber = (e) => setPhoneNumber(e.target.value);
-  const handleLocation = (e) => setLocation(e.target.value);
-  const handleQualification = (e) => setQualification(e.target.value);
+  const handleOfficeLocation = (e) => setOfficeLocation(e.target.value);
 
-  // 전문영역 리스트 - 추가
-  const addExpertise = (newExpertise) => {
-    setExpertise([...expertise, newExpertise]);
-  };
+  // const handleQualification = (e) => setQualification(e.target.value);
 
-  // 전문영역 리스트 - 삭제
-  const removeExpertise = (index) => {
-    const newExpertiseList = expertise.filter((_, i) => i !== index);
-    setExpertise(newExpertiseList);
-  };
+  // // 전문영역 리스트 - 추가
+  // const addExpertise = (newExpertise) => {
+  //   setExpertise([...expertise, newExpertise]);
+  // };
+
+  // // 전문영역 리스트 - 삭제
+  // const removeExpertise = (index) => {
+  //   const newExpertiseList = expertise.filter((_, i) => i !== index);
+  //   setExpertise(newExpertiseList);
+  // };
 
   // 페이지 전환
   const onClickNextButton = () => {
+    console.log(nickname);
+    console.log(email);
+    console.log(password);
+    console.log(description);
+    console.log(phoneNumber);
+    // console.log(profileImg.name);
+    console.log(interest);
+    console.log(expertise);
+    console.log(officeLocation);
+
     if (pageIndex < 3) setPageIndex(pageIndex + 1);
   };
 
-  const onClickSubmitButton = () => {
-    const formData = new FormData();
-    formData.append("email", email);
-    formData.append("password", password);
-    formData.append("name", name);
-    formData.append("profileImg", profileImg);
-    formData.append("description", description);
-    formData.append("phoneNumber", phoneNumber);
-    formData.append("expertise", JSON.stringify(expertise));
-    formData.append("location", location);
-    formData.append("qualification", qualification);
+  // 회원가입 axios 요청
+  const onClickSubmitButton = async () => {
+    console.log(nickname);
+    console.log(email);
+    console.log(password);
+    console.log(description);
+    console.log(phoneNumber);
+    console.log(profileImg.name);
+    console.log(interest);
+    console.log(expertise);
+    console.log(officeLocation);
 
-    // 회원가입 데이터 전송?
-    console.log("회원가입 데이터:", formData);
+    const formData = {
+      nickname: nickname,
+      email: email,
+      password: password,
+      profileImg: profileImg.name,
+      interests: interest,
+      userType: "lawyer",
+      lawyerDTO: {
+        description: description,
+        phoneNumber: phoneNumber,
+        officeLocation: officeLocation,
+        expertise: expertise,
+      },
+    };
 
-    setPageIndex(4);
+    try {
+      const response = await axiosInstance.post(
+        "/spring_api/register",
+        formData
+      );
+      console.log("변호사 회원가입 성공", response.data);
+      setPageIndex(4);
+    } catch (error) {
+      console.error("변호사요청 실패", error);
+    }
   };
 
   // 페이지 렌더링
@@ -71,10 +106,11 @@ function SignupLawyer() {
       case 1:
         return (
           <SignupLawyer1
-            name={name}
+            nickname={nickname}
+            setNickname={setNickname}
             email={email}
             password={password}
-            handleName={handleName}
+            handleNickname={handleNickname}
             handleEmail={handleEmail}
             handlePassword={handlePassword}
             onNext={onClickNextButton}
@@ -86,9 +122,12 @@ function SignupLawyer() {
             profileImg={profileImg}
             description={description}
             phoneNumber={phoneNumber}
+            setDescription={setDescription}
+            setPhoneNumber={setPhoneNumber}
             handleProfileImg={handleProfileImg}
-            handleDescription={handleDescription}
-            handlePhoneNumber={handlePhoneNumber}
+            // handleDescription={handleDescription}
+            // handlePhoneNumber={handlePhoneNumber}
+
             onNext={onClickNextButton}
           />
         );
@@ -96,13 +135,13 @@ function SignupLawyer() {
         return (
           <SignupLawyer3
             expertise={expertise}
-            location={location}
-            qualification={qualification}
-            addExpertise={addExpertise}
-            removeExpertise={removeExpertise}
-            handleLocation={handleLocation}
-            handleQualification={handleQualification}
+            setExpertise={setExpertise}
+            officeLocation={officeLocation}
+            setOfficeLocation={setOfficeLocation}
+            handleOfficeLocation={handleOfficeLocation}
             onSubmit={onClickSubmitButton}
+            interest={interest}
+            setInterest={setInterest}
           />
         );
       case 4:

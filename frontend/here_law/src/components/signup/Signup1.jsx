@@ -1,3 +1,5 @@
+import axiosInstance from "../../utils/axiosInstance";
+
 import React, { useState, useEffect } from "react";
 
 function Signup1({ email, password, handleEmail, handlePassword, onNext }) {
@@ -48,6 +50,46 @@ function Signup1({ email, password, handleEmail, handlePassword, onNext }) {
     }
   }, [emailValid, pwValid, password, passwordConfirm, emailCode]);
 
+  // 이메일-인증번호 요청 axios
+  const emailSend = async () => {
+    const emailData = {
+      email: email,
+    };
+    console.log(emailData);
+    try {
+      const response = await axiosInstance.post(
+        "/spring_api/send-verification-code",
+        emailData
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error("요청 실패", error);
+    }
+  };
+
+  const [isEmailChecked, setIsEmailChecked] = useState(false);
+  const [forEmailErrorMsg, setForEmailErrorMsg] = useState(false);
+
+  // 이메일 인증 확인 axios
+  const emailCheck = async () => {
+    const codeData = {
+      email: email,
+      code: emailCode,
+    };
+    try {
+      const response = await axiosInstance.post(
+        "/spring_api/verify-code",
+        codeData
+      );
+      console.log("인증 성공");
+      setIsEmailChecked(true);
+      setForEmailErrorMsg(false);
+    } catch (error) {
+      console.error("요청 실패", error);
+      setForEmailErrorMsg(true);
+    }
+  };
+
   return (
     <div>
       <div className="signup-input-title">이메일 주소</div>
@@ -59,7 +101,9 @@ function Signup1({ email, password, handleEmail, handlePassword, onNext }) {
           value={email}
           onChange={handleEmailChange}
         />
-        <button className="signup-verify-button-black">인증 요청</button>
+        <button className="signup-verify-button-black" onClick={emailSend}>
+          인증 요청
+        </button>
       </div>
       <div className="error-message-wrap">
         {!emailValid && email.length > 0 && (
@@ -81,13 +125,22 @@ function Signup1({ email, password, handleEmail, handlePassword, onNext }) {
           value={emailCode}
           onChange={handleEmailCodeChange}
         />
-        <button className="signup-verify-button-orange">인증</button>
-      </div>
-      {/* <div className="error-message-wrap">
-        {!emailValid && email.length > 0 && (
-          <div>인증번호가 일치합니다/일치하지 않습니다 </div>
+        {!isEmailChecked ? (
+          <button className="signup-verify-button-orange" onClick={emailCheck}>
+            인증
+          </button>
+        ) : (
+          <button
+            className="signup-verify-button-orange"
+            style={{ backgroundColor: "#ff5e00", color: "white" }}
+          >
+            완료
+          </button>
         )}
-      </div> */}
+      </div>
+      <div className="error-message-wrap">
+        {forEmailErrorMsg && <div>인증번호가 일치하지 않습니다 </div>}
+      </div>
 
       <div className="signup-input-title">비밀번호</div>
       <div className="signup-input-box">
