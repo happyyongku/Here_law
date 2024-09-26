@@ -11,6 +11,9 @@ import "./MyPageContainer.css";
 import axiosInstance from "../../utils/axiosInstance";
 
 function MyPageContainer() {
+  // 유저 데이터
+  const [userData, setUserData] = useState({});
+
   // 여기서 axios로 user 정보 호출
   const getUserData = async () => {
     const token = localStorage.getItem("token");
@@ -19,37 +22,24 @@ function MyPageContainer() {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log("회원정보 조회 성공", response.data);
-      // 데이터 처리
-      // const data = response.data;
-      // 데이터 사용
+      setUserData(response.data);
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        // 토큰 만료 시 로그인 페이지로 리디렉션
         console.log("Token expired. Please log in again.");
-        localStorage.removeItem("token"); // 토큰 삭제
-        // 다시 로그인 페이지로 이동하는 코드 작성해야할 수도 !
+        localStorage.removeItem("token");
       } else {
         console.error("Error fetching user data", error);
       }
     }
   };
 
+  // 마운트됐을 때 유저 정보 요청
   useEffect(() => {
     getUserData();
   }, []);
 
-  // 애초에 로그인을 했을 때 로그인 한 회원의 회원 정보를 가져오고
-  // 리덕스에서 데이터를 뽑아서 쓰는 느낌으로 하면 될듯하다.
   // 일반 유저 더미 데이터
-
   const data1 = {
-    id: 1,
-    nickname: "김해수",
-    profileImg: "",
-    email: "gotnsla12@naver.com",
-    userType: "normal",
-    interests: ["부동산", "형사", "노동", "test1"],
-    subscribe: ["민사", "test2"],
     write: ["", ""],
     like: ["", "", ""],
     save: ["", ""],
@@ -57,44 +47,30 @@ function MyPageContainer() {
 
   // 변호사 유저 더미 데이터
   const data2 = {
-    id: 2,
-    profileImg: "",
-    email: "rudalssla12@naver.com",
-    nickname: "강경민",
-    userType: "lawyer",
-    interests: ["부동산", "형사", "노동"],
-    subscribe: ["민사"],
     point: 500,
-    description: "실전에 강한 변호사. 이혼전문입니다.",
-    officeLocation: "대전광역시 노은동 488-5, 강경민변호사 사무실 2F",
-    phoneNumber: "042-894-2943",
-    expertise: ["부동산", "형사"],
     write: ["", ""],
     like: ["", ""],
     save: ["", "", ""],
   };
 
-  const [userType, setUserType] = useState(data1.userType);
-
   return (
     <div className="MyPageContainer">
-      {userType === "lawyer" ? (
+      {userData.userType === "lawyer" ? (
         <LawyerInfo
-          nickname={data2.nickname}
-          profileImg={data2.profileImg}
+          nickname={userData.nickname}
+          profileImg={userData.profileImg}
+          description={userData.lawyerDTO.description}
+          email={userData.email}
           point={data2.point}
-          description={data2.description}
-          email={data2.email}
-          phoneNumber={data2.phoneNumber}
           write={data2.write}
           like={data2.like}
           save={data2.save}
         />
       ) : (
         <UserInfo
-          nickname={data1.nickname}
-          profileImg={data1.profileImg}
-          email={data1.email}
+          nickname={userData.nickname}
+          profileImg={userData.profileImg}
+          email={userData.email}
           write={data1.write}
           like={data1.like}
           save={data1.save}
@@ -103,23 +79,27 @@ function MyPageContainer() {
 
       <img className="adimg" src={ad} alt="adimg" />
 
-      {userType === "lawyer" ? (
-        <LawyerLocation officeLocation={data2.officeLocation} />
+      {userData.userType === "lawyer" ? (
+        <LawyerLocation officeLocation={userData.lawyerDTO.officeLocation} />
       ) : (
         <></>
       )}
 
-      {userType === "lawyer" ? <Tel phoneNumber={data2.phoneNumber} /> : <></>}
-
-      {userType === "lawyer" ? (
-        <Expertise expertise={data2.expertise} />
+      {userData.userType === "lawyer" ? (
+        <Tel phoneNumber={userData.lawyerDTO.phoneNumber} />
       ) : (
         <></>
       )}
 
-      <Interest interests={data1.interests} />
+      {userData.userType === "lawyer" ? (
+        <Expertise expertise={userData.lawyerDTO.expertise} />
+      ) : (
+        <></>
+      )}
 
-      <Subscribe subscribe={data1.subscribe} />
+      <Interest interests={userData.interests || []} />
+
+      <Subscribe subscribe={userData.subscribe || []} />
     </div>
   );
 }
