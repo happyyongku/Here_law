@@ -21,7 +21,7 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-
+      ELA_URI: http://elasticsearch:9200
     depends_on:
       - postgres
   
@@ -73,13 +73,26 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-    # command: bash -c "psql -U $POSTGRES_USER -d $POSTGRES_DB -f /docker-entrypoint-initdb.d/init.sql && postgres"
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.5
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xms512m
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - app-network
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
 
 volumes:
   certs:
     driver: local
   database:
+    driver: local
+  elasticsearch-data:
     driver: local
 networks:
   app-network:
