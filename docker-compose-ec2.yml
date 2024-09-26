@@ -24,6 +24,7 @@ services:
       ELA_URI: http://elasticsearch:9200
     depends_on:
       - postgres
+      - elasticsearch
   
   fastapi:
     image: happyyongku/j11b109:fastapi
