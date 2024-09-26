@@ -36,7 +36,7 @@ from functionary.prompt_template import get_prompt_template_from_tokenizer
 
 # Initialize models and tokenizers
 bge_m3 = BGEM3Embeddings(device=torch.device('cpu'))
-llm = Llama(model_path=os.environ["LLM_MODEL_PATH"], n_ctx=os.environ["LLM_N_CTX"], n_batch = os.environ["LLM_BATCH"], n_gpu_layers =-1)
+llm = Llama(model_path=os.environ["LLM_MODEL_PATH"], n_ctx=int(os.environ["LLM_N_CTX"]), n_batch = int(os.environ["LLM_BATCH"]), n_gpu_layers =-1)
 llm_tokenizer = AutoTokenizer.from_pretrained(os.environ["LLM_MODEL_BASE_REPO_ID"], legacy=True)
 
 prompt_template = get_prompt_template_from_tokenizer(llm_tokenizer)
@@ -78,7 +78,7 @@ async def chat_endpoint(request: Llama31KorChatRequest):
             "repeat_penalty", "frequency_penalty", "presence_penalty"
         ]
         inputargs = {}
-        inputargs["repeat_penalty"] = os.environ["LLM_DEFAULT_REPEAT_PENALY"] #should be 1.1
+        inputargs["repeat_penalty"] = float(os.environ["LLM_DEFAULT_REPEAT_PENALY"]) #should be 1.1
 
         for param in crude_params:
             value = getattr(request, param)
@@ -101,7 +101,7 @@ async def chat_endpoint(request: Llama31KorChatRequest):
         start = time.time()
         finish_reason = None #TODO: 이거 숫자가 아니라 str로 바꾸기
         # We use function generate (instead of __call__) so we can pass in list of token_ids
-        for token_id in llm.model.generate(tokens = token_ids, **inputargs):
+        for token_id in llm.generate(tokens = token_ids, **inputargs):
             if token_id in stop_token_ids:
                 finish_reason = token_id
                 break
@@ -122,7 +122,7 @@ async def chat_endpoint(request: Llama31KorChatRequest):
         print(f"Error in chat_endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("v1/embed", response_model=EmbedResponseModel)
+@app.post("/v1/embed", response_model=EmbedResponseModel)
 async def embed_endpoint(request: EmbedRequestModel):
     try:
         embedding = bge_m3.embed_documents(request.root)
@@ -131,4 +131,4 @@ async def embed_endpoint(request: EmbedRequestModel):
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=os.environ["LLM_SERVER_PORT"])
+    uvicorn.run(app, host="0.0.0.0", port=int(os.environ["LLM_SERVER_PORT"]))
