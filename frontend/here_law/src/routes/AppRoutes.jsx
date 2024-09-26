@@ -4,16 +4,26 @@ import MyPage from "../pages/MyPage";
 import Login from "../pages/Login";
 import SingupLawyer from "../pages/SignupLawyer";
 import Singup from "../pages/Signup";
-import Header from "../components/common/Header";
+import Search from "../pages/Search";
+import CaseList from "../pages/CaseList";
+import Magazine from "../pages/Magazine";
 
 function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/mypage" element={<MyPage />} />
+
       <Route path="/signup" element={<Singup />} />
       <Route path="/signuplawyer" element={<SingupLawyer />} />
+
+      <Route path="/mypage" element={<MyPage />} />
+
+      <Route path="/search" element={<Search />} />
+
+      <Route path="/search/case" element={<CaseList />} />
+
+      <Route path="/magazine" element={<Magazine />} />
     </Routes>
   );
 }
