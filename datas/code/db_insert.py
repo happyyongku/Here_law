@@ -34,7 +34,7 @@ def insert_rule_info(data):
         data['별표편집여부'], data['공포법령여부'], json.dumps(data.get('연락부서'))
     ))
 
-# 디렉토리 내 모든 JSONL 파일 처리
+# 디렉토리 내 모든 JSONL 파일 처리 
 for filename in os.listdir(jsonl_directory_path):
     if filename.endswith(".jsonl"):
         file_path = os.path.join(jsonl_directory_path, filename)

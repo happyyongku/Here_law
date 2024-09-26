@@ -20,7 +20,7 @@ for i in trange(int(totalCnt / 20)):
         prec_info = xml_data[5:]
     except:
         break
-        
+
     for info in prec_info:
         judicPrecNum = info.find('판례일련번호').text
         case = info.find('사건명').text
