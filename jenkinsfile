@@ -43,6 +43,7 @@ pipeline {
                             echo DB_NAME=$DB_NAME >> .env &&
                             echo DB_USERNAME=$DB_USERNAME >> .env &&
                             echo DB_PASSWORD=$DB_PASSWORD >> .env &&
+                            echo ELA_PASSWORD=$ELA_PASSWORD >> .env &&
 
                             ls /var/jenkins_home/workspace/J11B109_pipeline &&
                             ls -la
