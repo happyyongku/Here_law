@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 // import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "./LoginForm.css";
+import axiosInstance from "../../utils/axiosInstance";
 
 function LoginForm() {
-  const navigate = useNavigate();
+  const navigation = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,6 +34,23 @@ function LoginForm() {
     }
     setNotAllow(true);
   }, [emailValid, pwValid]);
+
+  // 로그인 axios 요청
+  const loginRequestButton = async () => {
+    console.log(email);
+    console.log(password);
+    const formData = {
+      email: email,
+      password: password,
+    };
+    try {
+      const response = await axiosInstance.post("/spring_api/login", formData);
+      console.log("로그인 성공", response.data);
+      localStorage.setItem("token", response.data.token);
+    } catch (error) {
+      console.error("로그인 실패", error);
+    }
+  };
 
   return (
     <div className="login-page">
@@ -86,9 +104,7 @@ function LoginForm() {
           {!notAllow ? (
             <button
               className="login-button-activate"
-              onClick={() => {
-                console.log(notAllow);
-              }}
+              onClick={loginRequestButton}
             >
               로그인
             </button>
@@ -98,11 +114,12 @@ function LoginForm() {
         </div>
 
         <div className="login-checkbox">
-          <div>
+          <label className="checkbox-container">
             <input type="checkbox" />
-            <span className="check-ele">로그인 상태 유지</span>
-          </div>
-          <div className="check-ele">비밀번호 찾기</div>
+            <span className="checkmark"></span>
+            <span>로그인 상태 유지</span>
+          </label>
+          <span>비밀번호 찾기</span>
         </div>
 
         <div className="login-subtitle">
@@ -111,8 +128,18 @@ function LoginForm() {
         </div>
 
         <div className="login-buttons">
-          <button className="lawyer-signup-button">변호사 회원가입</button>
-          <button className="common-signup-button">회원가입</button>
+          <button
+            className="lawyer-signup-button"
+            onClick={() => navigation("/signuplawyer")}
+          >
+            변호사 회원가입
+          </button>
+          <button
+            className="common-signup-button"
+            onClick={() => navigation("/signup")}
+          >
+            회원가입
+          </button>
         </div>
       </div>
     </div>

@@ -1,0 +1,11 @@
+.navicard-page {
+  /* background-color: pink; */
+  height: 236px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 42px;
+  padding-left: 86px;
+  padding-right: 86px;
+  justify-content: space-between;
+}

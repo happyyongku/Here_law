@@ -4,5 +4,14 @@
 data
 
 ## python
-
 __pycache__
+
+
+## ipynb
+.ipynb_checkpoints
+
+## AI model
+*.gguf
+
+## WSL file
+*.Identifier

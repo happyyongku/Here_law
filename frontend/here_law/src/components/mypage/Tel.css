@@ -1,0 +1,16 @@
+.tel-container {
+  width: 550px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 15px 30px;
+}
+.tel-container-title {
+  font-size: 17px;
+  margin-bottom: 13px;
+}
+
+.tel-number {
+  font-size: 14px;
+  color: #262626;
+  opacity: 60%;
+}

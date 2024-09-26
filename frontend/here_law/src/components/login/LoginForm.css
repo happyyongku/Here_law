@@ -3,6 +3,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding-bottom: 100px;
 }
 
 .contents-box {
@@ -98,6 +99,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 34px;
+  font-size: 14px;
 }
 
 .check-ele {
@@ -136,4 +138,53 @@
   color: #ff5e00;
   font-size: 13px;
   /* margin-bottom: 13px; */
+}
+
+/* 체크박스 컨테이너 */
+.checkbox-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 실제 체크박스 숨기기 */
+.checkbox-container input[type="checkbox"] {
+  display: none;
+}
+
+/* 새로운 체크박스 스타일 */
+.checkbox-container .checkmark {
+  position: relative;
+  height: 17px;
+  width: 17px;
+  background-color: #eee; /* 기본 배경색 */
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s; /* 배경색 변경 애니메이션 */
+}
+
+/* 체크박스가 체크되었을 때의 스타일 */
+.checkbox-container input[type="checkbox"]:checked + .checkmark {
+  background-color: #ff5e00; /* 체크박스 색상 오렌지로 변경 */
+}
+
+/* 체크 표시 스타일 */
+.checkbox-container .checkmark:after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  opacity: 0;
+  transition: opacity 0.3s; /* 체크 표시 애니메이션 */
+}
+
+/* 체크박스 체크 시 체크 표시 보이기 */
+.checkbox-container input[type="checkbox"]:checked + .checkmark:after {
+  opacity: 1; /* 체크 표시가 부드럽게 나타나게 함 */
 }
