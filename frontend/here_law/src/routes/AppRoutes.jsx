@@ -5,8 +5,8 @@ import Login from "../pages/Login";
 import SingupLawyer from "../pages/SignupLawyer";
 import Singup from "../pages/Signup";
 import Search from "../pages/Search";
-
-import Header from "../components/common/Header";
+import CaseList from "../pages/CaseList";
+import Magazine from "../pages/Magazine";
 
 function AppRoutes() {
   return (
@@ -20,6 +20,10 @@ function AppRoutes() {
       <Route path="/mypage" element={<MyPage />} />
 
       <Route path="/search" element={<Search />} />
+
+      <Route path="/search/case" element={<CaseList />} />
+
+      <Route path="/magazine" element={<Magazine />} />
     </Routes>
   );
 }

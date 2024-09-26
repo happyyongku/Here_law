@@ -1,9 +1,23 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Switch from "./Switch";
 import SearchIcon from "../../assets/search/searchicon.png";
-import AiSearch from "./AiSearch"; // AiSearch 컴포넌트 import
+import AiSearch from "./AiSearch";
+
 import "./KeywordSearch.css";
 
 function KeywordSearch({ isAiMode, onToggle }) {
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    if (query.trim()) {
+      // query 검색어가 있으면 검색 결과 페이지로 이동함
+      navigate(`/search/case?q=${encodeURIComponent(query)}&page=1`);
+    }
+  };
+
   return (
     <div className="keyword-search-page">
       <div className="search-title">
@@ -21,7 +35,15 @@ function KeywordSearch({ isAiMode, onToggle }) {
       ) : (
         <div className="search-input-box">
           <img src={SearchIcon} alt="search icon" className="search-icon" />
-          <input type="text" placeholder="키워드를 검색하세요" />
+          <input
+            type="text"
+            placeholder="키워드를 검색하세요"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSearch(); // Enter 키를 누르면 검색 실행
+            }}
+          />
         </div>
       )}
     </div>

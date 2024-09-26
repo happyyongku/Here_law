@@ -24,6 +24,7 @@ function SearchPageContainer() {
       )}
 
       <NaviCard />
+
       <GuideSearch />
       <GuideDocument />
       <GuideLawyer />
