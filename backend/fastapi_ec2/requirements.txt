@@ -94,9 +94,9 @@ sympy==1.12
 tenacity==8.5.0
 tiktoken==0.7.0
 tokenizers==0.19.1
-torch==2.4.1+cpu
-torchaudio==2.4.1+cpu
-torchvision==0.19.1+cpu
+# torch==2.4.1+cpu
+# torchaudio==2.4.1+cpu
+# torchvision==0.19.1+cpu
 tornado==6.3.3
 tqdm==4.66.5
 traitlets==5.11.2
