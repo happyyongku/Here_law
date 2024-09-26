@@ -77,8 +77,7 @@ public class UserProfileController {
                 LawyerDTO updatedLawyerDTO = updatedUserDTO.getLawyerDTO();
 
                 // 변호사 정보 수정
-                lawyer.setExpertiseMain(updatedLawyerDTO.getExpertiseMain());
-                lawyer.setExpertiseSub(updatedLawyerDTO.getExpertiseSub());
+                lawyer.setExpertise(updatedLawyerDTO.getExpertise());
                 lawyer.setOfficeLocation(updatedLawyerDTO.getOfficeLocation());
                 lawyer.setQualification(updatedLawyerDTO.getQualification());
                 lawyer.setDescription(updatedLawyerDTO.getDescription());
@@ -100,8 +99,7 @@ public class UserProfileController {
 
         // 변호사 정보를 LawyerDTO에 저장
         LawyerDTO lawyerDTO = new LawyerDTO();
-        lawyerDTO.setExpertiseMain(lawyer.getExpertiseMain());
-        lawyerDTO.setExpertiseSub(lawyer.getExpertiseSub());
+        lawyerDTO.setExpertise(lawyer.getExpertise());
         lawyerDTO.setOfficeLocation(lawyer.getOfficeLocation());
         lawyerDTO.setQualification(lawyer.getQualification());
         lawyerDTO.setDescription(lawyer.getDescription());

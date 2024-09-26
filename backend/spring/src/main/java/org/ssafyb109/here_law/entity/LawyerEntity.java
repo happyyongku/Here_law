@@ -14,11 +14,9 @@ public class LawyerEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long lawyerId;
 
-    private String expertiseMain;
-
     @ElementCollection
-    @CollectionTable(name = "lawyer_expertise_sub", joinColumns = @JoinColumn(name = "lawyer_id"))
-    private List<String> expertiseSub;
+    @CollectionTable(name = "lawyer_expertise", joinColumns = @JoinColumn(name = "lawyer_id"))
+    private List<String> expertise;
 
     private String officeLocation;
     private String qualification;
