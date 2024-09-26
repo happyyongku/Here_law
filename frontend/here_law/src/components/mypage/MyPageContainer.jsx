@@ -13,6 +13,7 @@ import axiosInstance from "../../utils/axiosInstance";
 function MyPageContainer() {
   // 유저 데이터
   const [userData, setUserData] = useState({});
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
   // 여기서 axios로 user 정보 호출
   const getUserData = async () => {
@@ -30,6 +31,8 @@ function MyPageContainer() {
       } else {
         console.error("Error fetching user data", error);
       }
+    } finally {
+      setLoading(false); // 데이터 요청 후 로딩 상태 업데이트
     }
   };
 
@@ -53,6 +56,10 @@ function MyPageContainer() {
     save: ["", "", ""],
   };
 
+  if (loading) {
+    return <div>Loading...</div>; // 로딩 중일 때 표시할 내용
+  }
+
   return (
     <div className="MyPageContainer">
       {userData.userType === "lawyer" ? (
@@ -60,6 +67,7 @@ function MyPageContainer() {
           nickname={userData.nickname}
           profileImg={userData.profileImg}
           description={userData.lawyerDTO.description}
+          phoneNumber={userData.lawyerDTO.phoneNumber}
           email={userData.email}
           point={data2.point}
           write={data2.write}
@@ -81,21 +89,15 @@ function MyPageContainer() {
 
       {userData.userType === "lawyer" ? (
         <LawyerLocation officeLocation={userData.lawyerDTO.officeLocation} />
-      ) : (
-        <></>
-      )}
+      ) : null}
 
       {userData.userType === "lawyer" ? (
         <Tel phoneNumber={userData.lawyerDTO.phoneNumber} />
-      ) : (
-        <></>
-      )}
+      ) : null}
 
       {userData.userType === "lawyer" ? (
         <Expertise expertise={userData.lawyerDTO.expertise} />
-      ) : (
-        <></>
-      )}
+      ) : null}
 
       <Interest interests={userData.interests || []} />
 
