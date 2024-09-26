@@ -68,7 +68,7 @@ services:
         source: database
         target: /var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-      - /home/ubuntu/j11b109/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
+      # - /home/ubuntu/j11b109/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USERNAME}
