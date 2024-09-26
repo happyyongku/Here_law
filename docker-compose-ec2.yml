@@ -77,10 +77,11 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.5
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.3
     environment:
-      - discovery.type=single-node
-      - ES_JAVA_OPTS=-Xms512m -Xms512m
+      discovery.type: single-node
+      ES_JAVA_OPTS: -Xms512m -Xms512m
+      ELA_PASSWORD: ${ELA_PASSWORD}
     ports:
       - "9200:9200"
       - "9300:9300"
