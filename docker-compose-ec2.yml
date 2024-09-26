@@ -22,6 +22,7 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       ELA_URI: http://elasticsearch:9200
+      ELA_PASSWORD: ${ELA_PASSWORD}
     depends_on:
       - postgres
       - elasticsearch
