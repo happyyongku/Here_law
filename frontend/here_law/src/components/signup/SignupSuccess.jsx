@@ -29,7 +29,7 @@ function SignupSuccess() {
           textAlign: "center",
         }}
       >
-        <span style={{ fontWeight: "700" }}>'이름'</span> 님 <br />
+        <span style={{ fontWeight: "700" }}>&apos;이름&apos;</span> 님 <br />
         여기로 서비스 가입을 축하드립니다.
       </p>
 

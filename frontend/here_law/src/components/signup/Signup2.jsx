@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
 import cameraImage from "../../assets/signup/camera.png";
 
-function SignUp2({ handleProfileImg, onNext }) {
+function SignUp2({ handleProfileImg, onNext, nickname, setNickname }) {
   const [previewImage, setPreviewImage] = useState(null);
   const fileInputRef = useRef(null);
 
-  const [nickname, setNickname] = useState("");
+  // const [nickname, setNickname] = useState("");
   const [notAllow, setNotAllow] = useState(true);
 
   const handleImageUpload = (e) => {
