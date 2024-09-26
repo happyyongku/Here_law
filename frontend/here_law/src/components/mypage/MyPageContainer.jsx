@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UserInfo from "./UserInfo";
 import LawyerLocation from "./LawyerLocation";
 import Expertise from "./Expertise";
@@ -8,13 +8,40 @@ import Subscribe from "./Subscribe";
 import LawyerInfo from "./LawyerInfo";
 import ad from "../../assets/mypage/ad.png";
 import "./MyPageContainer.css";
+import axiosInstance from "../../utils/axiosInstance";
 
 function MyPageContainer() {
   // 여기서 axios로 user 정보 호출
+  const getUserData = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axiosInstance.get("/spring_api/user/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log("회원정보 조회 성공", response.data);
+      // 데이터 처리
+      // const data = response.data;
+      // 데이터 사용
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        // 토큰 만료 시 로그인 페이지로 리디렉션
+        console.log("Token expired. Please log in again.");
+        localStorage.removeItem("token"); // 토큰 삭제
+        // 다시 로그인 페이지로 이동하는 코드 작성해야할 수도 !
+      } else {
+        console.error("Error fetching user data", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, []);
+
   // 애초에 로그인을 했을 때 로그인 한 회원의 회원 정보를 가져오고
   // 리덕스에서 데이터를 뽑아서 쓰는 느낌으로 하면 될듯하다.
-
   // 일반 유저 더미 데이터
+
   const data1 = {
     id: 1,
     nickname: "김해수",
