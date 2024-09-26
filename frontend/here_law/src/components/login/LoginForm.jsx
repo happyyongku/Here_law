@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 // import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "./LoginForm.css";
+import axiosInstance from "../../utils/axiosInstance";
 
 function LoginForm() {
   const navigation = useNavigate();
@@ -33,6 +34,23 @@ function LoginForm() {
     }
     setNotAllow(true);
   }, [emailValid, pwValid]);
+
+  // 로그인 axios 요청
+  const loginRequestButton = async () => {
+    console.log(email);
+    console.log(password);
+    const formData = {
+      email: email,
+      password: password,
+    };
+    try {
+      const response = await axiosInstance.post("/spring_api/login", formData);
+      console.log("로그인 성공", response.data);
+      localStorage.setItem("token", response.data.token);
+    } catch (error) {
+      console.error("로그인 실패", error);
+    }
+  };
 
   return (
     <div className="login-page">
@@ -86,9 +104,7 @@ function LoginForm() {
           {!notAllow ? (
             <button
               className="login-button-activate"
-              onClick={() => {
-                console.log(notAllow);
-              }}
+              onClick={loginRequestButton}
             >
               로그인
             </button>
