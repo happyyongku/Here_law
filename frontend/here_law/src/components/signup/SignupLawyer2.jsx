@@ -1,11 +1,18 @@
 import React, { useRef, useState, useEffect } from "react";
 import cameraImage from "../../assets/signup/camera.png";
 
-function SignUpLawyer2({ handleProfileImg, onNext }) {
+function SignUpLawyer2({
+  handleProfileImg,
+  onNext,
+  description,
+  phoneNumber,
+  setDescription,
+  setPhoneNumber,
+}) {
   const [previewImage, setPreviewImage] = useState(null);
   const fileInputRef = useRef(null);
-  const [description, setDescription] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  // const [description, setDescription] = useState("");
+  // const [phoneNumber, setPhoneNumber] = useState("");
   const [notAllow, setNotAllow] = useState(true);
 
   const handleImageUpload = (e) => {

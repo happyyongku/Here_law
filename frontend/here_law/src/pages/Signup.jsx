@@ -40,13 +40,6 @@ function Signup() {
 
   // 회원가입 axios 요청
   const onClickSubmitButton = async () => {
-    // const formData = new FormData();
-    // formData.append("email", email);
-    // formData.append("password", password);
-    // formData.append("profileImg", profileImg);
-    // formData.append("nickname", nickname);
-    // formData.append("interest", JSON.stringify(interest));
-
     console.log(email);
     console.log(password);
     console.log(profileImg.name);
