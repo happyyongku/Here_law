@@ -87,8 +87,7 @@ public class UserController {
         if ("lawyer".equals(userDTO.getUserType()) && userDTO.getLawyerDTO() != null) {
             LawyerDTO lawyerDTO = userDTO.getLawyerDTO();
             LawyerEntity lawyer = new LawyerEntity();
-            lawyer.setExpertiseMain(lawyerDTO.getExpertiseMain());
-            lawyer.setExpertiseSub(lawyerDTO.getExpertiseSub());
+            lawyer.setExpertise(lawyerDTO.getExpertise());
             lawyer.setOfficeLocation(lawyerDTO.getOfficeLocation());
             lawyer.setQualification(lawyerDTO.getQualification());
             lawyer.setDescription(lawyerDTO.getDescription());
