@@ -46,6 +46,7 @@ function LoginForm() {
     try {
       const response = await axiosInstance.post("/spring_api/login", formData);
       console.log("로그인 성공", response.data);
+      localStorage.setItem("token", response.data.token);
     } catch (error) {
       console.error("로그인 실패", error);
     }
