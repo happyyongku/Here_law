@@ -63,8 +63,7 @@ public class UserController {
         }
 
         // 닉네임 중복 확인
-        if (userJpaRepository.existsByNickname(userDTO.getNickname())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 사용 중인 닉네임입니다.");
+        if (userJpaRepository.existsByNickname(userDTO.getNickname())) {return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 사용 중인 닉네임입니다.");
         }
 
         // UserEntity 생성 및 저장
