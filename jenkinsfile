@@ -109,22 +109,22 @@ pipeline {
             }
         }
 
-        stage('Run DB migration') {
-            steps {
-                script {
-                    sh 'sleep 15'
-                    sh 'docker exec -i j11b109_postgres_1 psql -U $DB_USERNAME -d $DB_NAME -f /docker-entrypoint-initdb.d/init.sql'
-                }
-            }
-        }
+        // stage('Run DB migration') {
+        //     steps {
+        //         script {
+        //             sh 'sleep 15'
+        //             sh 'docker exec -i j11b109_postgres_1 psql -U $DB_USERNAME -d $DB_NAME -f /docker-entrypoint-initdb.d/init.sql'
+        //         }
+        //     }
+        // }
 
-        stage('Run postgres') {
-            steps {
-                script {
-                    sh 'docker restart j11b109_postgres_1'
-                }
-            }
-        }
+        // stage('Run postgres') {
+        //     steps {
+        //         script {
+        //             sh 'docker restart j11b109_postgres_1'
+        //         }
+        //     }
+        // }
     }
     post {
         success {
