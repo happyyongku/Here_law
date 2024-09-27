@@ -5,10 +5,10 @@ from router.embed_router import embed_router
 
 app = FastAPI()
 
-app.include_router(chat_router, prefix="/chat")
-app.include_router(embed_router, prefix="/embedding")
+app.include_router(chat_router, prefix="/fastapi_ec2/chat")
+app.include_router(embed_router, prefix="/fastapi_ec2/embedding")
 
-@app.get('/')
+@app.get('/fastapi_ec2/')
 def test():
     return {'messages':'Connected'}
 
