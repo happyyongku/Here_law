@@ -4,9 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.ssafyb109.here_law.document.CaseEntity;
-import org.ssafyb109.here_law.repository.elasticsearch.CaseRepository;
-import org.ssafyb109.here_law.repository.elasticsearch.CustomCaseRepository;
+import org.ssafyb109.here_law.entity.CaseEntity;
+import org.ssafyb109.here_law.repository.jpa.CaseJpaRepository;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,24 +13,15 @@ import java.util.Map;
 @Service
 public class CaseService {
 
-    private final CaseRepository caseRepository;
-    private final CustomCaseRepository customCaseRepository;
+    private final CaseJpaRepository caseRepository;
 
-    public CaseService(CaseRepository caseRepository, CustomCaseRepository customCaseRepository) {
+    public CaseService(CaseJpaRepository caseRepository) {
         this.caseRepository = caseRepository;
-        this.customCaseRepository = customCaseRepository;
     }
 
     public Map<String, Object> searchCases(String query, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
-        String[] keywords = query.split("\\s+");
-        Page<CaseEntity> casesPage;
-
-        if (keywords.length == 1) {
-            casesPage = caseRepository.findBySummaryContaining(keywords[0], pageable);
-        } else {
-            casesPage = customCaseRepository.findBySummaryContainingMultipleKeywords(keywords, pageable);
-        }
+        Page<CaseEntity> casesPage = caseRepository.findBySummaryContaining(query, pageable);
 
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("totalResults", casesPage.getTotalElements());

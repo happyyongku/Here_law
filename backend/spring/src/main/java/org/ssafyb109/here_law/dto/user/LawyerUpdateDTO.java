@@ -8,9 +8,9 @@ import java.util.List;
 @Getter
 @Setter
 public class LawyerUpdateDTO {
-    private String expertiseMain;
-    private List<String> expertiseSub;
+    private List<String> expertise;
     private String officeLocation;
     private String qualification;
     private String description;
+    private String phoneNumber;
 }

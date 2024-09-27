@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Landing from "../pages/Landing";
 import MyPage from "../pages/MyPage";
 import Login from "../pages/Login";
@@ -7,6 +7,13 @@ import Singup from "../pages/Signup";
 import Search from "../pages/Search";
 import CaseList from "../pages/CaseList";
 import Magazine from "../pages/Magazine";
+
+const PrivateRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+  console.log(token);
+
+  return token ? children : <Navigate to="/login" />;
+};
 
 function AppRoutes() {
   return (
@@ -17,7 +24,14 @@ function AppRoutes() {
       <Route path="/signup" element={<Singup />} />
       <Route path="/signuplawyer" element={<SingupLawyer />} />
 
-      <Route path="/mypage" element={<MyPage />} />
+      <Route
+        path="/mypage"
+        element={
+          <PrivateRoute>
+            <MyPage />
+          </PrivateRoute>
+        }
+      />
 
       <Route path="/search" element={<Search />} />
 

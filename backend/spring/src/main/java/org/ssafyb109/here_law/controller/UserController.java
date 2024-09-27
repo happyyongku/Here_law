@@ -160,12 +160,4 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    // 사용자 검색 (엘라스틱 서치)
-    @Operation(summary = "닉네임으로 사용자 검색", description = "닉네임에 해당하는 사용자를 검색합니다.")
-    @GetMapping("/search-users")
-    public ResponseEntity<List<UserEntity>> searchUsers(@RequestParam String nickname) {
-        List<UserEntity> users = userService.searchUsersByNickname(nickname);
-        return ResponseEntity.ok(users);
-    }
-
 }
