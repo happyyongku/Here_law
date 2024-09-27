@@ -5,10 +5,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.ssafyb109.here_law.document.UserDocument;
 import org.ssafyb109.here_law.entity.UserEntity;
 import org.ssafyb109.here_law.jwt.JwtUtil;
-import org.ssafyb109.here_law.repository.elasticsearch.UserElasticsearchRepository;
 import org.ssafyb109.here_law.repository.jpa.UserJpaRepository;
 import org.ssafyb109.here_law.repository.jpa.VerificationTokenRepository;
 
@@ -27,9 +25,6 @@ public class UserService {
 
     @Autowired
     private UserJpaRepository userJpaRepository;
-
-    @Autowired
-    private UserElasticsearchRepository userElasticsearchRepository;
 
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
@@ -63,23 +58,5 @@ public class UserService {
         }
     }
 
-    // 닉네임으로 사용자 검색 (엘라스틱 서치)
-    public List<UserEntity> searchUsersByNickname(String nickname) {
-        List<UserDocument> userDocuments = userElasticsearchRepository.findByNicknameContaining(nickname);
-        // UserDocument를 UserEntity로 변환하는 로직 추가
-        return userDocuments.stream()
-                .map(this::convertToEntity)
-                .collect(Collectors.toList());
-    }
-
-    // UserDocument를 UserEntity로 변환하는 메서드
-    private UserEntity convertToEntity(UserDocument userDocument) {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setId(userDocument.getId());
-        userEntity.setNickname(userDocument.getNickname());
-        userEntity.setEmail(userDocument.getEmail());
-        // 다른 필요한 필드 설정
-        return userEntity;
-    }
 }
 

@@ -58,15 +58,23 @@ public class UserProfileController {
         UserEntity user = userJpaRepository.findByEmail(authentication.getName());
 
         // 닉네임 중복 확인
-        if (!user.getNickname().equals(updatedUserDTO.getNickname()) && userJpaRepository.existsByNickname(updatedUserDTO.getNickname())) {
+        if (updatedUserDTO.getNickname() != null && !user.getNickname().equals(updatedUserDTO.getNickname()) && userJpaRepository.existsByNickname(updatedUserDTO.getNickname())) {
             return ResponseEntity.badRequest().body("해당 닉네임은 이미 사용 중입니다.");
         }
 
-        // 일반 사용자 정보 수정
-        user.setNickname(updatedUserDTO.getNickname());
-        user.setProfileImg(updatedUserDTO.getProfileImg());
-        user.setInterests(updatedUserDTO.getInterests());
-        user.setSubscriptions(updatedUserDTO.getSubscriptions());
+        // 수정된 값만 반영 (null이 아닐 경우만)
+        if (updatedUserDTO.getNickname() != null) {
+            user.setNickname(updatedUserDTO.getNickname());
+        }
+        if (updatedUserDTO.getProfileImg() != null) {
+            user.setProfileImg(updatedUserDTO.getProfileImg());
+        }
+        if (updatedUserDTO.getInterests() != null) {
+            user.setInterests(updatedUserDTO.getInterests());
+        }
+        if (updatedUserDTO.getSubscriptions() != null) {
+            user.setSubscriptions(updatedUserDTO.getSubscriptions());
+        }
         user.setUpdateDate(LocalDateTime.now());
 
         // 변호사일 경우 변호사 정보 수정
@@ -76,11 +84,21 @@ public class UserProfileController {
                 LawyerEntity lawyer = lawyerOpt.get();
                 LawyerDTO updatedLawyerDTO = updatedUserDTO.getLawyerDTO();
 
-                // 변호사 정보 수정
-                lawyer.setExpertise(updatedLawyerDTO.getExpertise());
-                lawyer.setOfficeLocation(updatedLawyerDTO.getOfficeLocation());
-                lawyer.setQualification(updatedLawyerDTO.getQualification());
-                lawyer.setDescription(updatedLawyerDTO.getDescription());
+                if (updatedLawyerDTO.getExpertise() != null) {
+                    lawyer.setExpertise(updatedLawyerDTO.getExpertise());
+                }
+                if (updatedLawyerDTO.getOfficeLocation() != null) {
+                    lawyer.setOfficeLocation(updatedLawyerDTO.getOfficeLocation());
+                }
+                if (updatedLawyerDTO.getQualification() != null) {
+                    lawyer.setQualification(updatedLawyerDTO.getQualification());
+                }
+                if (updatedLawyerDTO.getDescription() != null) {
+                    lawyer.setDescription(updatedLawyerDTO.getDescription());
+                }
+                if (updatedLawyerDTO.getPhoneNumber() != null) {
+                    lawyer.setPhoneNumber(updatedLawyerDTO.getPhoneNumber());
+                }
 
                 lawyerRepository.save(lawyer);  // 변호사 정보 저장
             }
@@ -93,6 +111,7 @@ public class UserProfileController {
     }
 
 
+
     // 변호사 정보를 포함한 UserDTO 생성
     private UserDTO createUserDTOWithLawyer(UserEntity user, LawyerEntity lawyer) {
         UserDTO userDTO = createUserDTO(user);
@@ -103,6 +122,7 @@ public class UserProfileController {
         lawyerDTO.setOfficeLocation(lawyer.getOfficeLocation());
         lawyerDTO.setQualification(lawyer.getQualification());
         lawyerDTO.setDescription(lawyer.getDescription());
+        lawyerDTO.setPhoneNumber(lawyer.getPhoneNumber());
 
         userDTO.setLawyerDTO(lawyerDTO);  // 변호사 정보를 UserDTO에 설정
 
