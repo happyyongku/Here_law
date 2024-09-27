@@ -14,7 +14,7 @@ function KeywordSearch({ isAiMode, onToggle }) {
   const handleSearch = () => {
     if (query.trim()) {
       // query 검색어가 있으면 검색 결과 페이지로 이동함
-      navigate(`/search/case?q=${encodeURIComponent(query)}&page=1`);
+      navigate(`/search/case?query=${encodeURIComponent(query)}&page=1`);
     }
   };
 

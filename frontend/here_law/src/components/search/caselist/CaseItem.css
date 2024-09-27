@@ -1,0 +1,49 @@
+.case-item {
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  padding-left: 40px;
+  padding-right: 40px;
+  position: relative;
+}
+
+/* 새창 열기 */
+.case-item:hover::after {
+  content: "새창 열기";
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: rgba(77, 76, 76, 0.7);
+  color: white;
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 5px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.case-item:hover::after {
+  opacity: 1;
+}
+
+.case-item:hover {
+  background-color: #f6f6f6;
+}
+
+.case-item-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 22px;
+  margin-top: 22px;
+}
+
+.case-item-summary {
+  font-size: 17px;
+  margin-bottom: 22px;
+}
+
+.case-item-info {
+  font-size: 15px;
+  margin-bottom: 22px;
+}

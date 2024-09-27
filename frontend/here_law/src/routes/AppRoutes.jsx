@@ -6,6 +6,7 @@ import SingupLawyer from "../pages/SignupLawyer";
 import Singup from "../pages/Signup";
 import Search from "../pages/Search";
 import CaseList from "../pages/CaseList";
+import CaseDetail from "../components/search/caselist/CaseDetail";
 import Magazine from "../pages/Magazine";
 
 function AppRoutes() {
@@ -22,6 +23,7 @@ function AppRoutes() {
       <Route path="/search" element={<Search />} />
 
       <Route path="/search/case" element={<CaseList />} />
+      <Route path="/search/case/:id" element={<CaseDetail />} />
 
       <Route path="/magazine" element={<Magazine />} />
     </Routes>
