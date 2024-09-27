@@ -50,6 +50,7 @@
 }
 .case-detail-tab div {
   font-size: 17px;
+  cursor: pointer;
 }
 
 .case-detail-guide {
@@ -78,6 +79,21 @@
   margin-right: 17px;
 }
 
+.detail-title {
+  margin-top: 35px;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  color: #292d32;
+}
+
+.detail-text {
+  font-size: 17px;
+  margin-top: 27px;
+  line-height: 30px;
+  color: #585757;
+}
 .detail-sort {
   margin-right: 10px; /* 각 sort 항목 간의 간격 */
 }

@@ -43,7 +43,14 @@ const CaseDetail = () => {
           </div>
         </div>
 
-        <p>{caseItem.summary}</p>
+        <div className="detail-title">요약</div>
+
+        <div className="detail-text">{caseItem.summary}</div>
+
+        <div className="detail-title">요약</div>
+
+        <div className="detail-text">{caseItem.summary}</div>
+
         <p>판결일: {caseItem.date}</p>
         <p>결과: {caseItem.result}</p>
         <p>관련 법령: {caseItem.relatedLaws.join(", ")}</p>
