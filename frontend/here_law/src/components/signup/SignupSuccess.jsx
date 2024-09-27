@@ -5,9 +5,9 @@ import checkGif from "../../assets/signup/check11.gif";
 function SignupSuccess() {
   const navigate = useNavigate();
 
-  const GotoSearch = () => {
-    navigate("/search");
-  };
+  // const GotoSearch = () => {
+  //   navigate("/search");
+  // };
 
   return (
     <div>
@@ -33,7 +33,12 @@ function SignupSuccess() {
         여기로 서비스 가입을 축하드립니다.
       </p>
 
-      <button onClick={GotoSearch} className="signup-success-go-button">
+      <button
+        onClick={() => {
+          navigate("/login");
+        }}
+        className="signup-success-go-button"
+      >
         서비스 이용하기
       </button>
     </div>
