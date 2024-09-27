@@ -58,4 +58,10 @@ public class AuthController {
         }
         return ResponseEntity.ok("로그아웃되었습니다.");
     }
+
+    @Operation(summary = "루트 엔드포인트", description = "/spring_api로 접근 시 동작")
+    @GetMapping
+    public ResponseEntity<String> rootEndpoint() {
+        return ResponseEntity.ok("정상작동합니다.");
+    }
 }
