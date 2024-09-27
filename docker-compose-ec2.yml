@@ -29,9 +29,9 @@ services:
       MAIL_PORT: ${MAIL_PORT}
       MAIL_USERNAME: ${MAIL_USERNAME}
       MAIL_PASSWORD: ${MAIL_PASSWORD}
-    depends_on:
-      - postgres
-      - elasticsearch
+    # depends_on:
+    #   - postgres
+    #   - elasticsearch
   
   fastapi:
     image: happyyongku/j11b109:fastapi
@@ -45,8 +45,8 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-    depends_on:
-      - postgres
+    # depends_on:
+    #   - postgres
 
   nginx:
     image: happyyongku/j11b109:nginx
