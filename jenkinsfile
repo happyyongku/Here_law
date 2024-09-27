@@ -108,6 +108,23 @@ pipeline {
                 }
             }
         }
+
+        stage('Run DB migration') {
+            steps {
+                script {
+                    sh 'sleep 15'
+                    sh 'docker exec -i j11b109_postgres_1 psql -U $DB_USERNAME -d $DB_NAME -f /docker-entrypoint-initdb.d/init.sql'
+                }
+            }
+        }
+
+        stage('Run postgres') {
+            steps {
+                script {
+                    sh 'docker-compose -f docker-compose-ec2.yml up -d postgres'
+                }
+            }
+        }
     }
     post {
         success {
