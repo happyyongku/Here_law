@@ -121,7 +121,7 @@ pipeline {
         stage('Run postgres') {
             steps {
                 script {
-                    sh 'docker-compose -f docker-compose-ec2.yml up -d postgres --no-recreate'
+                    sh 'docker restart j11b109_postgres_1'
                 }
             }
         }
