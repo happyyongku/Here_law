@@ -73,6 +73,7 @@ function MyPageContainer() {
           write={data2.write}
           like={data2.like}
           save={data2.save}
+          getUserData={getUserData}
         />
       ) : (
         <UserInfo
@@ -96,7 +97,10 @@ function MyPageContainer() {
       ) : null}
 
       {userData.userType === "lawyer" ? (
-        <Expertise expertise={userData.lawyerDTO.expertise} />
+        <Expertise
+          getUserData={getUserData}
+          expertise={userData.lawyerDTO.expertise}
+        />
       ) : null}
 
       <Interest interests={userData.interests || []} />
