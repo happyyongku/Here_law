@@ -121,7 +121,7 @@ pipeline {
         stage('Run postgres') {
             steps {
                 script {
-                    sh 'docker-compose -f docker-compose-ec2.yml up -d postgres'
+                    sh 'docker-compose -f docker-compose-ec2.yml up -d postgres --no-recreate'
                 }
             }
         }
