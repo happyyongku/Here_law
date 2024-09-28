@@ -16,6 +16,7 @@
   padding: 20px;
   border-radius: 5px;
   width: 450px;
+  height: 420px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -43,14 +44,19 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 5px;
+  box-sizing: border-box;
+  border: 1px solid transparent;
 }
 
 .interest-modal-body-item.selected {
-  border: 2px solid orange; /* 선택된 상태에서 주황색 테두리 */
+  border: 1px solid orange; /* 선택된 상태에서 주황색 테두리 */
+  border-radius: 5px;
+  /* box-sizing: border-box; */
 }
 
 .interest-modal-item-title {
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .interest-modal-update-complete {

@@ -13,7 +13,7 @@ import axiosInstance from "../../utils/axiosInstance";
 function MyPageContainer() {
   // 유저 데이터
   const [userData, setUserData] = useState({});
-  const [loading, setLoading] = useState(true); // 로딩 상태 추가
+  const [loading, setLoading] = useState(true);
 
   // 여기서 axios로 user 정보 호출
   const getUserData = async () => {
@@ -57,7 +57,7 @@ function MyPageContainer() {
   };
 
   if (loading) {
-    return <div>Loading...</div>; // 로딩 중일 때 표시할 내용
+    return <div>Loading...</div>;
   }
 
   return (
