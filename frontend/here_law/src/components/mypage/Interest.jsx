@@ -4,7 +4,7 @@ import addinterestimg from "../../assets/mypage/addexpertise.png";
 import InterestModal from "./InterestModal";
 import "./Interest.css";
 
-function Interest({ interests }) {
+function Interest({ interests, getUserData }) {
   // 모달 열고 닫기
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => {
@@ -33,6 +33,7 @@ function Interest({ interests }) {
 
       {isModalOpen && (
         <InterestModal
+          getUserData={getUserData}
           interests={interests}
           // getUserData={getUserData}
           // expertise={expertise}

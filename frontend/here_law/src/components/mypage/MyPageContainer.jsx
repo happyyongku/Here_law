@@ -103,7 +103,10 @@ function MyPageContainer() {
         />
       ) : null}
 
-      <Interest interests={userData.interests || []} />
+      <Interest
+        getUserData={getUserData}
+        interests={userData.interests || []}
+      />
 
       <Subscribe subscribe={userData.subscribe || []} />
     </div>
