@@ -62,6 +62,7 @@ public class AuthController {
     @Operation(summary = "루트 엔드포인트", description = "/spring_api로 접근 시 동작")
     @GetMapping
     public ResponseEntity<String> rootEndpoint() {
+        logger.info("요청 들어옴");
         return ResponseEntity.ok("정상작동합니다.");
     }
 }
