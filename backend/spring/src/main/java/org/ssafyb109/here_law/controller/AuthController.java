@@ -14,6 +14,9 @@ import org.ssafyb109.here_law.dto.jwt.LoginRequestDTO;
 import org.ssafyb109.here_law.jwt.JwtBlacklistService;
 import org.ssafyb109.here_law.jwt.JwtUtil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Tag(name = "로그인/로그아웃")
 @RestController
 @RequestMapping("/spring_api")
