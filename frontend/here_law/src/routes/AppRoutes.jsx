@@ -7,6 +7,7 @@ import Singup from "../pages/Signup";
 import Search from "../pages/Search";
 import CaseList from "../pages/CaseList";
 import Magazine from "../pages/Magazine";
+import Signout from "../pages/Signout";
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -22,6 +23,7 @@ function AppRoutes() {
       <Route path="/login" element={<Login />} />
 
       <Route path="/signup" element={<Singup />} />
+      <Route path="/signout" element={<Signout />} />
       <Route path="/signuplawyer" element={<SingupLawyer />} />
 
       <Route
