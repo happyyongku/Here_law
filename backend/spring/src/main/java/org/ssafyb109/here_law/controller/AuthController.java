@@ -28,6 +28,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequestDTO loginRequest) {
         // 사용자 인증
+        logger.info("로그인 요청 들어옴");
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
@@ -52,6 +53,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
         // JWT 토큰을 블랙리스트에 추가
+        logger.info("로그아웃 요청 들어옴");
         if (token.startsWith("Bearer ")) {
             String jwt = token.substring(7);
             jwtBlacklistService.addToBlacklist(jwt);
