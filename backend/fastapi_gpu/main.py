@@ -6,7 +6,6 @@
 import sys
 import os
 
-from llama_cpp import Llama, ChatCompletionResponseMessage
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from fastapi_shared import (CreateChatCompletionStreamResponseModel,
@@ -17,6 +16,8 @@ from fastapi_shared import (CreateChatCompletionStreamResponseModel,
                     )
 
 import time
+import uuid
+
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 from typing import Iterator, AsyncIterator
@@ -25,18 +26,22 @@ import uvicorn
 import torch
 import asyncio
 
+from llama_cpp import Llama, ChatCompletionResponseMessage
 from models.bge_m3_embeddings import BGEM3Embeddings
-
-
-
 from llama_cpp.llama_types import CreateChatCompletionStreamResponse, ChatCompletionResponseChoice, CreateCompletionResponse
 from functionary.prompt_template import get_prompt_template_from_tokenizer
 
-#
+# ==== CONSTANTS===
 
 # Initialize models and tokenizers
 bge_m3 = BGEM3Embeddings(device=torch.device('cpu'))
-llm = Llama(model_path=os.environ["LLM_MODEL_PATH"], n_ctx=int(os.environ["LLM_N_CTX"]), n_batch = int(os.environ["LLM_BATCH"]), n_gpu_layers =-1)
+llm = Llama(
+    model_path=os.environ["LLM_MODEL_PATH"],
+    n_ctx=int(os.environ["LLM_N_CTX"]),
+    n_batch = int(os.environ["LLM_BATCH"]),
+    n_gpu_layers =-1
+)
+
 llm_tokenizer = AutoTokenizer.from_pretrained(os.environ["LLM_MODEL_BASE_REPO_ID"], legacy=True)
 
 prompt_template = get_prompt_template_from_tokenizer(llm_tokenizer)
@@ -55,16 +60,22 @@ async def _async_stream_generator(stream: Iterator[CreateChatCompletionStreamRes
 @app.post("/v1/chat/completions")
 async def chat_endpoint(request: Llama31KorChatRequest):
     try:
-        request.messages.append({"role": "assistant"}) #Makes Output as Chat
-
         # Start with only the required parameter
         kwargs = {"messages": request.messages}
 
         # Add optional parameters only if they are not None
         optional_params = [
-            "temperature", "stream", "presence_penalty", "frequency_penalty",
-            "repeat_penalty", "tools", "tool_choice", "stop", "seed",
-            "response_format", "max_tokens"
+            "temperature",
+            "stream",
+            "presence_penalty",
+            "frequency_penalty",
+            "repeat_penalty",
+            "tools",
+            "tool_choice",
+            "stop",
+            "seed",
+            "response_format",
+            "max_tokens"
         ]
 
         for param in optional_params:
@@ -72,48 +83,66 @@ async def chat_endpoint(request: Llama31KorChatRequest):
             if value is not None:
                 kwargs[param] = value
 
-
         #what a stupid design
         crude_params = [
             "repeat_penalty", "frequency_penalty", "presence_penalty"
         ]
         inputargs = {}
-        inputargs["repeat_penalty"] = float(os.environ["LLM_DEFAULT_REPEAT_PENALY"]) #should be 1.1
+        inputargs["repeat_penalty"] = float(os.environ["LLM_DEFAULT_REPEAT_PENALY"]) #should be 1.1 TODO: test 1.0
 
         for param in crude_params:
             value = getattr(request, param)
             if value is not None:
                 inputargs[param] = value
-        tempppp = getattr(request, "temperature")
-        if tempppp is not None:
-            inputargs["temp"] = tempppp
-
+        max_tokens = max(1, min(int(os.environ["LLM_N_CTX"]), getattr(request, "max_tokens") if getattr(request, "max_tokens") is not None else int(os.environ["LLM_N_CTX"])))
+        print(max_tokens)
+        gen_temp = getattr(request, "temperature") #llama_cpp.llama.Llama.create_chat_completion 는 llm.generate 와 달리 temparature에 temp 라는 이름을 사용한다. 맞춰주기 위한 작업
+        if gen_temp is not None:
+            inputargs["temp"] = gen_temp
+        print("================input request========================================")
+        print(request)
+        request.messages.append({"role": "assistant"}) #Makes Output as Chat
         prompt_str = prompt_template.get_prompt_from_messages(request.messages, request.tools)
-        token_ids = llm_tokenizer.encode(prompt_str)
-
-        gen_tokens = []
+        print("================input prompt========================================")
+        print(prompt_str)
+        token_ids = llm_tokenizer.encode(prompt_str)[:-2] # Assistant Message의 마지막 공백과 eos_token을 제거해서 생성을 유도
+        # token_ids = llm_tokenizer.encode(prompt_str)
+        print("================input token ids========================================")
+        print(token_ids)
+        
         # Get list of stop_tokens
         stop_token_ids = [
-            llm_tokenizer.encode(token)[-1] # 마지막 <|eot_id|> 를 제거해서 생성을 유도
+            llm_tokenizer.encode(token, add_special_tokens= False)[0]
             for token in prompt_template.get_stop_tokens_for_generation()
         ]
-
-        start = time.time()
-        finish_reason = None #TODO: 이거 숫자가 아니라 str로 바꾸기
+        print(stop_token_ids)
+        gen_tokens = []
+        tokens_generated = 0
+        finish_reason = None
+        generation_start = time.time()
+        
+        # =============GENERATION BEGIN============
         # We use function generate (instead of __call__) so we can pass in list of token_ids
         for token_id in llm.generate(tokens = token_ids, **inputargs):
-            if token_id in stop_token_ids:
-                finish_reason = token_id
-                break
             gen_tokens.append(token_id)
-            # print(llm_tokenizer.decode(token_id))
-        end = time.time()
-        print(f"{end - start:.5f} sec for creating" + str(len(gen_tokens)))
+            tokens_generated = tokens_generated + 1
+            if token_id in stop_token_ids:
+                finish_reason = llm_tokenizer.decode(token_id)
+                break
+            
+            if tokens_generated >= max_tokens:
+                gen_tokens.append(llm_tokenizer.eos_token)
+                finish_reason = f"Max_token reached:{max_tokens}"
+                break
+        generation_end = time.time()
+        print(f"Took {generation_end - generation_start:.5f} seconds for creating " + str(len(gen_tokens)))
         llm_output = llm_tokenizer.decode(gen_tokens)
         parsed = prompt_template.parse_assistant_response(llm_output)
         choice = ChatCompletionResponseChoice(index=0, message=ChatCompletionResponseMessage(**parsed), finish_reason=finish_reason)
-        return CreateCompletionResponse(id="to_be_implemented", object="text_completion", created=0000, model="functionary3.2", choices =[choice])
-        # 비동기 Response는 일단 중지
+        print("================model output========================================")
+        print(llm_output)
+        return CreateCompletionResponse(id="to_be_implemented", object="text_completion", created=tokens_generated, model="functionary3.2", choices =[choice])
+        # TODO implement async streaming Response later
         # if kwargs.get("stream", False):  # 비동기. Use .get() with a default value
         #     return StreamingResponse(_async_stream_generator(response), media_type="text/event-stream")
         # else:

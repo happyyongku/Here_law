@@ -9,14 +9,14 @@ class BGEM3Embeddings(Embeddings):
     RAG용 BGE-M3 임베딩 모델.
     """
     
-    def __init__(self, device: torch.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu'), chunk_size: int = 100):
+    def __init__(self, device: torch.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu'), chunk_size: int = 128):
         """
         생성자.
 
         Args:
             device (Union[str, torch.device], optional): The device to run the model on. 
                 If None, it will use CUDA if available, else CPU. Defaults to None.
-            chunk_size (int, optional): 한번에 처리할 bathc 크기. 메모리 상황에 따라 유동적으로 조절.
+            chunk_size (int, optional): 한번에 처리할 batch 크기. 메모리 상황에 따라 유동적으로 조절.
         """
         self.model = AutoModel.from_pretrained("upskyy/bge-m3-korean")
         self.tokenizer = AutoTokenizer.from_pretrained("upskyy/bge-m3-korean")    
