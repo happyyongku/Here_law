@@ -83,6 +83,7 @@ function MyPageContainer() {
           write={data1.write}
           like={data1.like}
           save={data1.save}
+          getUserData={getUserData}
         />
       )}
 

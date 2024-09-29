@@ -1,6 +1,7 @@
 import { useState } from "react";
 import closeimg from "../../assets/mypage/closeimg.png";
 import defualtImg from "../../assets/mypage/defaultimg.png";
+import axiosInstance from "../../utils/axiosInstance";
 import "./BasicInfoModal.css";
 
 function BasicInfoModal({
@@ -9,16 +10,45 @@ function BasicInfoModal({
   email,
   isModalOpen,
   closeModal,
+  getUserData,
 }) {
   const [newNickname, setNewNickname] = useState(nickname);
-  const [newEmail, setNewEmail] = useState(email);
+  // const [newEmail, setNewEmail] = useState(email);
 
   const onChangeNickname = (e) => {
     setNewNickname(e.target.value);
   };
 
-  const onChangeEmail = (e) => {
-    setNewEmail(e.target.value);
+  // const onChangeEmail = (e) => {
+  //   setNewEmail(e.target.value);
+  // };
+
+  const updateUserInfo = async () => {
+    const token = localStorage.getItem("token");
+    const formData = {
+      nickname: newNickname,
+    };
+    try {
+      const response = await axiosInstance.put(
+        "/spring_api/user/profile",
+        formData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log("회원 기본 정보 수정 성공", response.data);
+      // 수정 성공하면 닫자.
+      closeModal();
+      getUserData();
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        console.log("Token expired. Please log in again.");
+        localStorage.removeItem("token");
+      } else {
+        console.error("Error fetching user data", error);
+        closeModal();
+      }
+    }
   };
 
   if (!isModalOpen) return null;
@@ -45,7 +75,7 @@ function BasicInfoModal({
             onChange={onChangeNickname}
           />
         </div>
-        <div className="basic-info-modal-item">
+        {/* <div className="basic-info-modal-item">
           <div className="basic-info-modal-item-title">이메일 </div>
           <input
             className="basic-info-modal-input"
@@ -53,8 +83,10 @@ function BasicInfoModal({
             value={newEmail}
             onChange={onChangeEmail}
           />
-        </div>
-        <button className="update-complete">수정 완료</button>
+        </div> */}
+        <button className="update-complete" onClick={updateUserInfo}>
+          수정 완료
+        </button>
       </div>
     </div>
   );
