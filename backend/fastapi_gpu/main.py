@@ -17,8 +17,6 @@ from fastapi_shared import (CreateChatCompletionStreamResponseModel,
 
 import time
 import uuid
-import math
-from datetime import datetime, timezone
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
@@ -34,10 +32,6 @@ from llama_cpp.llama_types import CreateChatCompletionStreamResponse, ChatComple
 from functionary.prompt_template import get_prompt_template_from_tokenizer
 
 # ==== CONSTANTS===
-
-LLM_SPECIAL_TOKEN_HEADER_START = 128006 #"<|start_header_id|>",
-LLM_SPECIAL_TOKEN_ROLE_ASSISTANT = 78191 #"assistant"
-LLM_SPECIAL_TOKEN_HEADER_END = 128007 #"<|end_header_id|>"
 
 # Initialize models and tokenizers
 bge_m3 = BGEM3Embeddings(device=torch.device('cpu'))
@@ -100,7 +94,8 @@ async def chat_endpoint(request: Llama31KorChatRequest):
             value = getattr(request, param)
             if value is not None:
                 inputargs[param] = value
-        max_tokens = max(1, min(int(os.environ["LLM_N_CTX"]), inputargs["max_token"] if inputargs["max_token"] is not None else int(os.environ["LLM_N_CTX"])))
+        max_tokens = max(1, min(int(os.environ["LLM_N_CTX"]), getattr(request, "max_tokens") if getattr(request, "max_tokens") is not None else int(os.environ["LLM_N_CTX"])))
+        print(max_tokens)
         gen_temp = getattr(request, "temperature") #llama_cpp.llama.Llama.create_chat_completion 는 llm.generate 와 달리 temparature에 temp 라는 이름을 사용한다. 맞춰주기 위한 작업
         if gen_temp is not None:
             inputargs["temp"] = gen_temp
@@ -117,10 +112,11 @@ async def chat_endpoint(request: Llama31KorChatRequest):
         
         # Get list of stop_tokens
         stop_token_ids = [
-            llm_tokenizer.encode(token, add_special_tokens= False)
+            llm_tokenizer.encode(token, add_special_tokens= False)[0]
             for token in prompt_template.get_stop_tokens_for_generation()
         ]
-        gen_tokens = [LLM_SPECIAL_TOKEN_HEADER_START, LLM_SPECIAL_TOKEN_ROLE_ASSISTANT, LLM_SPECIAL_TOKEN_HEADER_END] #모델의 Output을 여기에 붙여서 Assistant의 Message form으로 만들어야 Parsing이 가능.
+        print(stop_token_ids)
+        gen_tokens = []
         tokens_generated = 0
         finish_reason = None
         generation_start = time.time()
@@ -133,18 +129,19 @@ async def chat_endpoint(request: Llama31KorChatRequest):
             if token_id in stop_token_ids:
                 finish_reason = llm_tokenizer.decode(token_id)
                 break
+            
             if tokens_generated >= max_tokens:
                 gen_tokens.append(llm_tokenizer.eos_token)
                 finish_reason = f"Max_token reached:{max_tokens}"
                 break
         generation_end = time.time()
-        print(f"Took {generation_start - generation_end:.5f} seconds for creating " + str(len(gen_tokens)))
+        print(f"Took {generation_end - generation_start:.5f} seconds for creating " + str(len(gen_tokens)))
         llm_output = llm_tokenizer.decode(gen_tokens)
         parsed = prompt_template.parse_assistant_response(llm_output)
         choice = ChatCompletionResponseChoice(index=0, message=ChatCompletionResponseMessage(**parsed), finish_reason=finish_reason)
         print("================model output========================================")
         print(llm_output)
-        return CreateCompletionResponse(id="to_be_implemented", object="text_completion", created=datetime.now(timezone.utc), model="functionary3.2", choices =[choice])
+        return CreateCompletionResponse(id="to_be_implemented", object="text_completion", created=tokens_generated, model="functionary3.2", choices =[choice])
         # TODO implement async streaming Response later
         # if kwargs.get("stream", False):  # 비동기. Use .get() with a default value
         #     return StreamingResponse(_async_stream_generator(response), media_type="text/event-stream")

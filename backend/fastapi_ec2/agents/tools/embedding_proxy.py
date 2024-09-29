@@ -1,7 +1,10 @@
 from typing import List
+from pydantic import RootModel
 from langchain_core.embeddings import Embeddings
-from fastapi_shared import EmbedRequestModel, EmbedResponseModel
 import requests
+
+EmbedRequestModel = RootModel[List[str]]
+EmbedResponseModel = RootModel[List[List[float]]]
 
 class EmbeddingProxy(Embeddings):
 
