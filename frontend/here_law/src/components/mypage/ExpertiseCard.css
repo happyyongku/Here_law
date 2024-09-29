@@ -5,13 +5,10 @@
   align-items: center;
 }
 
-.expertise-img {
-  width: 80px;
-  height: 80px;
-  border-radius: 50px;
-}
-
 .expertise-cate {
   font-size: 13px;
   font-weight: bold;
+  border: 1px solid black;
+  border-radius: 6px;
+  padding: 2px 5px;
 }

@@ -16,6 +16,7 @@ function LawyerInfo({
   write,
   like,
   save,
+  getUserData,
 }) {
   const [writePost, setWritePost] = useState(write.length);
   const [likePost, setLikePost] = useState(like.length);
@@ -91,6 +92,7 @@ function LawyerInfo({
             email={email}
             isModalOpen={isModalOpen}
             closeModal={closeModal}
+            getUserData={getUserData}
           />
         )}
       </div>
