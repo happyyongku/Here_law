@@ -14,9 +14,6 @@ import org.ssafyb109.here_law.dto.jwt.LoginRequestDTO;
 import org.ssafyb109.here_law.jwt.JwtBlacklistService;
 import org.ssafyb109.here_law.jwt.JwtUtil;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Tag(name = "로그인/로그아웃")
 @RestController
 @RequestMapping("/spring_api")
@@ -31,7 +28,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequestDTO loginRequest) {
         // 사용자 인증
-        logger.info("로그인 요청 들어옴");
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
@@ -56,7 +52,6 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
         // JWT 토큰을 블랙리스트에 추가
-        logger.info("로그아웃 요청 들어옴");
         if (token.startsWith("Bearer ")) {
             String jwt = token.substring(7);
             jwtBlacklistService.addToBlacklist(jwt);
@@ -67,7 +62,6 @@ public class AuthController {
     @Operation(summary = "루트 엔드포인트", description = "/spring_api로 접근 시 동작")
     @GetMapping
     public ResponseEntity<String> rootEndpoint() {
-        logger.info("요청 들어옴");
         return ResponseEntity.ok("정상작동합니다.");
     }
 }
