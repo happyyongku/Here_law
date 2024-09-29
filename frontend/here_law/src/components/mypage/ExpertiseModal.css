@@ -1,0 +1,81 @@
+.expertise-modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+}
+
+.expertise-modal-content-box {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 450px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  flex-wrap: wrap;
+}
+
+.expertise-modal-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.expertise-modal-close-img {
+  width: 30px;
+  height: 30px;
+}
+
+.expertise-modal-content-item-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+/* ExpertiseModal.css */
+.expertise-modal-content-item {
+  font-size: 12px;
+  border: 1px solid black;
+  padding: 3px;
+  border-radius: 5px;
+  margin: 2px 2px;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+.expertise-modal-content-item.selected {
+  background-color: #ff5e00;
+  color: white;
+  cursor: pointer;
+  opacity: 80%;
+  border: 1px solid #ff5e00;
+}
+
+.expertise-update-complete-button {
+  background-color: #ff5e00;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  width: 80px;
+  height: 30px;
+  font-size: 12px;
+  margin-top: 10px;
+  cursor: pointer;
+}

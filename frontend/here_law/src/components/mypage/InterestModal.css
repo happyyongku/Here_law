@@ -1,0 +1,72 @@
+.interest-modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+}
+
+.interest-modal-content-box {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 450px;
+  height: 420px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  flex-wrap: wrap;
+}
+
+.interest-modal-body {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  margin-top: 10px;
+}
+
+.interest-modal-body-group {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.interest-modal-body-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+}
+
+.interest-modal-body-item.selected {
+  border: 1px solid orange; /* 선택된 상태에서 주황색 테두리 */
+  border-radius: 5px;
+  /* box-sizing: border-box; */
+}
+
+.interest-modal-item-title {
+  font-size: 10px;
+}
+
+.interest-modal-update-complete {
+  background-color: #ff5e00;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  width: 80px;
+  height: 30px;
+  font-size: 12px;
+  margin-top: 10px;
+  cursor: pointer;
+}

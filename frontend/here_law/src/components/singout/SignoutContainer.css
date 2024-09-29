@@ -1,0 +1,53 @@
+.signout-page {
+  margin-top: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.signout-page-header {
+  width: 440px;
+  margin-bottom: 35px;
+}
+
+.signout-page-header-title {
+  font-size: 34px;
+  margin-bottom: 5px;
+}
+
+.signout-page-header-content {
+  font-size: 17px;
+  opacity: 50%;
+}
+
+.signout-page-body {
+  width: 440px;
+}
+
+.signout-page-body-label {
+  width: 440px;
+  font-size: 14px;
+}
+
+.signout-page-body-input {
+  width: 440px;
+  height: 44px;
+  border-radius: 5px;
+  border: 1px solid #d7dedd;
+  padding: 0 10px;
+  font-size: 12px;
+  margin-top: 5px;
+  margin-bottom: 25px;
+}
+
+.signout-button {
+  width: 440px;
+  height: 44px;
+  border: none;
+  background-color: black;
+  color: white;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+}
