@@ -65,9 +65,9 @@ function Signup1({ email, password, handleEmail, handlePassword, onNext }) {
     } catch (error) {
       console.error(`Error : ${error}`)
       if (error.response) {
-        console.error("응답 오류 ", response.data);
-        console.error("응답 상태 코드", response.status);
-        console.error("응답 헤더", response.headers);
+        console.error("응답 오류 ", error.response.data);
+        console.error("응답 상태 코드", error.response.status);
+        console.error("응답 헤더", error.response.headers);
       } else {
         console.error("요청 설정 오류", error.message);
       }
