@@ -1,9 +1,79 @@
 .case-list-page {
-  width: 704px;
-  height: 840px;
-  background-color: pink;
+  width: 800px;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  /* justify-content: center; */
+
+  position: relative;
+  left: 50%;
+  transform: translate(-50%, 0);
+
+  margin-top: 29px;
+}
+
+.case-list-sort {
+  width: 105px;
+  height: 30px;
+  border: 1.2px solid #f55e00;
+  color: #f55e00;
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+
+  padding-top: 1px;
+  padding-left: 4px;
+
+  border-radius: 20px;
+  font-size: 15px;
+  margin-top: 22px;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.sort-icon {
+  width: 23px;
+  height: 23px;
+}
+
+.case-list-sort:hover {
+  background-color: #e0e0e0;
+}
+
+.case-list-sort.selected {
+  background-color: #f55e00;
+  color: white; /* 선택된 사건 종류일 때 텍스트 색상 흰색 */
+}
+
+.case-type-list {
+  position: absolute; /* 절대 위치 설정 */
+  top: 74px; /* 버튼 바로 아래에 표시 */
+  left: 10px; /* 버튼과 정렬 */
+  margin-top: 5px; /* 버튼과의 간격 추가 */
+  padding: 10px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.3s;
+  z-index: 10; /* z-index를 높여 다른 요소 위에 표시 */
+}
+
+.case-type-list div {
+  padding: 5px 0;
+  cursor: pointer;
+}
+
+.case-type-list div:hover {
+  color: #f55e00;
+  font-weight: bold;
+}
+
+/* Fade-in 효과 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

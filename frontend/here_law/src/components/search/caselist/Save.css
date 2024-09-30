@@ -1,0 +1,40 @@
+#checkboxInput {
+  display: none;
+}
+
+.bookmark {
+  cursor: pointer;
+  background-color: black;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+}
+
+.svgIcon path {
+  stroke-dasharray: 200 0;
+  stroke-dashoffset: 0;
+  stroke: white;
+  fill: #dddddd00;
+  transition-delay: 0s;
+  transition-duration: 0.5s;
+}
+
+#checkboxInput:checked ~ .svgIcon path {
+  fill: #f7e111;
+  stroke: #f7e111;
+  animation: bookmark 0.5s linear;
+  transition-delay: 0.5s;
+}
+
+@keyframes bookmark {
+  0% {
+    stroke-dasharray: 0 200;
+    stroke-dashoffset: 80;
+  }
+  100% {
+    stroke-dasharray: 200 0;
+  }
+}
