@@ -1,7 +1,7 @@
 from langchain_openai import ChatOpenAI
 from langgraph.prebuilt import create_react_agent
 from langgraph.checkpoint.memory import MemorySaver
-
+import logging
 
 MODEL_OPENAI = "gpt-4o"
 MODEL_LOCAL = "functionary_3.2_KR_custom"
@@ -18,6 +18,8 @@ class BaseAgent:
         
         model_name = MODEL_LOCAL if self.gpu_url else MODEL_OPENAI
         
+        logging.debug(f"BaseAgent: model name is {model_name}")
+
         proxy_args = {
             "api_key": self.api_key,
             "model": model_name,
