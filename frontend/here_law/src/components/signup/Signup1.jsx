@@ -63,7 +63,15 @@ function Signup1({ email, password, handleEmail, handlePassword, onNext }) {
       );
       console.log(response.data);
     } catch (error) {
-      console.error("요청 실패", error);
+      console.error(`Error : ${error}`)
+      if (error.response) {
+        console.error("응답 오류 ", error.response.data);
+        console.error("응답 상태 코드", error.response.status);
+        console.error("응답 헤더", error.response.headers);
+      } else {
+        console.error("요청 설정 오류", error.message);
+      }
+      console.error("전체 에러 객체:", error.config);
     }
   };
 
