@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.ssafyb109.here_law.dto.user.LawyerDTO;
 import org.ssafyb109.here_law.dto.user.UserDTO;
 import org.ssafyb109.here_law.dto.user.UserDeleteDTO;
@@ -22,6 +23,9 @@ import org.ssafyb109.here_law.service.EmailService;
 import org.ssafyb109.here_law.service.EmailVerificationService;
 import org.ssafyb109.here_law.service.UserService;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -51,10 +55,15 @@ public class UserController {
     @Autowired
     private EmailVerificationService emailVerificationService;
 
+    private final String UPLOAD_DIR = "path/to/upload/dir/";
+
     @Operation(summary = "회원가입", description = "회원가입")
     @PostMapping("/register")
     @Transactional
-    public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> registerUser(
+            @ModelAttribute UserDTO userDTO, // JSON 데이터를 @ModelAttribute로 받음
+            @RequestPart(value = "profileImgFile", required = false) MultipartFile profileImgFile // 파일은 @RequestPart로 받음
+    ) {
         String email = userDTO.getEmail();
 
         // 이메일 인증 여부 확인
@@ -66,12 +75,25 @@ public class UserController {
         if (userJpaRepository.existsByNickname(userDTO.getNickname())) {return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 사용 중인 닉네임입니다.");
         }
 
+        // 파일 업로드 처리
+        String profileImgPath = null;
+        if (profileImgFile != null && !profileImgFile.isEmpty()) {
+            try {
+                String fileName = UUID.randomUUID() + "_" + profileImgFile.getOriginalFilename();
+                Path path = Paths.get(UPLOAD_DIR + fileName);
+                Files.write(path, profileImgFile.getBytes());
+                profileImgPath = path.toString();  // 저장된 파일 경로를 저장
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 오류가 발생했습니다.");
+            }
+        }
+
         // UserEntity 생성 및 저장
         UserEntity user = new UserEntity();
         user.setNickname(userDTO.getNickname());
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setProfileImg(userDTO.getProfileImg());
+        user.setProfileImg(profileImgPath);
         user.setUserType(userDTO.getUserType());
         user.setIsFirst(true);
         user.setCreatedDate(LocalDateTime.now());

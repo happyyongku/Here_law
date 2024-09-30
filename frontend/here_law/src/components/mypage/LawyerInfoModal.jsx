@@ -11,6 +11,7 @@ function BasicInfoModal({
   phoneNumber,
   isModalOpen,
   closeModal,
+  getUserData,
 }) {
   const [newNickname, setNewNickname] = useState(nickname);
   const [newDescription, setNewDescription] = useState(description);
@@ -32,16 +33,20 @@ function BasicInfoModal({
     const token = localStorage.getItem("token");
     const formData = {
       nickname: newNickname,
-      description: newDescription,
-      phoneNumber: newPhoneNumber,
+      lawyerDTO: { description: newDescription, phoneNumber: newPhoneNumber },
     };
     try {
-      const response = await axiosInstance.put("/spring_api/user/profile", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.put(
+        "/spring_api/user/profile",
+        formData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       console.log("회원 기본 정보 수정 성공", response.data);
       // 수정 성공하면 닫자.
       closeModal();
+      getUserData();
     } catch (error) {
       if (error.response && error.response.status === 401) {
         console.log("Token expired. Please log in again.");

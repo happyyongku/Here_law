@@ -1,14 +1,24 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import BasicInfoModal from "./BasicInfoModal";
 import normaluserimg from "../../assets/mypage/normaluserimg.png";
 import usersetting from "../../assets/mypage/usersetting.png";
 import updateimg from "../../assets/mypage/updateimg.png";
 import "./UserInfo.css";
 
-function UserInfo({ nickname, profileImg, email, write, like, save }) {
+function UserInfo({
+  nickname,
+  profileImg,
+  email,
+  write,
+  like,
+  save,
+  getUserData,
+}) {
   const [writePost, setWritePost] = useState(write.length);
   const [likePost, setLikePost] = useState(like.length);
   const [saveEx, setSaveEx] = useState(save.length);
+  const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => {
@@ -51,7 +61,9 @@ function UserInfo({ nickname, profileImg, email, write, like, save }) {
           />
           {isToggleOpen && (
             <div className="settings-dropdown">
-              <div className="">회원탈퇴</div>
+              <div className="" onClick={() => navigate("/signout")}>
+                회원탈퇴
+              </div>
             </div>
           )}
         </div>
@@ -80,6 +92,7 @@ function UserInfo({ nickname, profileImg, email, write, like, save }) {
           email={email}
           isModalOpen={isModalOpen}
           closeModal={closeModal}
+          getUserData={getUserData}
         />
       ) : (
         <></>

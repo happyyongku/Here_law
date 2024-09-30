@@ -5,6 +5,7 @@ import usersetting from "../../assets/mypage/usersetting.png";
 import defaultimg from "../../assets/mypage/defaultimg.png";
 import updateimg from "../../assets/mypage/updateimg.png";
 import "./LawyerInfo.css";
+import { useNavigate } from "react-router-dom";
 
 function LawyerInfo({
   nickname,
@@ -16,18 +17,18 @@ function LawyerInfo({
   write,
   like,
   save,
+  getUserData,
 }) {
+  const navigate = useNavigate();
   const [writePost, setWritePost] = useState(write.length);
   const [likePost, setLikePost] = useState(like.length);
   const [saveEx, setSaveEx] = useState(save.length);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => {
     setIsModalOpen(true);
     setIsToggleOpen(false);
   };
   const closeModal = () => setIsModalOpen(false);
-
   const [isToggleOpen, setIsToggleOpen] = useState(false);
   const toggleButton = () => setIsToggleOpen(!isToggleOpen);
 
@@ -62,7 +63,9 @@ function LawyerInfo({
             />
             {isToggleOpen && (
               <div className="settings-dropdown">
-                <div className="">회원탈퇴</div>
+                <div className="" onClick={() => navigate("/signout")}>
+                  회원탈퇴
+                </div>
               </div>
             )}
           </div>
@@ -91,6 +94,7 @@ function LawyerInfo({
             email={email}
             isModalOpen={isModalOpen}
             closeModal={closeModal}
+            getUserData={getUserData}
           />
         )}
       </div>
