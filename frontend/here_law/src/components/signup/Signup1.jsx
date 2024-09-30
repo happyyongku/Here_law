@@ -57,7 +57,7 @@ function Signup1({ email, password, handleEmail, handlePassword, onNext }) {
     };
     console.log(emailData);
     try {
-      console.log(`axiosInstance : ${axiosInstance}`)
+      console.log(`axiosInstance : ${axiosInstance.defaults.baseURL}`)
       const response = await axiosInstance.post(
         "/spring_api/send-verification-code",
         emailData
