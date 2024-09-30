@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BasicInfoModal from "./BasicInfoModal";
-import normaluserimg from "../../assets/mypage/normaluserimg.png";
 import usersetting from "../../assets/mypage/usersetting.png";
 import updateimg from "../../assets/mypage/updateimg.png";
 import "./UserInfo.css";
@@ -38,7 +37,7 @@ function UserInfo({
         <div className="user-basic-info">
           <img
             className="normal-user-img"
-            src={normaluserimg}
+            src={profileImg}
             alt="normaluserimg"
           />
           <div className="name-and-update">
