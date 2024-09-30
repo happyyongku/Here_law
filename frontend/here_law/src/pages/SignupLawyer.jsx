@@ -68,7 +68,7 @@ function SignupLawyer() {
     console.log(password);
     console.log(description);
     console.log(phoneNumber);
-    console.log(profileImg.name);
+    // console.log(profileImg.name);
     console.log(interest);
     console.log(expertise);
     console.log(officeLocation);
@@ -77,7 +77,7 @@ function SignupLawyer() {
       nickname: nickname,
       email: email,
       password: password,
-      profileImg: profileImg.name,
+      // profileImg: profileImg.name,
       interests: interest,
       userType: "lawyer",
       lawyerDTO: {

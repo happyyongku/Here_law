@@ -116,9 +116,11 @@ function SignupLawyer1({
         "/spring_api/send-verification-code",
         emailData
       );
+      alert("인증번호를 발송했습니다.");
       console.log(response.data);
     } catch (error) {
       console.error("요청 실패", error);
+      alert("인증번호를 발송에 실패했습니다.");
     }
   };
 
