@@ -4,7 +4,7 @@ import axios from "axios";
 // const SWAGGER_LINK = import.meta.env.SWWAGER_API_URL;
 
 const axiosInstance = axios.create({
-  baseURL: "http://192.168.31.65:8080",
+  baseURL: "http://localhost:8080",
   withCredentials: true,
 });
 
