@@ -49,7 +49,7 @@ pipeline {
                             echo JWT_EXPIRATION=$JWT_EXPIRATION >> .env &&
                             echo MAIL_HOST=$MAIL_HOST >> .env &&
                             echo MAIL_PORT=$MAIL_PORT >> .env &&
-                            echo MAIL_USERNAME=$MAIL_USERAME >> .env &&
+                            echo MAIL_USERNAME=$MAIL_USERNAME >> .env &&
                             echo MAIL_PASSWORD=$MAIL_PASSWORD >> .env &&
 
                             ls /var/jenkins_home/workspace/J11B109_pipeline &&
