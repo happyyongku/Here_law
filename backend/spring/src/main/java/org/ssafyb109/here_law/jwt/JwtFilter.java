@@ -26,15 +26,6 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String requestURI = request.getRequestURI();
-
-        // 이메일 인증 관련 엔드포인트는 JWT 검증 제외
-        if (requestURI.equals("/spring_api/send-verification-code") || requestURI.equals("/spring_api/verify-code")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-
         String token = getJwtFromRequest(request);
 
         if (token != null && tokenProvider.validateToken(token)) {
@@ -81,6 +72,14 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        return path.startsWith("/swagger-ui") || path.startsWith("/v3/api-docs") || path.startsWith("/swagger-resources");
+
+        // JWT 검증이 필요 없는 엔드포인트들을 지정합니다.
+        return path.startsWith("/swagger-ui") ||
+                path.startsWith("/v3/api-docs") ||
+                path.startsWith("/swagger-resources") ||
+                path.equals("/spring_api/register") ||                 // 회원가입 엔드포인트 제외
+                path.equals("/spring_api/login") ||                    // 로그인 엔드포인트 제외
+                path.equals("/spring_api/send-verification-code") ||   // 이메일 인증 코드 발송 제외
+                path.equals("/spring_api/verify-code");                // 이메일 인증 코드 검증 제외
     }
 }

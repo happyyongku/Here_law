@@ -42,7 +42,7 @@ function Signup() {
   const onClickSubmitButton = async () => {
     console.log(email);
     console.log(password);
-    console.log(profileImg.name);
+    // console.log(profileImg.name);
     console.log(nickname);
     console.log(interest);
 
@@ -50,7 +50,7 @@ function Signup() {
       nickname: nickname,
       email: email,
       password: password,
-      profileImg: profileImg.name,
+      // profileImg: profileImg.name,
       interests: interest,
       userType: "normal",
     };
