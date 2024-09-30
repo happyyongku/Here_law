@@ -31,18 +31,19 @@ function UserInfo({
   };
 
   // 로그아웃 axios 요청
-  // const LogoutRequest = async () => {
-  //   const token = localStorage.getItem("token");
-  //   try {
-  //     const response = await axiosInstance.get("/spring_api/user/profile", {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     });
-  //     console.log("로그아웃 성공", response.data);
-  //     localStorage.removeItem("token");
-  //   } catch (error) {
-  //     console.log("로그아웃 실패", error);
-  //   }
-  // };
+  const LogoutRequest = async () => {
+    const token = localStorage.getItem("token");
+    console.log(token);
+    try {
+      const response = await axiosInstance.post("/spring_api/logout", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log("로그아웃 성공", response.data);
+      localStorage.removeItem("token");
+    } catch (error) {
+      console.log("로그아웃 실패", error);
+    }
+  };
 
   return (
     <div className="user-info-container">
@@ -73,7 +74,7 @@ function UserInfo({
           />
           {isToggleOpen && (
             <div className="settings-dropdown">
-              <div onClick={() => {}}>로그아웃</div>
+              <div onClick={LogoutRequest}>로그아웃</div>
               <hr />
               <div className="" onClick={() => navigate("/signout")}>
                 회원탈퇴

@@ -11,7 +11,6 @@ function Signout() {
   // 비밀번호 상태 변경
   const onChangePassword = (e) => {
     setSignoutPassword(e.target.value);
-    console.log(signoutPassword);
   };
 
   // 회원탈퇴 axios 요청
