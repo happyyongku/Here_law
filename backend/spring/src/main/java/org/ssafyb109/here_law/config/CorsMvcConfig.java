@@ -15,7 +15,8 @@ public class CorsMvcConfig implements WebMvcConfigurer {
                         "http://localhost:5173",
                         "http://192.168.31.65:8080",
                         "https://j11b109.p.ssafy.io",
-                        "http://j11b109.p.ssafy.io")  // 프론트엔드 도메인 허용
+                        "http://j11b109.p.ssafy.io",
+                        "https://")  // 프론트엔드 도메인 허용
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")  // 모든 헤더 허용
                 .exposedHeaders("Authorization")
