@@ -15,7 +15,6 @@ function SignUp2({ handleProfileImg, onNext, nickname, setNickname }) {
         alert("이미지 파일만 업로드 가능합니다.");
         return;
       }
-
       handleProfileImg(file);
       const reader = new FileReader();
       reader.onloadend = () => {

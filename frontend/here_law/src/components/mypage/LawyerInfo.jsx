@@ -1,11 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import LawyerInfoModal from "./LawyerInfoModal";
 import lawyermark from "../../assets/mypage/lawyermark.png";
 import usersetting from "../../assets/mypage/usersetting.png";
-import defaultimg from "../../assets/mypage/defaultimg.png";
 import updateimg from "../../assets/mypage/updateimg.png";
 import "./LawyerInfo.css";
-import { useNavigate } from "react-router-dom";
 
 function LawyerInfo({
   nickname,
@@ -37,7 +36,7 @@ function LawyerInfo({
       <div className="lawyer-info-container">
         <div className="lawyer-profile-main">
           <div className="lawyer-profile-container">
-            <img className="lawyer-img" src={defaultimg} alt="lawyer-img" />
+            <img className="lawyer-img" src={profileImg} alt="lawyer-img" />
             <div className="lawyer-common-info">
               <p className="user-name">{nickname}</p>
               <img className="lawyer-mark" src={lawyermark} alt="lawyer-mark" />
