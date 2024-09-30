@@ -31,6 +31,20 @@ function LawyerInfo({
   const [isToggleOpen, setIsToggleOpen] = useState(false);
   const toggleButton = () => setIsToggleOpen(!isToggleOpen);
 
+  // 로그아웃 axios 요청
+  // const LogoutRequest = async () => {
+  //   const token = localStorage.getItem("token");
+  //   try {
+  //     const response = await axiosInstance.get("/spring_api/user/profile", {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+  //     console.log("로그아웃 성공", response.data);
+  //     localStorage.removeItem("token");
+  //   } catch (error) {
+  //     console.log("로그아웃 실패", error);
+  //   }
+  // };
+
   return (
     <>
       <div className="lawyer-info-container">
@@ -62,6 +76,8 @@ function LawyerInfo({
             />
             {isToggleOpen && (
               <div className="settings-dropdown">
+                <div onClick={() => {}}>로그아웃</div>
+                <hr />
                 <div className="" onClick={() => navigate("/signout")}>
                   회원탈퇴
                 </div>
