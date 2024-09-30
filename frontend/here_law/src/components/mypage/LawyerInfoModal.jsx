@@ -29,6 +29,7 @@ function BasicInfoModal({
     setNewPhoneNumber(e.target.value);
   };
 
+  // 변호사 정보 수정 요청
   const updateLawyerInfo = async () => {
     const token = localStorage.getItem("token");
     const formData = {
