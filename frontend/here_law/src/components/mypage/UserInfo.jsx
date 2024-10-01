@@ -35,11 +35,16 @@ function UserInfo({
     const token = localStorage.getItem("token");
     console.log(token);
     try {
-      const response = await axiosInstance.post("/spring_api/logout", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.post(
+        "/spring_api/logout",
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       console.log("로그아웃 성공", response.data);
       localStorage.removeItem("token");
+      navigate("/login");
     } catch (error) {
       console.log("로그아웃 실패", error);
     }
