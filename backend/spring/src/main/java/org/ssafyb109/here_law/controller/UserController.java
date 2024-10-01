@@ -61,7 +61,7 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     // 이미지 저장 디렉토리 경로
-    private static final String UPLOAD_DIR = "src/main/resources/static/images/";
+    private static final String UPLOAD_DIR = "C:/uploads/images/";
 
     @Operation(summary = "회원가입", description = "회원가입")
     @PostMapping("/register")
@@ -105,7 +105,7 @@ public class UserController {
                 }
                 Path filePath = dirPath.resolve(fileName);
                 Files.write(filePath, profileImgFile.getBytes());
-                profileImgPath = filePath.toString();  // 저장된 파일 경로를 저장
+                profileImgPath = "/images/" + fileName;  // 웹에서 접근 가능한 경로로 설정
                 logger.info("프로필 이미지 저장 완료: {}", profileImgPath);
             } catch (Exception e) {
                 logger.error("파일 업로드 중 오류 발생: ", e);
