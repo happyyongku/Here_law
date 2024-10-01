@@ -4,6 +4,7 @@ import LawyerInfoModal from "./LawyerInfoModal";
 import lawyermark from "../../assets/mypage/lawyermark.png";
 import usersetting from "../../assets/mypage/usersetting.png";
 import updateimg from "../../assets/mypage/updateimg.png";
+import axiosInstance from "../../utils/axiosInstance";
 import "./LawyerInfo.css";
 
 function LawyerInfo({
@@ -32,18 +33,24 @@ function LawyerInfo({
   const toggleButton = () => setIsToggleOpen(!isToggleOpen);
 
   // 로그아웃 axios 요청
-  // const LogoutRequest = async () => {
-  //   const token = localStorage.getItem("token");
-  //   try {
-  //     const response = await axiosInstance.get("/spring_api/user/profile", {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     });
-  //     console.log("로그아웃 성공", response.data);
-  //     localStorage.removeItem("token");
-  //   } catch (error) {
-  //     console.log("로그아웃 실패", error);
-  //   }
-  // };
+  const LogoutRequest = async () => {
+    const token = localStorage.getItem("token");
+    console.log(token);
+    try {
+      const response = await axiosInstance.post(
+        "/spring_api/logout",
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log("로그아웃 성공", response.data);
+      localStorage.removeItem("token");
+      navigate("/login");
+    } catch (error) {
+      console.log("로그아웃 실패", error);
+    }
+  };
 
   return (
     <>
@@ -76,7 +83,7 @@ function LawyerInfo({
             />
             {isToggleOpen && (
               <div className="settings-dropdown">
-                <div onClick={() => {}}>로그아웃</div>
+                <div onClick={LogoutRequest}>로그아웃</div>
                 <hr />
                 <div className="" onClick={() => navigate("/signout")}>
                   회원탈퇴
