@@ -58,6 +58,7 @@ pipeline {
                             echo ACCESS_TOKEN_EXPIRATION_MINUTES=$ACCESS_TOKEN_EXPIRATION_MINUTES >> .env &&
                             echo FASTAPI_SERVER_PORT=$FASTAPI_SERVER_PORT >> .env &&
                             echo API_KEY=$API_KEY >> .env
+                            "
                         '''
                     }
                 }
