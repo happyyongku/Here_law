@@ -3,7 +3,6 @@ from typing import Dict, Any, List, Optional
 from fastapi import APIRouter, HTTPException, Depends, status
 from pydantic import BaseModel
 import os
-import redis
 import json
 import threading
 import time
