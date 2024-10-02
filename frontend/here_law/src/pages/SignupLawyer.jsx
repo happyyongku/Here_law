@@ -11,15 +11,12 @@ function SignupLawyer() {
   const [nickname, setNickname] = useState(""); // 이름
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [profileImg, setProfileImg] = useState(null);
   const [description, setDescription] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-
   const [interest, setInterest] = useState([]);
   const [expertise, setExpertise] = useState([]);
   const [officeLocation, setOfficeLocation] = useState("");
-  // const [qualification, setQualification] = useState("");
 
   const [pageIndex, setPageIndex] = useState(1); // 현재 페이지 상태
 
@@ -27,71 +24,39 @@ function SignupLawyer() {
   const handleNickname = (e) => setNickname(e.target.value);
   const handleEmail = (e) => setEmail(e.target.value);
   const handlePassword = (e) => setPassword(e.target.value);
-
   const handleProfileImg = (file) => setProfileImg(file);
-  const handleDescription = (e) => setDescription(e.target.value);
-  const handlePhoneNumber = (e) => setPhoneNumber(e.target.value);
   const handleOfficeLocation = (e) => setOfficeLocation(e.target.value);
-
-  // const handleQualification = (e) => setQualification(e.target.value);
-
-  // // 전문영역 리스트 - 추가
-  // const addExpertise = (newExpertise) => {
-  //   setExpertise([...expertise, newExpertise]);
-  // };
-
-  // // 전문영역 리스트 - 삭제
-  // const removeExpertise = (index) => {
-  //   const newExpertiseList = expertise.filter((_, i) => i !== index);
-  //   setExpertise(newExpertiseList);
-  // };
 
   // 페이지 전환
   const onClickNextButton = () => {
-    console.log(nickname);
-    console.log(email);
-    console.log(password);
-    console.log(description);
-    console.log(phoneNumber);
-    // console.log(profileImg.name);
-    console.log(interest);
-    console.log(expertise);
-    console.log(officeLocation);
-
     if (pageIndex < 3) setPageIndex(pageIndex + 1);
   };
 
   // 회원가입 axios 요청
   const onClickSubmitButton = async () => {
-    console.log(nickname);
-    console.log(email);
-    console.log(password);
-    console.log(description);
-    console.log(phoneNumber);
-    console.log(profileImg.name);
-    console.log(interest);
-    console.log(expertise);
-    console.log(officeLocation);
-
-    const formData = {
-      nickname: nickname,
-      email: email,
-      password: password,
-      profileImg: profileImg.name,
-      interests: interest,
-      userType: "lawyer",
-      lawyerDTO: {
-        description: description,
-        phoneNumber: phoneNumber,
-        officeLocation: officeLocation,
-        expertise: expertise,
-      },
-    };
-
+    console.log(profileImg);
+    const formData = new FormData();
+    formData.append("nickname", nickname);
+    formData.append("email", email);
+    formData.append("password", password);
+    if (profileImg) {
+      formData.append("profileImgFile", profileImg);
+    }
+    formData.append("interests", JSON.stringify(interest));
+    formData.append("userType", "lawyer");
+    formData.append("lawyerDTO.description", description);
+    formData.append("lawyerDTO.phoneNumber", phoneNumber);
+    formData.append("lawyerDTO.officeLocation", officeLocation);
+    formData.append("lawyerDTO.expertise", expertise);
     try {
       const response = await axiosInstance.post(
         "/spring_api/register",
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       console.log("변호사 회원가입 성공", response.data);
       setPageIndex(4);
@@ -125,9 +90,6 @@ function SignupLawyer() {
             setDescription={setDescription}
             setPhoneNumber={setPhoneNumber}
             handleProfileImg={handleProfileImg}
-            // handleDescription={handleDescription}
-            // handlePhoneNumber={handlePhoneNumber}
-
             onNext={onClickNextButton}
           />
         );
