@@ -113,7 +113,7 @@ async def case_search(
         result_payload = {"session_id" : session_id, "ai_message" : last_ai}
         if last_tool is not None:
             result_payload["tool_message"] = last_tool
-        return RagChatResponse.model_construct(**result_payload).model_dump_json()
+        return RagChatResponse.model_construct(**result_payload)
     except Exception as e:
         session_storage_instance.update_session_activity(user.email, session_id)
         raise HTTPException(status_code=500, detail=str(e))
