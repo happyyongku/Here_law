@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.ssafyb109.here_law.dto.user.LawyerDTO;
 import org.ssafyb109.here_law.dto.user.UserDTO;
 import org.ssafyb109.here_law.dto.user.UserDeleteDTO;
@@ -24,6 +25,10 @@ import org.ssafyb109.here_law.service.EmailService;
 import org.ssafyb109.here_law.service.EmailVerificationService;
 import org.ssafyb109.here_law.service.UserService;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -55,11 +60,15 @@ public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
+    // 이미지 저장 디렉토리 경로
+    private static final String UPLOAD_DIR = "C:/uploads/images/";
+
     @Operation(summary = "회원가입", description = "회원가입")
     @PostMapping("/register")
     @Transactional
     public ResponseEntity<?> registerUser(
-            @RequestBody UserDTO userDTO
+            @ModelAttribute UserDTO userDTO, // JSON 데이터를 @ModelAttribute로 받음
+            @RequestPart(value = "profileImgFile", required = false) MultipartFile profileImgFile // 파일은 @RequestPart로 받음
     ) {
         logger.info("회원가입 요청 수신");
 
@@ -85,8 +94,24 @@ public class UserController {
 
         logger.info("회원 정보 유효성 검사 통과");
 
-        // 프로필 이미지 처리 (이미지가 파일이 아닌 경우)
-        String profileImgPath = userDTO.getProfileImg();
+        // 파일 업로드 처리
+        String profileImgPath = null;
+        if (profileImgFile != null && !profileImgFile.isEmpty()) {
+            try {
+                String fileName = UUID.randomUUID() + "_" + profileImgFile.getOriginalFilename();
+                Path dirPath = Paths.get(UPLOAD_DIR);
+                if (!Files.exists(dirPath)) {
+                    Files.createDirectories(dirPath); // 디렉토리가 없으면 생성
+                }
+                Path filePath = dirPath.resolve(fileName);
+                Files.write(filePath, profileImgFile.getBytes());
+                profileImgPath = "/images/" + fileName;  // 웹에서 접근 가능한 경로로 설정
+                logger.info("프로필 이미지 저장 완료: {}", profileImgPath);
+            } catch (Exception e) {
+                logger.error("파일 업로드 중 오류 발생: ", e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 오류가 발생했습니다.");
+            }
+        }
 
         // UserEntity 생성 및 저장
         UserEntity user = new UserEntity();

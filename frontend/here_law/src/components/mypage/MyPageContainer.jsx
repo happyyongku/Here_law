@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Loading from "../common/Loading";
 import UserInfo from "./UserInfo";
 import LawyerLocation from "./LawyerLocation";
 import Expertise from "./Expertise";
@@ -57,7 +58,7 @@ function MyPageContainer() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (

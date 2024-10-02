@@ -4,13 +4,17 @@ import cameraImage from "../../assets/signup/camera.png";
 function SignUp2({ handleProfileImg, onNext, nickname, setNickname }) {
   const [previewImage, setPreviewImage] = useState(null);
   const fileInputRef = useRef(null);
-
-  // const [nickname, setNickname] = useState("");
   const [notAllow, setNotAllow] = useState(true);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // 이미지 파일인지 확인
+      const fileType = file.type.split("/")[0];
+      if (fileType !== "image") {
+        alert("이미지 파일만 업로드 가능합니다.");
+        return;
+      }
       handleProfileImg(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -20,7 +24,7 @@ function SignUp2({ handleProfileImg, onNext, nickname, setNickname }) {
     }
   };
 
-  // 닉네임 유효성 검사 - 닉네임이 입력되었는지만 확인
+  // 닉네임 유효성 검사
   useEffect(() => {
     if (nickname.trim()) {
       setNotAllow(false);
