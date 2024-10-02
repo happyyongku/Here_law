@@ -39,23 +39,6 @@ function Signup() {
 
   // 회원가입 axios 요청
   const onClickSubmitButton = async () => {
-<<<<<<< HEAD
-    console.log(email);
-    console.log(password);
-    // console.log(profileImg.name);
-    console.log(nickname);
-    console.log(interest);
-
-    const formData = {
-      nickname: nickname,
-      email: email,
-      password: password,
-      // profileImg: profileImg.name,
-      interests: interest,
-      userType: "normal",
-    };
-
-=======
     const formData = new FormData();
     formData.append("nickname", nickname);
     formData.append("email", email);
@@ -64,7 +47,6 @@ function Signup() {
     if (profileImg) {
       formData.append("profileImgFile", profileImg);
     }
->>>>>>> 1e43410adcaf6f0415220da8a9f5280eb2c2f3d6
     try {
       const response = await axiosInstance.post(
         "/spring_api/register",
