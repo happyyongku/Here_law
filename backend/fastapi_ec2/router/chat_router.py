@@ -62,7 +62,7 @@ async def create_session_endpoint(user: User = Depends(get_current_user)):
         raise HTTPException(status_code=500, detail=str(e))
     return CreateSessionResponse(session_id=session_id, message="Session created.")
 
-@chat_router.post("/ccrc")
+@chat_router.post("/case_search")
 async def case_search(
     request: ChatRequest,
     user: User = Depends(get_current_user)
@@ -70,16 +70,19 @@ async def case_search(
     logging.debug("case_search starting....")
     session_id = request.session_id
     if not session_id:
+        logging.info(f"No session_id has been provided for user {user.email}")
         raise HTTPException(status_code=400, detail="Session ID is required.")
     session = session_storage_instance.get_session(user.email, session_id)
     
     logging.debug(f"case_search: session retrieved:{session}")
     if session is None:
+        logging.info(f"Session does not exist for user {user.email} with session_id={session_id}")
         raise HTTPException(status_code=404, detail="해당 세션이 존재하지 않음")
     
     if not session_storage_instance.is_session_active(session):
         session_storage_instance.get_active_sessions(user.email)
-        raise HTTPException(status_code=404, detail="Session not found or expired.")
+        logging.info(f"Session expired. for user {user.email}")
+        raise HTTPException(status_code=404, detail="Session expired.")
     logging.debug(f"case_search: got session: {session}")
     session_storage_instance.update_session_activity(user.email, session_id)
     try:
