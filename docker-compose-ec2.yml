@@ -41,7 +41,7 @@ services:
       - app-network
     environment:
       DB_DOMAIN: ${DB_DOMAIN}
-      DB_PORT: ${DB_PORT_FASTAPI}
+      DB_PORT_FASTAPI: ${DB_PORT_FASTAPI}
       DB_NAME: ${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
