@@ -18,7 +18,6 @@ function Signup() {
   // 페이지별 핸들러
   const handleEmail = (e) => setEmail(e.target.value);
   const handlePassword = (e) => setPassword(e.target.value);
-
   const handleProfileImg = (file) => setProfileImg(file);
   const handleNickname = (e) => setNickname(e.target.value);
 
@@ -40,6 +39,7 @@ function Signup() {
 
   // 회원가입 axios 요청
   const onClickSubmitButton = async () => {
+<<<<<<< HEAD
     console.log(email);
     console.log(password);
     // console.log(profileImg.name);
@@ -55,6 +55,16 @@ function Signup() {
       userType: "normal",
     };
 
+=======
+    const formData = new FormData();
+    formData.append("nickname", nickname);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("interests", JSON.stringify(interest));
+    if (profileImg) {
+      formData.append("profileImgFile", profileImg);
+    }
+>>>>>>> 1e43410adcaf6f0415220da8a9f5280eb2c2f3d6
     try {
       const response = await axiosInstance.post(
         "/spring_api/register",
