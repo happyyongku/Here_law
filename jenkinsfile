@@ -37,29 +37,27 @@ pipeline {
                     sshagent (credentials: [env.SSH_KEY]) {
                         sh '''
                             ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 &&
-                        cat > .env << EOF
-DB_DOMAIN=$DB_DOMAIN
-DB_PORT=$DB_PORT
-DB_PORT_SPRING=$DB_PORT_SPRING
-DB_PORT_FASTAPI=$DB_PORT_FASTAPI
-DB_NAME=$DB_NAME
-DB_USERNAME=$DB_USERNAME
-DB_PASSWORD=$DB_PASSWORD
-ELA_PASSWORD=$ELA_PASSWORD
-WT_SECRET=$JWT_SECRET
-JWT_EXPIRATION=$JWT_EXPIRATION
-MAIL_HOST=$MAIL_HOST
-MAIL_PORT=$MAIL_PORT
-MAIL_USERNAME=$MAIL_USERNAME
-MAIL_PASSWORD=$MAIL_PASSWORD
-EMBEDDER_URL=$EMBEDDER_URL
-SESSION_TIMEOUT=$SESSION_TIMEOUT
-MAX_SESSIONS_PER_USER=$MAX_SESSIONS_PER_USER
-SESSION_CLEANUP_INTERVAL=$SESSION_CLEANUP_INTERVAL
-ACCESS_TOKEN_EXPIRATION_MINUTES=$ACCESS_TOKEN_EXPIRATION_MINUTES
-FASTAPI_SERVER_PORT=$FASTAPI_SERVER_PORT
-API_KEY=$API_KEY
-EOF
+                            echo DB_DOMAIN=$DB_DOMAIN >> .env &&
+                            echo DB_PORT=$DB_PORT >> .env &&
+                            echo DB_PORT_SPRING=$DB_PORT_SPRING >> .env &&
+                            echo DB_PORT_FASTAPI=$DB_PORT_FASTAPI >> .env &&
+                            echo DB_NAME=$DB_NAME >> .env &&
+                            echo DB_USERNAME=$DB_USERNAME >> .env &&
+                            echo DB_PASSWORD=$DB_PASSWORD >> .env &&
+                            echo ELA_PASSWORD=$ELA_PASSWORD >> .env &&
+                            echo WT_SECRET=$JWT_SECRET >> .env &&
+                            echo JWT_EXPIRATION=$JWT_EXPIRATION >> .env &&
+                            echo MAIL_HOST=$MAIL_HOST >> .env &&
+                            echo MAIL_PORT=$MAIL_PORT >> .env &&
+                            echo MAIL_USERNAME=$MAIL_USERNAME >> .env &&
+                            echo MAIL_PASSWORD=$MAIL_PASSWORD >> .env &&
+                            echo EMBEDDER_URL=$EMBEDDER_URL >> .env &&
+                            echo SESSION_TIMEOUT=$SESSION_TIMEOUT >> .env &&
+                            echo MAX_SESSIONS_PER_USER=$MAX_SESSIONS_PER_USER >> .env &&
+                            echo SESSION_CLEANUP_INTERVAL=$SESSION_CLEANUP_INTERVAL >> .env &&
+                            echo ACCESS_TOKEN_EXPIRATION_MINUTES=$ACCESS_TOKEN_EXPIRATION_MINUTES >> .env &&
+                            echo FASTAPI_SERVER_PORT=$FASTAPI_SERVER_PORT >> .env &&
+                            echo API_KEY=$API_KEY >> .env
                         '''
                     }
                 }
