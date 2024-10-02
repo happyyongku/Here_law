@@ -11,8 +11,8 @@ from fastapi.security import OAuth2PasswordBearer
 from dto.user_model import User
 
 # JWT 토큰을 인코딩하고 디코딩하기 위한 비밀 키
-JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")  # 실제 비밀 키로 대체해야 합니다
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
+JWT_SECRET_KEY = os.environ.get("JWT_SECRET")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("JWT_EXPIRATION"))
 ALGORITHM = "HS512"
 
 # OAuth2 스킴 설정
