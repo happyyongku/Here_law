@@ -1,0 +1,9 @@
+.magazine-main-cate-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100px;
+  height: 200px;
+  background-color: beige;
+}

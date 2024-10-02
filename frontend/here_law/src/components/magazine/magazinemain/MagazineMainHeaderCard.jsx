@@ -1,3 +1,5 @@
+import "./MagazineMainHeaderCard.css";
+
 function MagazineMainHeaderCard({ cardTitle, navigateButton }) {
   return (
     <div className="main-header-card">
