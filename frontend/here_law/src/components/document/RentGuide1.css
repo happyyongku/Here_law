@@ -1,0 +1,17 @@
+.document-guide-page {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+.document-guide-top {
+  margin-top: 60px;
+}
+
+.document-guide-title {
+  font-size: 30px;
+  font-weight: bold;
+}
+.document-check-icon {
+  width: 50px;
+  height: 50px;
+}

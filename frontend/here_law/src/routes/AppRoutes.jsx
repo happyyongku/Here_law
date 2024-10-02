@@ -9,6 +9,7 @@ import CaseList from "../pages/CaseList";
 import CaseDetail from "../components/search/caselist/CaseDetail";
 import Magazine from "../pages/Magazine";
 import Signout from "../pages/Signout";
+import RentDocument from "../pages/RentDocument";
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -42,6 +43,8 @@ function AppRoutes() {
       <Route path="/search/case/:id" element={<CaseDetail />} />
 
       <Route path="/magazine" element={<Magazine />} />
+
+      <Route path="/rentdocument" element={<RentDocument />} />
     </Routes>
   );
 }
