@@ -1,19 +1,18 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Dict
-from fpdf import FPDF
+from docx import Document
+from docx.shared import Pt
 from datetime import datetime
 import os
 from openai import OpenAI
 
 # 라우터 생성
-router = APIRouter()
+sojang_router = APIRouter()
 
 # OpenAI 클라이언트 생성 (API 키 필요 시 추가)
-client = OpenAI()  # 여기에 자신의 OpenAI API 키를 입력하세요.
-
-# 폰트 파일 경로 설정 (서버에 맞게 조정 필요)
-FONT_PATH = '/path/to/NanumGothic.ttf'
+OPENAI_API_KEY = "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"
+client = OpenAI(api_key=OPENAI_API_KEY)  # 여기에 자신의 OpenAI API 키를 입력하세요.
 
 # 사용자로부터 입력받는 데이터 모델 정의
 class UserInfo(BaseModel):
@@ -27,17 +26,17 @@ class UserInfo(BaseModel):
     court_name: str
     case_details: str
 
-@router.post("/generate")
+@sojang_router.post("/generate")
 async def generate_legal_document(user_info: UserInfo):
     try:
         # 청구 취지 및 내용 생성
         generated_content = generate_content(user_info.dict())
 
-        # PDF 저장
-        pdf_filename = "소장.pdf"
-        save_to_pdf(user_info.dict(), generated_content, filename=pdf_filename)
+        # Word 파일로 저장
+        doc_filename = "소장.docx"
+        save_to_word(user_info.dict(), generated_content, filename=doc_filename)
 
-        return {"message": f"'{pdf_filename}' 파일로 저장되었습니다."}
+        return {"message": f"'{doc_filename}' 파일로 저장되었습니다."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -79,66 +78,46 @@ def generate_content(user_info: Dict[str, str]) -> Dict[str, str]:
 
     return sections
 
-# PDF로 저장하는 함수
-def save_to_pdf(user_info: Dict[str, str], generated_content: Dict[str, str], filename="소장.pdf"):
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.add_font('NanumGothic', '', FONT_PATH, uni=True)
-    pdf.set_font('NanumGothic', size=12)
+# Word로 저장하는 함수
+def save_to_word(user_info: Dict[str, str], generated_content: Dict[str, str], filename="소장.docx"):
+    doc = Document()
 
-    pdf.set_font_size(16)
-    pdf.cell(0, 10, txt="소      장", ln=True, align='C')
+    # 제목 추가
+    doc.add_heading('소      장', level=1).alignment = 1  # 가운데 정렬
 
-    pdf.ln(10)
+    # 원고 정보
+    doc.add_paragraph(f"원    고 : {user_info['plaintiff']} (전화번호: {user_info['plaintiff_phone']})")
+    doc.add_paragraph(f"주    소 : {user_info['plaintiff_address']}")
 
-    pdf.cell(30, 10, txt="원    고 :", ln=False)
-    pdf.cell(0, 10, txt=f"{user_info['plaintiff']} (전화번호: {user_info['plaintiff_phone']})", ln=True)
-    pdf.cell(30, 10, txt="주    소 :", ln=False)
-    pdf.cell(0, 10, txt=user_info['plaintiff_address'], ln=True)
+    # 피고 정보
+    doc.add_paragraph(f"피    고 : {user_info['defendant']} (전화번호: {user_info['defendant_phone']})")
+    doc.add_paragraph(f"주    소 : {user_info['defendant_address']}")
 
-    pdf.cell(30, 10, txt="피    고 :", ln=False)
-    pdf.cell(0, 10, txt=f"{user_info['defendant']} (전화번호: {user_info['defendant_phone']})", ln=True)
-    pdf.cell(30, 10, txt="주    소 :", ln=False)
-    pdf.cell(0, 10, txt=user_info['defendant_address'], ln=True)
-    
-    pdf.ln(20)
+    # 사건명
+    doc.add_paragraph(f"\n사건명: {user_info['case_title']}")
 
-    pdf.set_font_size(12)
-    pdf.cell(0, 10, txt=user_info['case_title'], ln=True)
+    # 청구 취지
+    doc.add_heading('청 구  취 지', level=2).alignment = 1
+    doc.add_paragraph(generated_content['청구 취지'])
 
-    pdf.ln(20)
+    # 청구 원인
+    doc.add_heading('청 구  원 인', level=2).alignment = 1
+    doc.add_paragraph(generated_content['청구 원인'])
 
-    pdf.set_font_size(14)
-    pdf.cell(0, 10, txt="청 구  취 지", ln=True, align='C')
-    pdf.set_font_size(12)
-    pdf.multi_cell(0, 10, txt=generated_content['청구 취지'], align='J')
-
-    pdf.ln(10)
-
-    pdf.set_font_size(14)
-    pdf.cell(0, 10, txt="청 구  원 인", ln=True, align='C')
-    pdf.set_font_size(12)
-    pdf.multi_cell(0, 10, txt=generated_content['청구 원인'], align='J')
-
-    pdf.ln(10)
-
-    pdf.set_font_size(14)
-    pdf.cell(0, 10, txt="첨 부  서 류", ln=True, align='C')
-    pdf.set_font_size(12)
-    attachments = generated_content['첨부 서류'].split('\n')
-    for attachment in attachments:
+    # 첨부 서류
+    doc.add_heading('첨 부  서 류', level=2).alignment = 1
+    for attachment in generated_content['첨부 서류'].split('\n'):
         if attachment.strip() != '':
-            pdf.cell(0, 10, txt=f"- {attachment.strip()}", ln=True)
+            doc.add_paragraph(f"- {attachment.strip()}")
 
-    pdf.ln(20)
-
+    # 날짜 및 서명
     today = datetime.today().strftime('%Y    .   %m    .   %d    .')
-    pdf.cell(0, 10, txt=today, ln=True, align='R')
-    pdf.cell(0, 10, txt="원고           (인)", ln=True, align='R')
-    pdf.cell(0, 10, txt=user_info['plaintiff'], ln=True, align='R')
+    doc.add_paragraph(today, style='Normal').alignment = 2  # 오른쪽 정렬
+    doc.add_paragraph("원고           (인)", style='Normal').alignment = 2
+    doc.add_paragraph(user_info['plaintiff'], style='Normal').alignment = 2
 
-    pdf.ln(10)
+    # 법원 이름
+    doc.add_paragraph(f"\n{user_info['court_name']} 귀중", style='Normal').alignment = 2
 
-    pdf.cell(0, 10, txt=f"{user_info['court_name']} 귀중", ln=True, align='R')
-
-    pdf.output(filename, 'F')
+    # Word 파일 저장
+    doc.save(filename)
