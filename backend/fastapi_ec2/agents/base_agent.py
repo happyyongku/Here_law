@@ -19,7 +19,10 @@ class BaseAgent:
         model_name = MODEL_LOCAL if self.gpu_url else MODEL_OPENAI
         
         logging.debug(f"BaseAgent: model name is {model_name}")
-
+        if self.api_key is None:
+            logging.debug("OpenAI api key 없음. Local 모델을 사용합니다...")
+            self.api_key = "dummy_api_key"
+        
         proxy_args = {
             "api_key": self.api_key,
             "model": model_name,
