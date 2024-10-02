@@ -1,15 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import "./SignoutContainer.css";
 
 function Signout() {
+  const navigate = useNavigate();
   // 비밀번호
   const [signoutPassword, setSignoutPassword] = useState("");
 
   // 비밀번호 상태 변경
   const onChangePassword = (e) => {
     setSignoutPassword(e.target.value);
-    console.log(signoutPassword);
   };
 
   // 회원탈퇴 axios 요청
@@ -20,20 +21,17 @@ function Signout() {
       password: signoutPassword,
     };
     try {
-      const response = await axiosInstance.delete(
-        "/spring_api/user/profile",
-        // formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axiosInstance.delete("/spring_api/user/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        data: formData,
+      });
       console.log("회원탈퇴 성공", response.data);
       // 로컬스토리지 삭제
       localStorage.removeItem("token");
       // 랜딩페이지로 이동
-      navigation("/");
+      navigate("/");
     } catch (error) {
       console.error("회원탈퇴 실패", error);
     }

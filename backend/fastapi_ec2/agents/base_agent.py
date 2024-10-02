@@ -1,7 +1,7 @@
 from langchain_openai import ChatOpenAI
 from langgraph.prebuilt import create_react_agent
 from langgraph.checkpoint.memory import MemorySaver
-
+import logging
 
 MODEL_OPENAI = "gpt-4o"
 MODEL_LOCAL = "functionary_3.2_KR_custom"
@@ -17,6 +17,11 @@ class BaseAgent:
             raise ValueError("'api_key' 나 'gpu_url' 둘 중 최소 하나는 필요함!")
         
         model_name = MODEL_LOCAL if self.gpu_url else MODEL_OPENAI
+        
+        logging.debug(f"BaseAgent: model name is {model_name}")
+        if self.api_key is None:
+            logging.debug("OpenAI api key 없음. Local 모델을 사용합니다...")
+            self.api_key = "dummy_api_key"
         
         proxy_args = {
             "api_key": self.api_key,
