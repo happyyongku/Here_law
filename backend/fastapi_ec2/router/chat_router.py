@@ -22,7 +22,15 @@ logging.basicConfig(level=logging.DEBUG)
 # 서버 CONFIG
 EMBEDDER_URL = os.environ.get("EMBEDDER_URL", None)
 LLM_URL = os.environ.get("LLM_URL", None)
-DB_URL = os.environ.get("DB_URL")
+DB_URL = os.environ.get("DB_USERNAME")\
+    +":"\
+    +os.environ.get("DB_PASSWORD")\
+    +"@"\
+    +os.environ.get("DB_DOMAIN")\
+    +":"\
+    +os.environ.get("DB_PORT_FASTAPI")\
+    +"/"\
+    +os.environ.get("DB_NAME")
 API_KEY = os.environ.get("API_KEY", None)
 
 
