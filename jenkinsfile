@@ -37,7 +37,7 @@ pipeline {
                     sshagent (credentials: [env.SSH_KEY]) {
                         sh '''
                             ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 &&
-                            echo DB_DOMAIN=$DB_DOMAIN >> .env &&
+                            echo DB_DOMAIN=$DB_DOMAIN > .env &&
                             echo DB_PORT=$DB_PORT >> .env &&
                             echo DB_PORT_SPRING=$DB_PORT_SPRING >> .env &&
                             echo DB_PORT_FASTAPI=$DB_PORT_FASTAPI >> .env &&
