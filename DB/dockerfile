@@ -1,3 +1,7 @@
-FROM postgres:12.20
+FROM ramsrib/pgvector:12
 
-ENV POSTGRES_USER=
+COPY init.sql /docker-entrypoint-initdb.d/init.sql
+
+# CMD [ "/bin/sh", "-c", "psql","-U", "$POSTGRES_USER", "-d", "$POSTGRES_DB", "-f", "/docker-entrypoint-initdb.d/init.sql" ]
+
+# CMD /bin/sh -c psql -U $POSTGRES_USER -d $POSTGRES_DB -f /docker-entrypoint-initdb.d/init.sql

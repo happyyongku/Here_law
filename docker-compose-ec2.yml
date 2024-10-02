@@ -2,8 +2,8 @@ version: '3.8'
 services:
   react:
     image: happyyongku/j11b109:react
-    expose:
-      - "3000"
+    ports:
+      - "3000:80"
     networks:
       - app-network
     volumes:
@@ -11,19 +11,53 @@ services:
 
   spring:
     image: happyyongku/j11b109:spring
-    expose:
-      - "8080"
+    ports:
+      - "8080:8080"
     networks:
       - app-network
+    environment:
+      DB_DOMAIN: ${DB_DOMAIN}
+      DB_PORT: ${DB_PORT_SPRING}
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      ELA_URI: http://elasticsearch:9200
+      ELA_PASSWORD: ${ELA_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
     # depends_on:
     #   - postgres
+    #   - elasticsearch
   
   fastapi:
     image: happyyongku/j11b109:fastapi
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"
     networks:
       - app-network
+    environment:
+      DB_DOMAIN: ${DB_DOMAIN}
+      DB_PORT: ${DB_PORT_FASTAPI}
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      EMBEDDER_URL: ${EMBEDDER_URL}
+      SESSION_TIMEOUT: ${SESSION_TIMEOUT}
+      MAX_SESSIONS_PER_USER: ${MAX_SESSIONS_PER_USER}
+      SESSION_CLEANUP_INTERVAL: ${SESSION_CLEANUP_INTERVAL}
+      ACCESS_TOKEN_EXPIRATION_MINUTES: ${ACCESS_TOKEN_EXPIRATION_MINUTES}
+      FASTAPI_SERVER_PORT: ${FASTAPI_SERVER_PORT}
+      API_KEY: $API_KEY
     # depends_on:
     #   - postgres
 
@@ -34,26 +68,54 @@ services:
       - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./certs:/etc/letsencrypt
-      - /etc/letsencrypt/live/j11b109.p.ssafy.io:/etc/letsencrypt/live/j11b109.p.ssafy.io
-      # - ./dist:/usr/share/nginx/html
-    user: "www-data"
+      # - certs:/etc/letsencrypt/live/j11b109.p.ssafy.io
+      - ./certs/live/j11b109.p.ssafy.io:/etc/letsencrypt/live/j11b109.p.ssafy.io
+
     command: nginx -g 'daemon off;'
-    # command: /bin/sh -c "chown -R www-data:www-data /etc/letsencrypt/live && \
-    #                     chmod 750 /etc/letsencrypt/live && \
-    #                     chmod 640 /etc/letsencrypt/live/j11b109.p.ssafy.io/fullchain.pem && \
-    #                     chmod 640 /etc/letsencrypt/live/j11b109.p.ssafy.io/privkey.pem && \
-    #                     nginx -g 'daemon off;'"
     depends_on:
-      - react
-    #   - spring
       - fastapi
+      - react
+      - spring
     networks:
       - app-network
-    # healthcheck:
-    #   test: ["CMD-SHELL", "curl -f http://localhost || exit 1"]
-    #   interval: 30s
-    #   retries: 3
-    
+  
+  # postgres:
+  #   image: happyyongku/j11b109:postgres
+  #   ports:
+  #     - "5433:5432"
+  #     - "3345:5432"
+  #   volumes:
+  #     - type: volume
+  #       source: database
+  #       target: /var/lib/postgresql/data
+  #     - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  #     - /home/ubuntu/j11b109/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
+  #   environment:
+  #     POSTGRES_DB: ${DB_NAME}
+  #     POSTGRES_USER: ${DB_USERNAME}
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+  # elasticsearch:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.17.3
+  #   environment:
+  #     discovery.type: single-node
+  #     ES_JAVA_OPTS: -Xms512m -Xms512m
+  #     ELA_PASSWORD: ${ELA_PASSWORD}
+  #   ports:
+  #     - "9200:9200"
+  #     - "9300:9300"
+  #   networks:
+  #     - app-network
+  #   volumes:
+  #     - elasticsearch-data:/usr/share/elasticsearch/data
+
+volumes:
+  certs:
+    driver: local
+  database:
+    driver: local
+  elasticsearch-data:
+    driver: local
 networks:
   app-network:
+    driver: bridge

@@ -1,44 +1,38 @@
 package org.ssafyb109.here_law.service;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.ssafyb109.here_law.document.CaseEntity;
-import org.ssafyb109.here_law.repository.elasticsearch.CaseRepository;
-import org.ssafyb109.here_law.repository.elasticsearch.CustomCaseRepository;
+import org.ssafyb109.here_law.entity.CaseEntity;
+import org.ssafyb109.here_law.repository.jpa.CaseJpaRepository;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 
 @Service
 public class CaseService {
 
-    private final CaseRepository caseRepository;
-    private final CustomCaseRepository customCaseRepository;
 
-    public CaseService(CaseRepository caseRepository, CustomCaseRepository customCaseRepository) {
+    private final CaseJpaRepository caseRepository;
+
+    public CaseService(CaseJpaRepository caseRepository) {
         this.caseRepository = caseRepository;
-        this.customCaseRepository = customCaseRepository;
     }
 
-    public Map<String, Object> searchCases(String query, int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size);
-        String[] keywords = query.split("\\s+");
-        Page<CaseEntity> casesPage;
-
-        if (keywords.length == 1) {
-            casesPage = caseRepository.findBySummaryContaining(keywords[0], pageable);
-        } else {
-            casesPage = customCaseRepository.findBySummaryContainingMultipleKeywords(keywords, pageable);
-        }
-
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("totalResults", casesPage.getTotalElements());
-        response.put("currentPage", casesPage.getNumber() + 1);
-        response.put("totalPages", casesPage.getTotalPages());
-        response.put("cases", casesPage.getContent());
-
-        return response;
+    // caseInfoId로 케이스 조회
+    public CaseEntity getCaseById(String caseInfoId) {  // Long에서 String으로 변경
+        return caseRepository.findByCaseInfoId(caseInfoId);
     }
+
+    // 키워드로 케이스 검색 (페이지네이션 포함)
+    public Page<CaseEntity> searchCases(String keyword, Pageable pageable) {
+        return caseRepository.findByCaseNameContainingOrIssuesContainingOrJudgmentSummaryContainingOrFullTextContainingOrderByCaseInfoIdAsc(
+                keyword, keyword, keyword, keyword, pageable);
+    }
+
+    // 키워드로 전체 케이스 검색 (페이지네이션 없음)
+    public List<CaseEntity> searchAllCases(String keyword) {
+        return caseRepository.findByCaseNameContainingOrIssuesContainingOrJudgmentSummaryContainingOrFullTextContainingOrderByCaseInfoIdAsc(
+                keyword, keyword, keyword, keyword);
+    }
+
 }

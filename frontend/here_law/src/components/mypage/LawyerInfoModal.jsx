@@ -1,6 +1,7 @@
 import { useState } from "react";
 import closeimg from "../../assets/mypage/closeimg.png";
 import defualtImg from "../../assets/mypage/defaultimg.png";
+import axiosInstance from "../../utils/axiosInstance";
 import "./BasicInfoModal.css";
 
 function BasicInfoModal({
@@ -8,15 +9,13 @@ function BasicInfoModal({
   nickname,
   description,
   phoneNumber,
-  email,
   isModalOpen,
   closeModal,
+  getUserData,
 }) {
   const [newNickname, setNewNickname] = useState(nickname);
   const [newDescription, setNewDescription] = useState(description);
-  const [newEmail, setNewEmail] = useState(email);
   const [newPhoneNumber, setNewPhoneNumber] = useState(phoneNumber);
-  // console.log(phonenumber);
 
   const onChangeNickname = (e) => {
     setNewNickname(e.target.value);
@@ -26,12 +25,38 @@ function BasicInfoModal({
     setNewDescription(e.target.value);
   };
 
-  const onChangeEmail = (e) => {
-    setNewEmail(e.target.value);
-  };
-
   const onChangePhoneNumber = (e) => {
     setNewPhoneNumber(e.target.value);
+  };
+
+  // 변호사 정보 수정 요청
+  const updateLawyerInfo = async () => {
+    const token = localStorage.getItem("token");
+    const formData = {
+      nickname: newNickname,
+      lawyerDTO: { description: newDescription, phoneNumber: newPhoneNumber },
+    };
+    try {
+      const response = await axiosInstance.put(
+        "/spring_api/user/profile",
+        formData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log("회원 기본 정보 수정 성공", response.data);
+      // 수정 성공하면 닫자.
+      closeModal();
+      getUserData();
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        console.log("Token expired. Please log in again.");
+        localStorage.removeItem("token");
+      } else {
+        console.error("Error fetching user data", error);
+        closeModal();
+      }
+    }
   };
 
   if (!isModalOpen) return null;
@@ -70,16 +95,6 @@ function BasicInfoModal({
         </div>
 
         <div className="basic-info-modal-item">
-          <div className="basic-info-modal-item-title">이메일 </div>
-          <input
-            className="basic-info-modal-input"
-            type="text"
-            value={newEmail}
-            onChange={onChangeEmail}
-          />
-        </div>
-
-        <div className="basic-info-modal-item">
           <div className="basic-info-modal-item-title">전화번호 </div>
           <input
             className="basic-info-modal-input"
@@ -88,7 +103,9 @@ function BasicInfoModal({
             onChange={onChangePhoneNumber}
           />
         </div>
-        <button className="update-complete">수정 완료</button>
+        <button className="update-complete" onClick={updateLawyerInfo}>
+          수정 완료
+        </button>
       </div>
     </div>
   );

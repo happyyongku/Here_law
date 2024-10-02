@@ -32,6 +32,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -42,7 +43,8 @@ public class SecurityConfig {
                                 "/spring_api/register",
                                 "/spring_api/login",
                                 "/spring_api/send-verification-code",
-                                "/spring_api/verify-code"
+                                "/spring_api/verify-code",
+                                "/spring_api"
                         ).permitAll()
                         .requestMatchers("/spring_api/lawyer/**").hasRole("LAWYER")
                         .anyRequest().authenticated()

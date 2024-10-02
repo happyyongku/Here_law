@@ -11,8 +11,6 @@ function SignUpLawyer2({
 }) {
   const [previewImage, setPreviewImage] = useState(null);
   const fileInputRef = useRef(null);
-  // const [description, setDescription] = useState("");
-  // const [phoneNumber, setPhoneNumber] = useState("");
   const [notAllow, setNotAllow] = useState(true);
 
   const handleImageUpload = (e) => {
@@ -35,7 +33,7 @@ function SignUpLawyer2({
     setPhoneNumber(e.target.value);
   };
 
-  // 유효성 검사 - description과 phoneNumber가 입력되었는지만 확인
+  // 유효성 검사
   useEffect(() => {
     if (description.trim() && phoneNumber.trim()) {
       setNotAllow(false);

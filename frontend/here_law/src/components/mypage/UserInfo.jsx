@@ -1,25 +1,53 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import BasicInfoModal from "./BasicInfoModal";
-import normaluserimg from "../../assets/mypage/normaluserimg.png";
 import usersetting from "../../assets/mypage/usersetting.png";
 import updateimg from "../../assets/mypage/updateimg.png";
+import axiosInstance from "../../utils/axiosInstance";
 import "./UserInfo.css";
 
-function UserInfo({ nickname, profileImg, email, write, like, save }) {
+function UserInfo({
+  nickname,
+  profileImg,
+  email,
+  write,
+  like,
+  save,
+  getUserData,
+}) {
+  const navigate = useNavigate();
   const [writePost, setWritePost] = useState(write.length);
   const [likePost, setLikePost] = useState(like.length);
   const [saveEx, setSaveEx] = useState(save.length);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => {
     setIsModalOpen(true);
     setIsToggleOpen(false);
   };
   const closeModal = () => setIsModalOpen(false);
-
   const [isToggleOpen, setIsToggleOpen] = useState(false);
   const toggleButton = () => {
     setIsToggleOpen(!isToggleOpen);
+  };
+
+  // 로그아웃 axios 요청
+  const LogoutRequest = async () => {
+    const token = localStorage.getItem("token");
+    console.log(token);
+    try {
+      const response = await axiosInstance.post(
+        "/spring_api/logout",
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log("로그아웃 성공", response.data);
+      localStorage.removeItem("token");
+      navigate("/login");
+    } catch (error) {
+      console.log("로그아웃 실패", error);
+    }
   };
 
   return (
@@ -28,7 +56,7 @@ function UserInfo({ nickname, profileImg, email, write, like, save }) {
         <div className="user-basic-info">
           <img
             className="normal-user-img"
-            src={normaluserimg}
+            src={profileImg}
             alt="normaluserimg"
           />
           <div className="name-and-update">
@@ -51,7 +79,11 @@ function UserInfo({ nickname, profileImg, email, write, like, save }) {
           />
           {isToggleOpen && (
             <div className="settings-dropdown">
-              <div className="">회원탈퇴</div>
+              <div onClick={LogoutRequest}>로그아웃</div>
+              <hr />
+              <div className="" onClick={() => navigate("/signout")}>
+                회원탈퇴
+              </div>
             </div>
           )}
         </div>
@@ -80,6 +112,7 @@ function UserInfo({ nickname, profileImg, email, write, like, save }) {
           email={email}
           isModalOpen={isModalOpen}
           closeModal={closeModal}
+          getUserData={getUserData}
         />
       ) : (
         <></>
