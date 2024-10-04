@@ -30,7 +30,29 @@ public class CaseController {
         this.caseService = caseService;
     }
 
-    @Operation(summary = "케이스 조회", description = "케이스 ID로 케이스 조회")
+    @Operation(
+            summary = "케이스 조회",
+            description = "케이스 ID로 케이스 조회",
+            responses = @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "케이스 조회 응답 예시",
+                                    value = "{\n" +
+                                            "  \"caseInfoId\": \"100006\",\n" +
+                                            "  \"caseName\": \"양도소득세부과처분취소\",\n" +
+                                            "  \"judgment\": \"선고\",\n" +
+                                            "  \"courtName\": \"대법원\",\n" +
+                                            "  \"caseType\": \"세무\",\n" +
+                                            "  \"issues\": \"담보권자명의의 소유권이전...\",\n" +
+                                            "  \"judgmentSummary\": \"가등기담보권자가 제소전 화해조항에...\",\n" +
+                                            "  \"referenceClause\": \"소득세법 제23조\",\n" +
+                                            "  \"fullText\": \"【원고, 피상고인】 김인배...\"\n" +
+                                            "}"
+                            )
+                    )
+            )
+    )
     @GetMapping("/{caseInfoId}")
     public ResponseEntity<?> getCaseById(@PathVariable String caseInfoId) {  // Long에서 String으로 변경
         logger.info("케이스 조회 요청 수신: caseInfoId={}", caseInfoId);
@@ -46,7 +68,46 @@ public class CaseController {
         }
     }
 
-    @Operation(summary = "케이스 검색", description = "키워드로 케이스 검색")
+    @Operation(
+            summary = "케이스 검색",
+            description = "키워드로 케이스 검색",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "케이스 검색 요청 예시",
+                                    value = "{\n" +
+                                            "  \"keyword\": \"소득세\",\n" +
+                                            "  \"page\": 1,\n" +
+                                            "  \"size\": 10\n" +
+                                            "}"
+                            )
+                    )
+            ),
+            responses = @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "케이스 검색 응답 예시",
+                                    value = "{\n" +
+                                            "  \"totalResults\": 50,\n" +
+                                            "  \"currentPage\": 1,\n" +
+                                            "  \"totalPages\": 5,\n" +
+                                            "  \"cases\": [\n" +
+                                            "    {\n" +
+                                            "      \"caseInfoId\": \"100001\",\n" +
+                                            "      \"caseName\": \"소득세 부과처분 취소\",\n" +
+                                            "      \"courtName\": \"대법원\",\n" +
+                                            "      \"caseType\": \"세무\",\n" +
+                                            "      \"issues\": \"소득세 관련 문제...\",\n" +
+                                            "      \"judgmentSummary\": \"소득세법 관련...\"\n" +
+                                            "    }\n" +
+                                            "  ]\n" +
+                                            "}"
+                            )
+                    )
+            )
+    )
     @GetMapping("/search")
     public ResponseEntity<?> searchCases(
             @RequestParam String keyword,
@@ -68,7 +129,42 @@ public class CaseController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "전체 케이스 검색", description = "키워드로 전체 케이스 검색")
+    @Operation(
+            summary = "전체 케이스 검색",
+            description = "키워드로 전체 케이스 검색",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "전체 케이스 검색 요청 예시",
+                                    value = "{\n" +
+                                            "  \"keyword\": \"소득세\"\n" +
+                                            "}"
+                            )
+                    )
+            ),
+            responses = @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "전체 케이스 검색 응답 예시",
+                                    value = "{\n" +
+                                            "  \"totalResults\": 100,\n" +
+                                            "  \"cases\": [\n" +
+                                            "    {\n" +
+                                            "      \"caseInfoId\": \"100001\",\n" +
+                                            "      \"caseName\": \"소득세 부과처분 취소\",\n" +
+                                            "      \"courtName\": \"대법원\",\n" +
+                                            "      \"caseType\": \"세무\",\n" +
+                                            "      \"issues\": \"소득세 관련 문제...\",\n" +
+                                            "      \"judgmentSummary\": \"소득세법 관련...\"\n" +
+                                            "    }\n" +
+                                            "  ]\n" +
+                                            "}"
+                            )
+                    )
+            )
+    )
     @GetMapping("/search/all")
     public ResponseEntity<?> searchAllCases(@RequestParam String keyword) {
         logger.info("전체 케이스 검색 요청 수신: keyword={}", keyword);

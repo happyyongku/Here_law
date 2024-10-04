@@ -63,7 +63,35 @@ public class UserController {
     // 이미지 저장 디렉토리 경로
     private static final String UPLOAD_DIR = "C:/uploads/images/";
 
-    @Operation(summary = "회원가입", description = "회원가입")
+    @Operation(
+            summary = "회원가입",
+            description = "회원가입",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "회원가입 요청 예시",
+                                    summary = "회원가입 요청 예시",
+                                    value = "{\n" +
+                                            "  \"email\": \"example@example.com\",\n" +
+                                            "  \"password\": \"examplePassword\",\n" +
+                                            "  \"nickname\": \"exampleNickname\",\n" +
+                                            "  \"userType\": \"lawyer\",\n" +
+                                            "  \"interests\": [\"법률\", \"IT\"],\n" +
+                                            "  \"subscriptions\": [\"구독1\", \"구독2\"],\n" +
+                                            "  \"lawyerDTO\": {\n" +
+                                            "    \"expertise\": \"사법\",\n" +
+                                            "    \"officeLocation\": \"서울\",\n" +
+                                            "    \"qualification\": \"변호사 자격\",\n" +
+                                            "    \"description\": \"변호사 설명\",\n" +
+                                            "    \"phoneNumber\": \"010-1234-5678\"\n" +
+                                            "  },\n" +
+                                            "  \"profileImgFile\": \"프로필 이미지 파일 경로\"\n" +
+                                            "}"
+                            )
+                    )
+            )
+    )
     @PostMapping("/register")
     @Transactional
     public ResponseEntity<?> registerUser(
@@ -157,7 +185,22 @@ public class UserController {
     }
 
 
-    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴")
+    @Operation(
+            summary = "회원 탈퇴",
+            description = "회원 탈퇴",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "회원탈퇴 요청 예시",
+                                    summary = "회원탈퇴 요청 예시",
+                                    value = "{\n" +
+                                            "  \"password\": \"examplePassword\"\n" +
+                                            "}"
+                            )
+                    )
+            )
+    )
     @DeleteMapping("/user/profile") //회원 탈퇴
     public ResponseEntity<String> deleteUser(Authentication authentication, @RequestBody UserDeleteDTO userDeleteDTO) {
         logger.info("회원 탈퇴 요청 수신");
@@ -192,7 +235,22 @@ public class UserController {
     }
 
     // 이메일 중복 확인
-    @Operation(summary = "이메일 중복 확인", description = "이메일 중복 확인")
+    @Operation(
+            summary = "이메일 중복 확인",
+            description = "이메일 중복 확인",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "이메일 중복 확인 요청 예시",
+                                    summary = "이메일 중복 확인 요청 예시",
+                                    value = "{\n" +
+                                            "  \"email\": \"example@example.com\"\n" +
+                                            "}"
+                            )
+                    )
+            )
+    )
     @PostMapping("/check-email")
     public ResponseEntity<Map<String, Boolean>> checkEmail(@RequestBody Map<String, String> request) {
         String email = request.get("email");
@@ -208,7 +266,22 @@ public class UserController {
     }
 
     // 닉네임 중복 확인
-    @Operation(summary = "닉네임 중복 확인", description = "닉네임 중복 확인")
+    @Operation(
+            summary = "닉네임 중복 확인",
+            description = "닉네임 중복 확인",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "닉네임 중복 확인 요청 예시",
+                                    summary = "닉네임 중복 확인 요청 예시",
+                                    value = "{\n" +
+                                            "  \"nickname\": \"exampleNickname\"\n" +
+                                            "}"
+                            )
+                    )
+            )
+    )
     @PostMapping("/check-nickname")
     public ResponseEntity<Map<String, Boolean>> checkNickname(@RequestBody Map<String, String> request) {
         String nickname = request.get("nickname");
