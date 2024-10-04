@@ -12,7 +12,7 @@ import Signout from "../pages/Signout";
 // 매거진 컴포넌트 모음
 import Magazine from "../pages/Magazine";
 import MagazineMain from "../components/magazine/magazinemain/MagazineMain";
-// import MagazineHotfix from "../components/magazine/magazinehotfix/MagazineHotfix";
+import MagazineHotfix from "../components/magazine/magazinehotfix/MagazineHotfix";
 import MagazineHotpost from "../components/magazine/magazinehotpost/MagazineHotpost";
 // import MagazineMy from "../components/magazine/magazinemy/MagazineMy";
 
@@ -49,7 +49,7 @@ function AppRoutes() {
 
       <Route path="/magazine" element={<Magazine />}>
         <Route path="" element={<MagazineMain />}></Route>
-        {/* <Route path="hotfix" element={<MagazineHotfix />}></Route> */}
+        <Route path="hotfix" element={<MagazineHotfix />}></Route>
         <Route path="hotpost" element={<MagazineHotpost />}></Route>
         {/* <Route path="my" element={<MagazineMy />}></Route> */}
       </Route>

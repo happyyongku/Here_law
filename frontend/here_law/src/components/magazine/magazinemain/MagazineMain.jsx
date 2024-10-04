@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import MagazineMainHeaderCard from "./MagazineMainHeaderCard";
 import MagazineMainCateCard from "./MagazineMainCateCard";
+import MagazineHotfix from "../magazinehotfix/MagazineHotfix";
 import MagazineMainCustomCard from "./MagazineMainCustomCard";
 import "./MagazineMain.css";
 
@@ -40,17 +41,17 @@ function MagazineMain() {
             TOP 추천 기사 관심 <br /> 분야 <br /> 조회수 기반
           </h3>
           <div className="magazine-main-header1-article-box">
-            <p>
+            <div className="magazine-main-header1-article-content">
               소상공인을 위한 법이 계정되었다. 관련 법에 대한 타협점이 필요로
               하다.
-            </p>
+            </div>
             <button className="magazine-main-detail-button">자세히 보기</button>
           </div>
         </div>
         <div className="magazine-main-header2">
           <MagazineMainHeaderCard
             cardTitle={"법제처 긴급 hot fix"}
-            navigateButton={() => navigate("hotpost")}
+            navigateButton={() => navigate("hotfix")}
           />
           <MagazineMainHeaderCard
             cardTitle={"유저 기반 추천"}
@@ -72,7 +73,10 @@ function MagazineMain() {
         </div>
         <div className="magazine-main-posting-fetch-body">
           <div className="magazine-main-posting-box"></div>
-          <div className="magazine-main-fetch-box"></div>
+          <div className="magazine-main-fetch-box">
+            <div>패치노트 바로 가기</div>
+            <img src="" alt="" />
+          </div>
         </div>
       </div>
       <div className="magazine-main-custom-posting">
