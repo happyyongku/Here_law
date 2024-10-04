@@ -7,14 +7,14 @@ from sqlalchemy import BIGINT, VARCHAR, BigInteger, Boolean, ForeignKey, create_
 from sqlalchemy.ext. declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session, relationship
 from sqlalchemy.sql import func
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import requests
 import os
 import logging
 
 
 router = APIRouter()
-load_dotenv()
+# load_dotenv()
 
 DB_USERNAME = os.environ.get('DB_USERNAME')
 DB_PASSWORD = os.environ.get('DB_PASSWORD')
