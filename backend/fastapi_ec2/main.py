@@ -10,8 +10,6 @@ import logging
 
 app = FastAPI()
 
-FASTAPI_SERVER_PORT = int(os.environ.get("FASTAPI_SERVER_PORT"))
-
 app.include_router(chat_router, prefix="/fastapi_ec2/chat")
 app.include_router(clause_analysis_router, prefix="/fastapi_ec2/clause")
 app.include_router(case_router, prefix="/fastapi_ec2/case")
