@@ -12,9 +12,9 @@ from fastapi import HTTPException, status
 from agents.base_agent import BaseAgent
 
 # Session-related configuration
-SESSION_TIMEOUT = timedelta(seconds=int(os.environ.get("SESSION_TIMEOUT_SECONDS")))
+SESSION_TIMEOUT = timedelta(seconds=int(os.environ.get("SESSION_TIMEOUT")))
 MAX_SESSIONS_PER_USER = int(os.environ.get("MAX_SESSIONS_PER_USER"))
-SESSIONS_CLEANUP_INTERVAL = int(os.environ.get("SESSIONS_CLEANUP_INTERVAL_SECONDS"))
+SESSIONS_CLEANUP_INTERVAL = int(os.environ.get("SESSIONS_CLEANUP_INTERVAL"))
 
 class SessionStorage:
     """
