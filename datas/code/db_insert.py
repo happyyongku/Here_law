@@ -4,16 +4,16 @@ import psycopg2
 
 # PostgreSQL 연결 설정
 conn = psycopg2.connect(
-    dbname="mydb",
-    user="myuser",
-    password="mypassword",
-    host="172.17.111.171",
-    port="5432"
+    dbname="here_law",
+    user="here_law_admin",
+    password="1234",
+    host="3.36.85.129",
+    port="5434"
 )
 cur = conn.cursor()
 
 # JSONL 파일들이 있는 디렉토리 경로
-jsonl_directory_path = '/home/qudrb0107/S11P21B109/datas/law_datas'
+jsonl_directory_path = '/home/ubuntu/kbg_workspace/S11P21B109/datas/law_datas'
 
 # 조항 데이터 삽입 함수
 def insert_rule_section(data):
