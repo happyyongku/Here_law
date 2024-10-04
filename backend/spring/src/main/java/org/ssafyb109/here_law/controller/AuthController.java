@@ -28,7 +28,34 @@ public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-    @Operation(summary = "로그인", description = "로그인")
+    @Operation(
+            summary = "로그인",
+            description = "로그인",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "로그인 요청 예시",
+                                    summary = "로그인 요청 예시",
+                                    value = "{\n" +
+                                            "  \"email\": \"user@example.com\",\n" +
+                                            "  \"password\": \"password123\"\n" +
+                                            "}"
+                            )
+                    )
+            ),
+            responses = @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "로그인 응답 예시",
+                                    value = "{\n" +
+                                            "  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n" +
+                                            "}"
+                            )
+                    )
+            )
+    )
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequestDTO loginRequest) {
         logger.info("로그인 요청 수신: {}", loginRequest.getEmail());
@@ -60,7 +87,32 @@ public class AuthController {
     @Autowired
     private JwtBlacklistService jwtBlacklistService;
 
-    @Operation(summary = "로그아웃", description = "로그아웃")
+    @Operation(
+            summary = "로그아웃",
+            description = "로그아웃",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "로그아웃 요청 예시",
+                                    value = "{\n" +
+                                            "  \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n" +
+                                            "}"
+                            )
+                    )
+            ),
+            responses = @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "로그아웃 응답 예시",
+                                    value = "{\n" +
+                                            "  \"message\": \"로그아웃되었습니다.\"\n" +
+                                            "}"
+                            )
+                    )
+            )
+    )
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
         logger.info("로그아웃 요청 수신");
@@ -77,7 +129,21 @@ public class AuthController {
         return ResponseEntity.ok("로그아웃되었습니다.");
     }
 
-    @Operation(summary = "루트 엔드포인트", description = "/spring_api로 접근 시 동작")
+    @Operation(
+            summary = "루트 엔드포인트",
+            description = "/spring_api로 접근 시 동작",
+            responses = @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "루트 엔드포인트 응답 예시",
+                                    value = "{\n" +
+                                            "  \"message\": \"정상작동합니다.\"\n" +
+                                            "}"
+                            )
+                    )
+            )
+    )
     @GetMapping
     public ResponseEntity<String> rootEndpoint() {
         logger.info("루트 엔드포인트 접근");

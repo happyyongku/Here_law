@@ -32,7 +32,36 @@ public class UserProfileController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserProfileController.class);
 
-    @Operation(summary = "회원 정보 조회", description = "회원 정보 조회")
+    @Operation(
+            summary = "회원 정보 조회",
+            description = "회원 정보 조회",
+            responses = @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "회원 정보 조회 응답 예시",
+                                    value = "{\n" +
+                                            "  \"nickname\": \"exampleNickname\",\n" +
+                                            "  \"email\": \"example@example.com\",\n" +
+                                            "  \"profileImg\": \"/images/profile.jpg\",\n" +
+                                            "  \"userType\": \"lawyer\",\n" +
+                                            "  \"isFirst\": true,\n" +
+                                            "  \"createdDate\": \"2024-01-01T12:34:56\",\n" +
+                                            "  \"updateDate\": \"2024-10-02T12:34:56\",\n" +
+                                            "  \"interests\": [\"법률\", \"IT\"],\n" +
+                                            "  \"subscriptions\": [\"구독1\", \"구독2\"],\n" +
+                                            "  \"lawyerDTO\": {\n" +
+                                            "    \"expertise\": \"사법\",\n" +
+                                            "    \"officeLocation\": \"서울\",\n" +
+                                            "    \"qualification\": \"변호사 자격\",\n" +
+                                            "    \"description\": \"변호사 설명\",\n" +
+                                            "    \"phoneNumber\": \"010-1234-5678\"\n" +
+                                            "  }\n" +
+                                            "}"
+                            )
+                    )
+            )
+    )
     @GetMapping("/user/profile") // 회원 정보 조회
     public ResponseEntity<Object> getUserProfile(Authentication authentication) {
         logger.info("회원 정보 조회 요청 수신");
@@ -62,7 +91,32 @@ public class UserProfileController {
         }
     }
 
-    @Operation(summary = "회원 정보 수정", description = "회원 정보 수정")
+    @Operation(
+            summary = "회원 정보 수정",
+            description = "회원 정보 수정",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "회원 정보 수정 요청 예시",
+                                    summary = "회원 정보 수정 요청 예시",
+                                    value = "{\n" +
+                                            "  \"nickname\": \"updatedNickname\",\n" +
+                                            "  \"profileImg\": \"/images/new-profile.jpg\",\n" +
+                                            "  \"interests\": [\"개발\", \"법률\"],\n" +
+                                            "  \"subscriptions\": [\"새 구독1\", \"새 구독2\"],\n" +
+                                            "  \"lawyerDTO\": {\n" +
+                                            "    \"expertise\": \"헌법\",\n" +
+                                            "    \"officeLocation\": \"부산\",\n" +
+                                            "    \"qualification\": \"변호사 자격2\",\n" +
+                                            "    \"description\": \"변호사 설명2\",\n" +
+                                            "    \"phoneNumber\": \"010-4321-5678\"\n" +
+                                            "  }\n" +
+                                            "}"
+                            )
+                    )
+            )
+    )
     @PutMapping("/user/profile") // 회원 정보 수정
     public ResponseEntity<Object> updateUserProfile(Authentication authentication, @RequestBody UserDTO updatedUserDTO) {
         logger.info("회원 정보 수정 요청 수신");
