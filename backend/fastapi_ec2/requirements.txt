@@ -86,7 +86,7 @@ PyJWT==2.9.0
 python-dateutil==2.8.2
 # python-dotenv==1.0.1
 pytz==2024.2
-pywin32==306
+# pywin32==306
 PyYAML==6.0.2
 pyzmq==25.1.0
 regex==2024.9.11
@@ -101,14 +101,14 @@ sympy==1.12
 tenacity==8.5.0
 tiktoken==0.7.0
 tokenizers==0.19.1
-torch==2.4.1
-torchaudio==2.4.1
-torchvision==0.19.1
+# torch==2.4.1
+# torchaudio==2.4.1
+# torchvision==0.19.1
 tornado==6.3.3
 tqdm==4.66.5
 traitlets==5.11.2
 transformers==4.44.2
-typing_extensions==4.12.2
+# typing_extensions==4.12.2
 tzdata==2024.2
 urllib3==2.2.3
 uvicorn==0.30.6
