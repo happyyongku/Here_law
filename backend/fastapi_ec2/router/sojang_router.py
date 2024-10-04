@@ -11,7 +11,11 @@ from openai import OpenAI
 sojang_router = APIRouter()
 
 # OpenAI 클라이언트 생성 (API 키 필요 시 추가)
+<<<<<<< HEAD
 OPENAI_API_KEY = "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"
+=======
+OPENAI_API_KEY = os.environ["API_KEY"]
+>>>>>>> c8874eb04376198de72995b39d1ef6f6446fe1cc
 client = OpenAI(api_key=OPENAI_API_KEY)  # 여기에 자신의 OpenAI API 키를 입력하세요.
 
 # 사용자로부터 입력받는 데이터 모델 정의

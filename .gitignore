@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+HEAD
 .idea
 .vscode
 .env
@@ -180,7 +180,7 @@ cython_debug/
 #.idea/
 ./datas
 backend/fastapi_ec2/main.py
-=======
+HEAD
 .idea
 .vscode
 .env
@@ -200,5 +200,26 @@ __pycache__
 *.Identifier
 
 ## log file
+
+.idea
+.vscode
+.env
+data
+
+## python
+__pycache__
+
+
+## ipynb
+.ipynb_checkpoints
+
+## AI model
+*.gguf
+
+## WSL file
+*.Identifier
+
+## log file
+c8874eb04376198de72995b39d1ef6f6446fe1cc
 *.log
->>>>>>> f767b48c5463b490de8802ea045385ed1ba75f1e
+f767b48c5463b490de8802ea045385ed1ba75f1e

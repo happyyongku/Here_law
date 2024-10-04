@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+import os
+>>>>>>> c8874eb04376198de72995b39d1ef6f6446fe1cc
 from fastapi import APIRouter, HTTPException, UploadFile, File
 import requests
 import uuid
@@ -10,10 +14,17 @@ clause_analysis_router = APIRouter()
 
 # NAVER CLOVA OCR API 설정
 api_url = 'https://t0gyxh4s0b.apigw.ntruss.com/custom/v1/34682/a4ab6ce628c7d82809103dff358791d5362577461f5388a14dd88825641bc382/general'
+<<<<<<< HEAD
 secret_key = 'UHlQc0lTSHFDelpXc2JmbFBMVkZKaFVKTGhXZlpVU24='
 
 # OpenAI API 설정
 OPENAI_API_KEY = "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"
+=======
+secret_key = 'UHlQc0lTSHFDelpXc2JmbFBMVkZKaFVKTGhXZlpVU24=' #TODO env-lize
+
+# OpenAI API 설정
+OPENAI_API_KEY = os.environ["API_KEY"]
+>>>>>>> c8874eb04376198de72995b39d1ef6f6446fe1cc
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # OCR 요청 함수

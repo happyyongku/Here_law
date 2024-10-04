@@ -49,11 +49,15 @@ pipeline {
                             echo JWT_EXPIRATION=$JWT_EXPIRATION >> .env &&
                             echo MAIL_HOST=$MAIL_HOST >> .env &&
                             echo MAIL_PORT=$MAIL_PORT >> .env &&
-                            echo MAIL_USERNAME=$MAIL_USERAME >> .env &&
+                            echo MAIL_USERNAME=$MAIL_USERNAME >> .env &&
                             echo MAIL_PASSWORD=$MAIL_PASSWORD >> .env &&
-
-                            ls /var/jenkins_home/workspace/J11B109_pipeline &&
-                            ls -la
+                            echo EMBEDDER_URL=$EMBEDDER_URL >> .env &&
+                            echo SESSION_TIMEOUT=$SESSION_TIMEOUT >> .env &&
+                            echo MAX_SESSIONS_PER_USER=$MAX_SESSIONS_PER_USER >> .env &&
+                            echo SESSIONS_CLEANUP_INTERVAL=$SESSIONS_CLEANUP_INTERVAL >> .env &&
+                            echo ACCESS_TOKEN_EXPIRE_MINUTES=$ACCESS_TOKEN_EXPIRE_MINUTES >> .env &&
+                            echo FASTAPI_SERVER_PORT=$FASTAPI_SERVER_PORT >> .env &&
+                            echo API_KEY=$API_KEY >> .env
                             "
                         '''
                     }

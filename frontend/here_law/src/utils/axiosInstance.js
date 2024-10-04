@@ -4,7 +4,7 @@ import axios from "axios";
 // const SWAGGER_LINK = import.meta.env.SWWAGER_API_URL;
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: "https://j11b109.p.ssafy.io",
   withCredentials: true,
 });
 
