@@ -76,6 +76,14 @@ def subscriptions_query(user, db):
     
     return [mag.as_dict() for mag in magazines]
 
+def most_view_query(db):
+    magazines = db.query(Magazine).order_by(Magazine.view_count.desc()).limit(5).all()
+    return [mag.as_dict() for mag in magazines]
+
+def most_like_query(db):
+    magazines = db.query(Magazine).order_by(Magazine.likes.desc()).limit(5).all()
+    return [mag.as_dict() for mag in magazines]
+
 # -----------------------------------------------함수 영역 ------------------------------------------------
 
 @router.get("/")
@@ -87,10 +95,14 @@ def magazine_mount_interest(token:str=Depends(get_current_user), db: Session=Dep
     
     interest_magazines = interest_query(user, db)
     subscription_magazines = subscriptions_query(user, db)
+    view_count_magazines = most_view_query(db)
+    likes_magazines = most_like_query(db)
     
     magazines_obj = {
         'interest': interest_magazines,
-        'subscription': subscription_magazines
+        'subscription': subscription_magazines,
+        'view_count': view_count_magazines,
+        'likes': likes_magazines
     }
     
     return JSONResponse(content=magazines_obj)
