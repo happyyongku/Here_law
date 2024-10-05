@@ -21,15 +21,16 @@ logging.basicConfig(level=logging.DEBUG)
 # 서버 CONFIG
 EMBEDDER_URL = os.environ.get("EMBEDDER_URL", None)
 LLM_URL = os.environ.get("LLM_URL", None)
-DB_URL = os.environ.get("DB_USERNAME")\
+DB_URL = os.environ["DB_USERNAME"]\
     +":"\
-    +os.environ.get("DB_PASSWORD")\
+    +os.environ["DB_PASSWORD"]\
     +"@"\
-    +os.environ.get("DB_DOMAIN")\
+    +os.environ["DB_DOMAIN"]\
     +":"\
-    +os.environ.get("DB_PORT_FASTAPI")\
+    +os.environ["DB_PORT_FASTAPI"]\
     +"/"\
-    +os.environ.get("DB_NAME")
+    +os.environ["DB_NAME"]
+
 API_KEY = os.environ.get("API_KEY", None)
 
 
@@ -99,11 +100,9 @@ async def case_search(
         inputs = {"messages": [("user", request.input_data)]}
         # Get the result(PROMISE) from the agent
         result = agent(inputs)
-        last_result = None # for debug
         last_tool = None
         last_ai = None
         for s in result:
-            last_result = s
             latest_genned = s["messages"][-1]
             if(isinstance(latest_genned, ToolMessage)):
                 last_tool = latest_genned
