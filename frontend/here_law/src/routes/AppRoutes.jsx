@@ -10,6 +10,7 @@ import CaseDetail from "../components/search/caselist/CaseDetail";
 import Magazine from "../pages/Magazine";
 import Signout from "../pages/Signout";
 import RentDocument from "../pages/RentDocument";
+import RentDocumentUpload from "../pages/RentDocumentUpload";
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -40,11 +41,12 @@ function AppRoutes() {
       <Route path="/search" element={<Search />} />
 
       <Route path="/search/case" element={<CaseList />} />
-      <Route path="/search/case/:id" element={<CaseDetail />} />
+      <Route path="/search/case/:caseInfoId" element={<CaseDetail />} />
 
       <Route path="/magazine" element={<Magazine />} />
 
       <Route path="/rentdocument" element={<RentDocument />} />
+      <Route path="/rentdocument/upload" element={<RentDocumentUpload />} />
     </Routes>
   );
 }

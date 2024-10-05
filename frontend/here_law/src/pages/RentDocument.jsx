@@ -1,9 +1,9 @@
-import DocumentRentContainer from "../components/document/RentDocumentContainer";
+import RentContainer from "../components/document/RentContainer";
 
 function RentDocument() {
   return (
     <>
-      <DocumentRentContainer />
+      <RentContainer />
     </>
   );
 }

@@ -1,49 +1,84 @@
-import Switch from "./Switch";
-import SendIcon from "../../assets/search/searchsend.png";
-import "./AiSearch.css";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-function AiSearch({ isAiMode, onToggle }) {
+const ChatApp = () => {
+  const [userInput, setUserInput] = useState(""); // 사용자의 입력
+  const [sessionId, setSessionId] = useState(null); // 세션 ID 저장
+  const [messages, setMessages] = useState([]); // 메시지 목록 저장
+
+  // 세션 생성 요청
+  const createSession = async () => {
+    try {
+      const response = await axios.post("/fastapi_ec2/chat/case_search/new");
+      const { session_id } = response.data;
+      setSessionId(session_id); // 세 션 ID 저장
+      console.log("세션 생성 성공:", session_id);
+    } catch (error) {
+      console.error("세션 생성 실패:", error);
+    }
+  };
+
+  // 첫 로드 시 세션 ID 가져오기
+  useEffect(() => {
+    createSession();
+  }, []);
+
+  // 사용자가 입력한 메시지 API로 전송하고 답장 받기
+  const sendMessage = async () => {
+    if (!userInput || !sessionId) return; // 입력이나 세션 ID가 없을 경우 반환
+
+    // 사용자의 메시지 추가
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { sender: "user", text: userInput },
+    ]);
+
+    try {
+      const response = await axios.post("/fastapi_ec2/chat/case_search", {
+        input_data: userInput,
+        session_id: sessionId,
+      });
+
+      // AI 답장 메시지 추가
+      const aiReply = response.data.reply; // AI로부터 받은 답변
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { sender: "ai", text: aiReply },
+      ]);
+
+      // 입력창 비우기
+      setUserInput("");
+    } catch (error) {
+      console.error("메시지 전송 실패:", error);
+    }
+  };
+
   return (
-    <div className="ai-search-page">
-      <div className="search-title">
-        키워드 또는 Ai 검색으로 <br /> 판례를 검색하세요
-        <span style={{ color: "#ff5e00" }}>.</span>
+    <div className="chat-app">
+      <div className="message-container">
+        {messages.map((message, index) => (
+          <div
+            key={index}
+            className={`message ${
+              message.sender === "user" ? "user-message" : "ai-message"
+            }`}
+          >
+            {message.text}
+          </div>
+        ))}
       </div>
 
-      <div className="toggle-wrap">
-        <Switch onToggle={onToggle} isChecked={isAiMode} />
-      </div>
-
-      <div className="ai-chat-box">
-        <div className="chat-message">
-          <div className="ai-message">안녕하세요, 무엇을 도와드릴까요?</div>
-          <div className="user-message">
-            판례를 검색하고
-            싶어가나아린ㅇ마러민아러미ㅏ얼미ㅏㄴ어림ㄴ아러ㅣㅁ낭러미나얼미ㅏㄴ어리만어리만어리ㅏ먼이라먼이ㅏ럼ㄴ이ㅏ러민아러ㅣㅁㅇ나ㅓ리ㅏㄴㄴ요.
-          </div>
-          <div className="user-message">
-            판례를 검색하고
-            싶어가나아린ㅇ마러민아러미ㅏ얼미ㅏㄴ어림ㄴ아러ㅣㅁ낭러미나얼미ㅏㄴ어리만어리만어리ㅏ먼이라먼이ㅏ럼ㄴ이ㅏ러민아러ㅣㅁㅇ나ㅓ리ㅏㄴㄴ요.
-          </div>
-          <div className="user-message">
-            판례를 검색하고
-            싶어가나아린ㅇ마러민아러미ㅏ얼미ㅏㄴ어림ㄴ아러ㅣㅁ낭러미나얼미ㅏㄴ어리만어리만어리ㅏ먼이라먼이ㅏ럼ㄴ이ㅏ러민아러ㅣㅁㅇ나ㅓ리ㅏㄴㄴ요.
-          </div>
-        </div>
-
-        {/* 이하 메시지 어쩌구 */}
-      </div>
-
-      <div className="search-input-box">
+      <div className="input-container">
         <input
           type="text"
-          style={{ marginLeft: "20px" }}
-          placeholder="메시지를 입력하세요"
+          value={userInput}
+          onChange={(e) => setUserInput(e.target.value)}
+          placeholder="Type your message..."
         />
-        <img src={SendIcon} alt="search send" className="search-send" />
+        <button onClick={sendMessage}>Send</button>
       </div>
     </div>
   );
-}
+};
 
-export default AiSearch;
+export default ChatApp;

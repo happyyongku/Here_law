@@ -6,29 +6,35 @@ import Save from "./Save";
 
 import axiosInstance from "../../../utils/axiosInstance";
 
-const CaseDetail = ({ caseInfoId }) => {
+const CaseDetail = () => {
+  const { caseInfoId } = useParams();
   const [caseItem, setCaseItem] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // 판례 상세 조회 axios 요청
+  // 상세 조회 axios 요청
   const CaseDetailRequest = async () => {
     const token = localStorage.getItem("token");
-    // console.log(token);
+    // console.log("응", caseInfoId);
     try {
-      const response = await axiosInstance.get(`/spring_api/cases/208983`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get(
+        `/spring_api/cases/${caseInfoId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       console.log("판례 상세 조회 성공", response.data);
       setCaseItem(response.data);
+      setIsLoading(false);
     } catch (error) {
       console.log("판례 상세 조회 실패", error);
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     CaseDetailRequest();
-  }, []);
+  }, [caseInfoId]);
 
   // 더보기
   const toggleText = () => {
@@ -41,13 +47,12 @@ const CaseDetail = ({ caseInfoId }) => {
     }
     return text;
   };
+  // 로딩 중일 때 로딩 메시지 표시
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  // // 로딩 중일 때 로딩 메시지 표시
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // caseItem이 없을 경우(데이터가 없을 때) 처리
+  // caseItem이 없을 경우 처리
   if (!caseItem) {
     return <div>No case details found</div>;
   }
@@ -59,7 +64,7 @@ const CaseDetail = ({ caseInfoId }) => {
         <div className="case-detail-title">{caseItem.caseName}</div>
         <div className="case-detail-bar">
           <div className="bar-sort">
-            <div>A</div>
+            <div>{caseItem.caseType}</div>
             <div style={{ backgroundColor: "#F7E111" }}>B</div>
             <div style={{ backgroundColor: "#FF9898" }}>C</div>
           </div>
