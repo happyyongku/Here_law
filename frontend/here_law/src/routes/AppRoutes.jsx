@@ -14,6 +14,7 @@ import Magazine from "../pages/Magazine";
 import MagazineMain from "../components/magazine/magazinemain/MagazineMain";
 import MagazineHotfix from "../components/magazine/magazinehotfix/MagazineHotfix";
 import MagazineHotpost from "../components/magazine/magazinehotpost/MagazineHotpost";
+import CaseType from "../components/magazine/magazinemain/CaseType";
 // import MagazineMy from "../components/magazine/magazinemy/MagazineMy";
 
 const PrivateRoute = ({ children }) => {
@@ -51,6 +52,7 @@ function AppRoutes() {
         <Route path="" element={<MagazineMain />}></Route>
         <Route path="hotfix" element={<MagazineHotfix />}></Route>
         <Route path="hotpost" element={<MagazineHotpost />}></Route>
+        <Route path="case/:type" element={<CaseType />}></Route>
         {/* <Route path="my" element={<MagazineMy />}></Route> */}
       </Route>
     </Routes>

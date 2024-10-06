@@ -1,5 +1,5 @@
 .magazine-hotfix-card-container {
-  margin-bottom: 50px;
+  margin-bottom: 150px;
 }
 
 .magazine-hotfix-card-head-box {
@@ -7,7 +7,7 @@
 }
 
 .magazine-hotfix-card-title {
-  font-size: 34px;
+  font-size: 30px;
   margin-left: 20px;
   margin-bottom: 15px;
 }
@@ -18,7 +18,7 @@
   background-color: #002a6a;
   opacity: 20%;
   position: absolute;
-  left: 230px;
+  left: 200px;
   bottom: 15px;
 }
 
@@ -30,8 +30,9 @@
 .magazine-hotfix-content-box-title {
   font-weight: 500;
   font-size: 22px;
+  margin-bottom: 10px;
 }
 
 .magazine-hotfix-content-box-content {
-  font-size: 17px;
+  font-size: 14px;
 }
