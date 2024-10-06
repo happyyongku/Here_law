@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import "./CaseDetail.css";
 import Save from "./Save";
-
+import Light from "../../../assets/search/light.gif";
 import axiosInstance from "../../../utils/axiosInstance";
 
 const CaseDetail = () => {
@@ -15,7 +15,7 @@ const CaseDetail = () => {
   // 상세 조회 axios 요청
   const CaseDetailRequest = async () => {
     const token = localStorage.getItem("token");
-    // console.log("응", caseInfoId);
+    // console.log("아이디", caseInfoId);
     try {
       const response = await axiosInstance.get(
         `/spring_api/cases/${caseInfoId}`,
@@ -65,8 +65,12 @@ const CaseDetail = () => {
         <div className="case-detail-bar">
           <div className="bar-sort">
             <div>{caseItem.caseType}</div>
-            <div style={{ backgroundColor: "#F7E111" }}>B</div>
-            <div style={{ backgroundColor: "#FF9898" }}>C</div>
+            <div style={{ backgroundColor: "#F7E111" }}>
+              {caseItem.courtName}
+            </div>
+            <div style={{ backgroundColor: "#FF9898" }}>
+              {caseItem.judgment}
+            </div>
           </div>
 
           <div className="bar-save">
@@ -80,17 +84,32 @@ const CaseDetail = () => {
           <div>조문</div>
         </div>
         <div className="case-detail-guide">
+          <img src={Light} alt="Light Icon" className="light-icon" />
           <div className="guide-box">요점보기</div>
           <div>
             AI가 추출한 핵심 문장으로 판결문 요점을 빠르게 파악해 보세요.
           </div>
         </div>
-        <div className="detail-title">요약</div>
+        <div className="detail-title">판결 요약</div>
+
+        {/* 판결 요약을 클릭하면 아래 내용이 나오도록 해줘 */}
+
+        <div className="case-detail-guide">
+          <img src={Light} alt="Light Icon" className="light-icon" />
+          <div className="guide-box">판결</div>
+          <div>판결을 요약해서 보여드립니다.</div>
+        </div>
+
         <div className="detail-text">{caseItem.judgmentSummary}</div>
-        <div className="detail-title">주문</div>
+
+        <div className="detail-title">판결 결과</div>
         <div className="detail-text" style={{ textAlign: "center" }}>
           “{caseItem.judgment}”
         </div>
+
+        <div className="detail-title">주요 쟁점</div>
+        <div className="detail-text">{caseItem.issues}</div>
+
         <div>
           <div className="detail-title">전문</div>
           <div
