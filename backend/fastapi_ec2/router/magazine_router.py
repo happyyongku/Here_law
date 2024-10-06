@@ -6,7 +6,6 @@ from utils.security import get_current_user
 from pydantic import BaseModel
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session, relationship
-from dotenv import load_dotenv
 from dto.user_model import UserEntity, UserInterests, Magazine, UserSubscription
 import requests
 import os
