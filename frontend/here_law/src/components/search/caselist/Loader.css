@@ -1,4 +1,5 @@
 .loader-wrapper {
+  margin-top: 250px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -6,7 +7,7 @@
 }
 
 .loader {
-  border: 10px inset tomato;
+  border: 10px inset #f55e00;
   padding: 12px;
   transform: rotate(45deg);
   animation: loader1 1s ease-in-out infinite;
