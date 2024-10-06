@@ -1,0 +1,17 @@
+.magazine-hotfix-container {
+  padding: 50px 400px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.magazine-hotfix-title {
+  font-size: 34px;
+  font-weight: bold;
+}
+
+.magazine-hotfix-content {
+  margin-top: 120px;
+  width: 800px;
+  height: 500px;
+}

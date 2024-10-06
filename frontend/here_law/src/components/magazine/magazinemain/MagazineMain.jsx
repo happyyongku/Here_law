@@ -11,6 +11,7 @@ import prom2 from "../../../assets/magazine/prom2.png";
 
 function MagazineMain() {
   // 기사 유형별 axios 요청이 필요하다
+  // 한번에 받는걸로 정함
   // 1. 맞춤형
   // 2. 패치노트
   // 3. 인기순
