@@ -4,14 +4,18 @@ import MagazineMainCateCard from "./MagazineMainCateCard";
 import MagazineHotfix from "../magazinehotfix/MagazineHotfix";
 import MagazineMainCustomCard from "./MagazineMainCustomCard";
 import axiosInstance from "../../../utils/axiosInstance";
+import fastaxiosInstance from "../../../utils/fastaxiosInstance";
+import MagazineCustomCard from "./MagazineCustomCard";
 import "./MagazineMain.css";
 
 // 임시 이미지 imoprt
 import prom1 from "../../../assets/magazine/prom1.png";
 import prom2 from "../../../assets/magazine/prom2.png";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function MagazineMain() {
+  const navigate = useNavigate();
+
   // 기사 유형별 axios 요청이 필요하다
   // 한번에 받는걸로 정함
   // 1. 맞춤형
@@ -19,34 +23,9 @@ function MagazineMain() {
   // 3. 인기순
   // 4. 분야별
 
-  const navigate = useNavigate();
+  const [myPosting, setMyPosting] = useState([]);
 
-  // 여기서 axios로 의안 정보 호출
-  const getBillData = async () => {
-    const token = localStorage.getItem("token");
-    try {
-      const response = await axiosInstance.get(
-        "/fastapi_ec2/bill/bills"
-        //   {
-        //   headers: { Authorization: `Bearer ${token}` },
-        // }
-      );
-      console.log("의안 조회 성공", response.data);
-      // setUserData(response.data);
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        console.log("Token expired. Please log in again.");
-        localStorage.removeItem("token");
-      } else {
-        console.error("Error fetching user data", error);
-      }
-    } finally {
-      // setLoading(false);
-      // 데이터 요청 후 로딩 상태 업데이트
-    }
-  };
-
-  // 여기서 axios로 매거진 포스팅 정보 호출
+  // 1. 여기서 axios로 유저 맞춤형 매거진 포스팅 정보 호출 (interest, subsciption)
   const getMagazineData = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -54,13 +33,74 @@ function MagazineMain() {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log("포스팅 조회 성공", response.data);
-      // setUserData(response.data);
+      setMyPosting(response.data);
     } catch (error) {
       if (error.response && error.response.status === 401) {
         console.log("Token expired. Please log in again.");
         localStorage.removeItem("token");
       } else {
-        console.error("Error fetching user data", error);
+        console.error(
+          "Error fetching user data, 맞춤형 포스팅 조회 실패",
+          error
+        );
+      }
+    } finally {
+      // setLoading(false);
+      // 데이터 요청 후 로딩 상태 업데이트
+    }
+  };
+
+  // 2. axios 조회순 포스팅
+  const getMagazineViewData = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axiosInstance.get(
+        "/fastapi_ec2/magazine/top-viewed",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log("조회순 포스팅 조회 성공", response.data);
+      // setMyPosting(response.data);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        console.log("Token expired. Please log in again.");
+        localStorage.removeItem("token");
+      } else {
+        console.error(
+          "Error fetching user data, 조회순 포스팅 조회 실패",
+          error
+        );
+      }
+    } finally {
+      // setLoading(false);
+      // 데이터 요청 후 로딩 상태 업데이트
+    }
+  };
+
+  // 3. axios 추천순 포스팅
+  const getMagazineLikeData = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axiosInstance.get(
+        "/fastapi_ec2/magazine/top-liked",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("추천순 포스팅 조회 성공", response.data);
+      // setMyPosting(response.data);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        console.log("Token expired. Please log in again.");
+        localStorage.removeItem("token");
+      } else {
+        console.error(
+          "Error fetching user data, 추천순 포스팅 조회 실패",
+          error
+        );
       }
     } finally {
       // setLoading(false);
@@ -69,8 +109,10 @@ function MagazineMain() {
   };
 
   useEffect(() => {
-    getBillData();
+    // getBillData();
     getMagazineData();
+    getMagazineViewData();
+    getMagazineLikeData();
   }, []);
 
   const interests = [
@@ -139,12 +181,13 @@ function MagazineMain() {
         <div className="magazine-main-custom-title">
           유저 맞춤형 TOP AI 포스팅
         </div>
-        {/* 여기에 기사 카드가 반복문으로 들어가야 한다 */}
-        {/* 요청으로 받아오고 반복 돌려야 한다 */}
-        {/* {aiPosting.map((item, index) => (
-            <></>
-        ))} */}
-        <div></div>
+        <div className="magazine-main-custom-posting-content">
+          {/* 여기에 기사 카드가 반복문으로 들어가야 한다 */}
+          {/* 요청으로 받아오고 반복 돌려야 한다 */}
+          {myPosting.map((item, index) => (
+            <MagazineCustomCard key={index} item={item} />
+          ))}
+        </div>
       </div>
     </div>
   );
