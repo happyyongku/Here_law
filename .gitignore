@@ -2,6 +2,10 @@
 .vscode
 .env
 data
+**.pdf
+
+datas/*
+pdf_files/*
 
 ## python
 __pycache__
@@ -87,3 +91,4 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+

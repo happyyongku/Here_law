@@ -5,7 +5,7 @@ from contextlib import contextmanager
 from psycopg.rows import dict_row
 from utils.db_connection import DBConnection
 
-router = APIRouter()
+magazine_router = APIRouter()
 
 # DBConnection 클래스의 인스턴스 생성
 db_connection = DBConnection()
@@ -96,7 +96,7 @@ def get_recent_magazines(conn):
         cur.execute(query)
         return cur.fetchall()
 
-@router.get("/")
+@magazine_router.get("/")
 def magazine_mount(request: Request, token: str = Depends(get_current_user)):
     """
     사용자의 관심사에 따라 magazine 목록을 제공하는 API 엔드포인트입니다.
