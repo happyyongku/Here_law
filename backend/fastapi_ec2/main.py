@@ -11,6 +11,7 @@ from router.sojang_router import sojang_router
 from router.magazine_router import magazine_router
 from router.get_newbill_router import new_bill_router
 from router.news_router import news_router
+from router.revision_router import revision_router
 
 from utils.magazine_update_daemon import MagazineUpdateDaemon
 from utils.law_update_daemon import LawUpdateDaemon
@@ -63,6 +64,7 @@ app.include_router(bill_router, prefix='/fastapi_ec2/bill')
 app.include_router(new_bill_router, prefix='/fastapi_ec2/new_bill')
 app.include_router(news_router, prefix='/fastapi_ec2/news')
 app.include_router(sojang_router, prefix='/fastapi_ec2/sojang')
+app.include_router(revision_router, prefix='/fastapi_ec2/revision')
 
 #Daemon 실행
 UPDATE_INTERVAL = 3600*12 #TODO: Envlize this
