@@ -21,7 +21,7 @@ function AiSearch({ isAiMode, onToggle }) {
     const fetchSessionId = async () => {
       const token = localStorage.getItem("token");
       try {
-        const response = await fastaxiosInstance.get(
+        const response = await axiosInstance.get(
           "/fastapi_ec2/chat/case_search/new",
           {
             headers: {
@@ -54,7 +54,7 @@ function AiSearch({ isAiMode, onToggle }) {
 
     try {
       // GPT에게 요청 보내기
-      const response = await fastaxiosInstance.post("/fastapi_ec2/", {
+      const response = await axiosInstance.post("/fastapi_ec2/", {
         input_data: inputValue,
       });
 
