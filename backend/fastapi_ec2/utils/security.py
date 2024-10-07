@@ -17,7 +17,7 @@ load_dotenv()
 # JWT settings
 JWT_SECRET_KEY = os.environ.get("JWT_SECRET")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("JWT_EXPIRATION"))
-ALGORITHM = "HS512"
+ALGORITHM = os.environ.get("JWT_ALGORITHM")
 
 # Security scheme
 security = HTTPBearer()
