@@ -25,14 +25,14 @@ public class CaseService {
 
     // 키워드로 케이스 검색 (페이지네이션 포함)
     public Page<CaseEntity> searchCases(String keyword, Pageable pageable) {
-        return caseRepository.findByCaseNameContainingOrIssuesContainingOrJudgmentSummaryContainingOrFullTextContainingOrderByCaseInfoIdAsc(
-                keyword, keyword, keyword, keyword, pageable);
+        return caseRepository.findByCaseNameContainingOrIssuesContainingOrJudgmentSummaryContainingOrderByCaseInfoIdAsc(
+                keyword, keyword, keyword, pageable);
     }
 
     // 키워드로 전체 케이스 검색 (페이지네이션 없음)
     public List<CaseEntity> searchAllCases(String keyword) {
-        return caseRepository.findByCaseNameContainingOrIssuesContainingOrJudgmentSummaryContainingOrFullTextContainingOrderByCaseInfoIdAsc(
-                keyword, keyword, keyword, keyword);
+        return caseRepository.findByCaseNameContainingOrIssuesContainingOrJudgmentSummaryContainingOrderByCaseInfoIdAsc(
+                keyword, keyword, keyword);
     }
 
 }
