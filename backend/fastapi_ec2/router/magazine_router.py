@@ -152,4 +152,10 @@ def get_magazine(request: Request, magazine_id: int, token: str = Depends(get_cu
         magazine = get_magazine_by_id(conn, magazine_id)
         if not magazine:
             raise HTTPException(status_code=404, detail="해당 magazine을 찾을 수 없습니다.")
+        query = "UPDATE magazines SET view_count = view_count + 1 WHERE magazine_id = %s"
+        with conn.cursor() as cur:
+            cur.execute(query, (magazine_id,))
+            conn.commit()
+            
+    magazine['view_count'] += 1
     return magazine
