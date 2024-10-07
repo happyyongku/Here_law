@@ -1,0 +1,22 @@
+.case-type-card-container {
+  margin-bottom: 40px;
+}
+
+.case-type-card-img {
+  margin-right: 20px;
+}
+
+.case-type-card-content-header {
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+}
+
+.case-type-card-content-index {
+  font-size: 14px;
+}
+
+.case-type-card-content-img {
+  width: 24px;
+  height: 24px;
+}
