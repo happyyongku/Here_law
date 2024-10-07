@@ -219,3 +219,40 @@ def toggle_like(request: Request, magazine_id: int, token: str = Depends(get_cur
             conn.commit()
 
     return {"message": action, "updated_likes": like_count}
+
+@magazine_router.get("/top-liked")
+def get_top_liked_magazines(request: Request, token: str = Depends(get_current_user)):
+    """
+    좋아요 순으로 정렬된 magazine 목록을 30개까지 반환하는 API 엔드포인트입니다.
+    """
+    with db_connection.get_connection() as conn:
+        query = """
+        SELECT magazine_id, title, category, created_at, image, content, view_count, likes, law_id
+        FROM magazines
+        ORDER BY likes DESC
+        LIMIT 30;
+        """
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute(query)
+            top_liked_magazines = cur.fetchall()
+
+    return top_liked_magazines
+
+
+@magazine_router.get("/top-viewed")
+def get_top_viewed_magazines(request: Request, token: str = Depends(get_current_user)):
+    """
+    조회수 순으로 정렬된 magazine 목록을 30개까지 반환하는 API 엔드포인트입니다.
+    """
+    with db_connection.get_connection() as conn:
+        query = """
+        SELECT magazine_id, title, category, created_at, image, content, view_count, likes, law_id
+        FROM magazines
+        ORDER BY view_count DESC
+        LIMIT 30;
+        """
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute(query)
+            top_viewed_magazines = cur.fetchall()
+
+    return top_viewed_magazines
