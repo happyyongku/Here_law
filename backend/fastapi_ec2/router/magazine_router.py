@@ -75,6 +75,20 @@ def get_magazines_by_category(conn, categories, limit):
         cur.execute(query, (categories,))
         return cur.fetchall()
 
+# 특정 magazine을 ID로 조회하는 함수
+def get_magazine_by_id(conn, magazine_id):
+    """
+    특정 magazine_id를 통해 magazine 정보를 조회합니다.
+    """
+    query = """
+    SELECT magazine_id, title, category, created_at, image, content, view_count, likes, law_id
+    FROM magazines 
+    WHERE magazine_id = %s
+    """
+    with conn.cursor(row_factory=dict_row) as cur:
+        cur.execute(query, (magazine_id,))
+        return cur.fetchone()
+
 # 최근 magazine를 조회하는 함수
 def get_recent_magazines(conn):
     """
@@ -131,3 +145,11 @@ def magazine_mount(request: Request, token: str = Depends(get_current_user)):
         magazines = get_magazines_by_category(conn, interest_categories, 5)
 
     return magazines
+
+@magazine_router.get("/{magazine_id}")
+def get_magazine(request: Request, magazine_id: int, token: str = Depends(get_current_user)):
+    with db_connection.get_connection() as conn:
+        magazine = get_magazine_by_id(conn, magazine_id)
+        if not magazine:
+            raise HTTPException(status_code=404, detail="해당 magazine을 찾을 수 없습니다.")
+    return magazine
