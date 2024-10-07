@@ -146,6 +146,99 @@ def magazine_mount(request: Request, token: str = Depends(get_current_user)):
 
     return magazines
 
+
+@magazine_router.post("/{magazine_id}/like")
+def toggle_like(request: Request, magazine_id: int, token: str = Depends(get_current_user)):
+    """
+    좋아요 기능 API: 특정 magazine_id에 대해 사용자가 좋아요를 누르면 기록을 추가,
+    이미 좋아요를 누른 상태면 기록을 삭제하고, user_magazine_likes의 레코드 수로 likes를 계산.
+    """
+    # 현재 로그인한 사용자 정보를 가져오기
+    user_email = str(token).split("'")[1]
+    with db_connection.get_connection() as conn:
+        # 사용자 정보 조회
+        user = get_user_by_email(conn, user_email)
+        if not user:
+            raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+
+        # magazine 조회
+        magazine = get_magazine_by_id(conn, magazine_id)
+        if not magazine:
+            raise HTTPException(status_code=404, detail="해당 magazine을 찾을 수 없습니다.")
+
+        # 사용자가 이미 해당 magazine에 대해 좋아요를 눌렀는지 확인
+        check_like_query = """
+        SELECT * FROM user_magazine_likes WHERE user_id = %s AND magazine_id = %s
+        """
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute(check_like_query, (user['id'], magazine_id))
+            existing_like = cur.fetchone()
+
+            if existing_like:
+                # 이미 좋아요를 눌렀다면 좋아요 취소 (기록 삭제)
+                delete_like_query = "DELETE FROM user_magazine_likes WHERE id = %s"
+                cur.execute(delete_like_query, (existing_like['id'],))
+                action = "좋아요를 취소했습니다."
+            else:
+                # 좋아요를 누르지 않았다면 좋아요 추가 (기록 삽입)
+                insert_like_query = "INSERT INTO user_magazine_likes (user_id, magazine_id) VALUES (%s, %s)"
+                cur.execute(insert_like_query, (user['id'], magazine_id))
+                action = "좋아요를 추가했습니다."
+
+            # 트랜잭션 커밋 (좋아요 추가/취소 이후에 반영)
+            conn.commit()
+
+            # 좋아요 수 카운트 (user_magazine_likes에서 레코드 수 계산)
+            count_likes_query = "SELECT COUNT(*) FROM user_magazine_likes WHERE magazine_id = %s"
+            cur.execute(count_likes_query, (magazine_id,))
+            like_count = cur.fetchone()['count']
+            
+            # magazines 테이블의 likes 필드 업데이트
+            update_magazine_query = "UPDATE magazines SET likes = %s WHERE magazine_id = %s"
+            cur.execute(update_magazine_query, (like_count, magazine_id))
+
+            # 다시 한번 트랜잭션 커밋 (likes 업데이트 반영)
+            conn.commit()
+
+    return {"message": action, "updated_likes": like_count}
+
+@magazine_router.get("/top-liked")
+def get_top_liked_magazines(request: Request, token: str = Depends(get_current_user)):
+    """
+    좋아요 순으로 정렬된 magazine 목록을 30개까지 반환하는 API 엔드포인트입니다.
+    """
+    with db_connection.get_connection() as conn:
+        query = """
+        SELECT magazine_id, title, category, created_at, image, content, view_count, likes, law_id
+        FROM magazines
+        ORDER BY likes DESC
+        LIMIT 30;
+        """
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute(query)
+            top_liked_magazines = cur.fetchall()
+
+    return top_liked_magazines
+
+
+@magazine_router.get("/top-viewed")
+def get_top_viewed_magazines(request: Request, token: str = Depends(get_current_user)):
+    """
+    조회수 순으로 정렬된 magazine 목록을 30개까지 반환하는 API 엔드포인트입니다.
+    """
+    with db_connection.get_connection() as conn:
+        query = """
+        SELECT magazine_id, title, category, created_at, image, content, view_count, likes, law_id
+        FROM magazines
+        ORDER BY view_count DESC
+        LIMIT 30;
+        """
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute(query)
+            top_viewed_magazines = cur.fetchall()
+
+    return top_viewed_magazines
+
 @magazine_router.get("/{magazine_id}")
 def get_magazine(request: Request, magazine_id: int, token: str = Depends(get_current_user)):
     with db_connection.get_connection() as conn:
