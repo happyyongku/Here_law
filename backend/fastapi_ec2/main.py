@@ -17,6 +17,22 @@ from utils.law_update_daemon import LawUpdateDaemon
 
 import logging
 
+# Create a logger
+
+logger = logging.getLogger("fastapi_logger")
+logger.setLevel(logging.DEBUG)  # Set log level to DEBUG
+
+# Create a file handler to write logs to a file
+file_handler = logging.FileHandler("fastapi_debug.log")
+file_handler.setLevel(logging.DEBUG)
+
+# Create a logging format
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(formatter)
+
+# Add the handlers to the logger
+logger.addHandler(file_handler)
+
 app = FastAPI()
 
 origins = [
