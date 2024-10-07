@@ -1,6 +1,7 @@
 import os
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from router.bill_router import bill_router
 from router.search_router import case_router
@@ -17,6 +18,19 @@ from utils.law_update_daemon import LawUpdateDaemon
 import logging
 
 app = FastAPI()
+
+origins = [
+  "*"
+  # "https://j11b109.p.ssafy.io"
+]
+
+app.add_middleware(
+  CORSMiddleware,
+  allow_origins = origins,
+  allow_credentials=True,
+  allow_method=["*"],
+  allow_headers=["*"]
+)
 
 app.include_router(chat_router, prefix="/fastapi_ec2/chat")
 app.include_router(clause_analysis_router, prefix="/fastapi_ec2/clause")
