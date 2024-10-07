@@ -95,8 +95,8 @@ public class UserController {
     @PostMapping("/register")
     @Transactional
     public ResponseEntity<?> registerUser(
-            @ModelAttribute UserDTO userDTO, // JSON 데이터를 @ModelAttribute로 받음
-            @RequestPart(value = "profileImgFile", required = false) MultipartFile profileImgFile // 파일은 @RequestPart로 받음
+            @ModelAttribute UserDTO userDTO,
+            @RequestPart(value = "profileImgFile", required = false) MultipartFile profileImgFile
     ) {
         logger.info("회원가입 요청 수신");
 
@@ -133,7 +133,10 @@ public class UserController {
                 }
                 Path filePath = dirPath.resolve(fileName);
                 Files.write(filePath, profileImgFile.getBytes());
-                profileImgPath = "/images/" + fileName;  // 웹에서 접근 가능한 경로로 설정
+
+                String serverUrl = "https://j11b109.p.ssafy.io";
+                profileImgPath = serverUrl + "/images/" + fileName;  // 절대 경로
+
                 logger.info("프로필 이미지 저장 완료: {}", profileImgPath);
             } catch (Exception e) {
                 logger.error("파일 업로드 중 오류 발생: ", e);

@@ -12,10 +12,10 @@ public interface CaseJpaRepository extends JpaRepository<CaseEntity, Long> {
     CaseEntity findByCaseInfoId(String caseInfoId);
 
     // 검색 기능 (페이지네이션 포함)
-    Page<CaseEntity> findByCaseNameContainingOrIssuesContainingOrJudgmentSummaryContainingOrFullTextContainingOrderByCaseInfoIdAsc(
-            String caseName, String issues, String judgmentSummary, String fullText, Pageable pageable);
+    Page<CaseEntity> findByCaseNameContainingOrIssuesContainingOrJudgmentSummaryContainingOrderByCaseInfoIdAsc(
+            String caseName, String issues, String judgmentSummary, Pageable pageable);
 
     // 전체 검색 기능 (페이지네이션 없음)
-    List<CaseEntity> findByCaseNameContainingOrIssuesContainingOrJudgmentSummaryContainingOrFullTextContainingOrderByCaseInfoIdAsc(
-            String caseName, String issues, String judgmentSummary, String fullText);
+    List<CaseEntity> findByCaseNameContainingOrIssuesContainingOrJudgmentSummaryContainingOrderByCaseInfoIdAsc(
+            String caseName, String issues, String judgmentSummary);
 }
