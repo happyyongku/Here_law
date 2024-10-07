@@ -6,12 +6,13 @@ import time
 import json
 from openai import OpenAI
 
+
 # FastAPI Router 생성
 clause_analysis_router = APIRouter()
 
 # NAVER CLOVA OCR API 설정
-api_url = 'https://t0gyxh4s0b.apigw.ntruss.com/custom/v1/34682/a4ab6ce628c7d82809103dff358791d5362577461f5388a14dd88825641bc382/general'
-secret_key = 'UHlQc0lTSHFDelpXc2JmbFBMVkZKaFVKTGhXZlpVU24=' #TODO env-lize
+api_url = os.environ.get("CLOVA_URL")
+secret_key = os.environ.get("CLOVA_KEY")
 
 # OpenAI API 설정
 OPENAI_API_KEY = os.environ["API_KEY"]

@@ -47,6 +47,7 @@ pipeline {
                             echo ELA_PASSWORD=$ELA_PASSWORD >> .env &&
                             echo JWT_SECRET=$JWT_SECRET >> .env &&
                             echo JWT_EXPIRATION=$JWT_EXPIRATION >> .env &&
+                            echo JWT_ALGORITHM=$JWT_ALGORITHM >> .env &&
                             echo MAIL_HOST=$MAIL_HOST >> .env &&
                             echo MAIL_PORT=$MAIL_PORT >> .env &&
                             echo MAIL_USERNAME=$MAIL_USERNAME >> .env &&

@@ -10,6 +10,9 @@ from openai import OpenAI
 # 라우터 생성
 sojang_router = APIRouter()
 
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
+
 # OpenAI 클라이언트 생성 (API 키 필요 시 추가)
 OPENAI_API_KEY = os.environ["API_KEY"]
 client = OpenAI(api_key=OPENAI_API_KEY)  # 여기에 자신의 OpenAI API 키를 입력하세요.
@@ -33,7 +36,7 @@ async def generate_legal_document(user_info: UserInfo):
         generated_content = generate_content(user_info.dict())
 
         # Word 파일로 저장
-        doc_filename = "소장.docx"
+        doc_filename = f"{user_info.plaintiff}_{user_info.case_title}.docx"
         save_to_word(user_info.dict(), generated_content, filename=doc_filename)
 
         return {"message": f"'{doc_filename}' 파일로 저장되었습니다."}
@@ -80,6 +83,7 @@ def generate_content(user_info: Dict[str, str]) -> Dict[str, str]:
 
 # Word로 저장하는 함수
 def save_to_word(user_info: Dict[str, str], generated_content: Dict[str, str], filename="소장.docx"):
+    SAVE_DIR = os.path.abspath(os.path.join(BASE_DIR, "docs", filename))
     doc = Document()
 
     # 제목 추가
@@ -120,4 +124,4 @@ def save_to_word(user_info: Dict[str, str], generated_content: Dict[str, str], f
     doc.add_paragraph(f"\n{user_info['court_name']} 귀중", style='Normal').alignment = 2
 
     # Word 파일 저장
-    doc.save(filename)
+    doc.save(SAVE_DIR)

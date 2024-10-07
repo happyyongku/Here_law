@@ -14,7 +14,12 @@ import Magazine from "../pages/Magazine";
 import MagazineMain from "../components/magazine/magazinemain/MagazineMain";
 import MagazineHotfix from "../components/magazine/magazinehotfix/MagazineHotfix";
 import MagazineHotpost from "../components/magazine/magazinehotpost/MagazineHotpost";
+import CaseType from "../components/magazine/magazinemain/CaseType";
+import MagazineDetail from "../components/magazine/magazinemain/MagazineDetail";
 // import MagazineMy from "../components/magazine/magazinemy/MagazineMy";
+
+import RentDocument from "../pages/RentDocument";
+import RentDocumentUpload from "../pages/RentDocumentUpload";
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -45,14 +50,16 @@ function AppRoutes() {
       <Route path="/search" element={<Search />} />
 
       <Route path="/search/case" element={<CaseList />} />
-      <Route path="/search/case/:id" element={<CaseDetail />} />
+      <Route path="/search/case/:caseInfoId" element={<CaseDetail />} />
 
       <Route path="/magazine" element={<Magazine />}>
         <Route path="" element={<MagazineMain />}></Route>
         <Route path="hotfix" element={<MagazineHotfix />}></Route>
         <Route path="hotpost" element={<MagazineHotpost />}></Route>
+        <Route path="case/:type" element={<CaseType />}></Route>
         {/* <Route path="my" element={<MagazineMy />}></Route> */}
       </Route>
+      <Route path="/magazine/:id" element={<MagazineDetail />}></Route>
     </Routes>
   );
 }

@@ -2,7 +2,7 @@
 import os
 from typing import Optional
 import logging
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 
 import jwt
 from jwt import PyJWTError
@@ -11,13 +11,13 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from dto.user_model import User
 
-# load_dotenv()
+load_dotenv()
 
 # JWT 토큰을 인코딩하고 디코딩하기 위한 비밀 키
 # JWT settings
 JWT_SECRET_KEY = os.environ.get("JWT_SECRET")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("JWT_EXPIRATION"))
-ALGORITHM = "HS512"
+ALGORITHM = os.environ.get("JWT_ALGORITHM")
 
 # Security scheme
 security = HTTPBearer()
