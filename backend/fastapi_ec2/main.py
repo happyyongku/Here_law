@@ -19,19 +19,17 @@ import logging
 
 app = FastAPI()
 
-# origins = [
-#     "http://localhost:5173",
-#     ""
+origins = [
+    "http://localhost:5173",
+]
 
-# ]
-
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,  # Specify allowed origins explicitly
-#     allow_credentials=True,  # This allows Authorization headers or cookies
-#     allow_methods=["*"],  # Allow all HTTP methods
-#     allow_headers=["*"],  # Allow all headers including Authorization
-# )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Specify allowed origins explicitly
+    allow_credentials=True,  # This allows Authorization headers or cookies
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers including Authorization
+)
 
 @app.middleware("http")
 async def log_request_origin(request: Request, call_next):
