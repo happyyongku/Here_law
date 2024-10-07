@@ -12,7 +12,7 @@ import difflib  # 중간에 있던 import를 최상단으로 이동
 from openai import OpenAI
 
 import re
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 from utils.db_connection import DBConnection
 from psycopg.rows import dict_row
@@ -121,7 +121,7 @@ class MagazineUpdateDaemon:
                 continue
 
             # 6. 기사를 DB에 저장합니다.
-            self.save_magazine_article(law_id, title, category, content)
+            self.save_magazine_article(law_id, title, category, today,content)
             logging.info(f"law_id {law_id}에 대한 기사를 성공적으로 저장했습니다.")            
 
     def check_magazine_exists(self, law_id: str) -> bool:
@@ -226,7 +226,8 @@ class MagazineUpdateDaemon:
         if diff_text is not None:
             prompt += f"""
             
-            이전 법령과의 변경 사항은 다음과 같습니다:
+            기사를 작성할 떄에는 이전 법령과의 내용적 차이점에 집중하세요.
+            이전 법령과의 변경 사항은 다음과 같습니다. 몇몇 변경점은 내용의 변경점 없이 단순 형식 변경일 수 있으니 주의하세요. :
             {diff_text}"""
 
         
@@ -257,8 +258,12 @@ class MagazineUpdateDaemon:
         logging.debug(f"generate_article: 기사를 생성했습니다. 생성된 기사: \n{article_content}")
         return article_content
 
-    def save_magazine_article(self, law_id: str, title: str, category: str, content: str):
+    def save_magazine_article(self, law_id: str, title: str, category: str, current_day: str, content: str):
         """생성된 기사를 DB에 저장합니다."""
+        kst = timezone(timedelta(hours=9))
+
+        # Convert the string to a datetime object and set the KST timezone
+        date_obj_kst = datetime.fromisoformat(current_day).replace(tzinfo=kst)
         sql = """
         INSERT INTO magazines (
             title,
@@ -284,7 +289,7 @@ class MagazineUpdateDaemon:
         data = {
             'title': title,
             'category': category,
-            'created_at': datetime.now(),
+            'created_at': date_obj_kst,
             'image': None,
             'content': content,
             'view_count': 0,

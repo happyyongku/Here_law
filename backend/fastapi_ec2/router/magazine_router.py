@@ -53,7 +53,7 @@ def get_user_interests(conn, user_id):
         return cur.fetchall()
 
 # 관심사를 기준으로 magazine를 조회하는 함수
-def get_magazines_by_category(conn, categories):
+def get_magazines_by_category(conn, categories, limit):
     """
     사용자의 관심사를 기반으로 magazine 목록을 조회합니다.
     
@@ -64,12 +64,12 @@ def get_magazines_by_category(conn, categories):
     Returns:
     list: magazine 목록
     """
-    query = """
+    query = f"""
     SELECT magazine_id, title, category, created_at, image, content, view_count, likes, law_id
     FROM magazines 
     WHERE category = ANY(%s)
     ORDER BY created_at DESC
-    LIMIT 5
+    LIMIT {limit}
     """
     with conn.cursor(row_factory=dict_row) as cur:
         cur.execute(query, (categories,))
@@ -128,9 +128,6 @@ def magazine_mount(request: Request, token: str = Depends(get_current_user)):
             raise HTTPException(status_code=404, detail="관심사를 찾을 수 없습니다.")
         
         # 관심사를 기반으로 magazine 조회
-        magazines = get_magazines_by_category(conn, interest_categories)
-        if not magazines:
-            # 관심사와 맞는 magazine가 없을 경우 최신 magazine 제공
-            magazines = get_recent_magazines(conn)
+        magazines = get_magazines_by_category(conn, interest_categories, 5)
 
     return magazines
