@@ -68,8 +68,13 @@
   padding-bottom: 45px;
 }
 
+.magazine-main-cate-container {
+  margin-bottom: 50px;
+}
+
 .magazine-main-cate-title {
   font-size: 24px;
+  margin-bottom: 20px;
 }
 
 .magazine-main-cate-contents {
