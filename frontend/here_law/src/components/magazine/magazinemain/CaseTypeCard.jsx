@@ -1,11 +1,19 @@
+import { useNavigate } from "react-router-dom";
 import postingindeximg from "../../../assets/magazine/postingindeximg.png";
 import "./CaseTypeCard.css";
 
 function CaseTypeCard() {
+  const navigate = useNavigate();
   return (
     <div className="case-type-card-container">
       <div className="case-type-card-img">이미지</div>
-      <div className="case-type-card-box">
+      <div
+        className="case-type-card-box"
+        onClick={() => {
+          // 뒤에 포스팅 id를 넣어야 한다.
+          navigate("/magazine/1");
+        }}
+      >
         <div className="case-type-card-content-header">
           <div className="case-type-card-content-index">● VOL. {}</div>
           <img
