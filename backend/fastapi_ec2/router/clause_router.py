@@ -73,6 +73,7 @@ def analyze_clause(ocr_text, example_format):
 @clause_analysis_router.post("/analyze-clause")
 async def analyze_contract_clause(file: UploadFile = File(...)):
     # 이미지 파일을 읽어서 OCR 처리
+    print(f"Uploaded file : {file.filename}")
     ocr_response = ocr_request(file.file)
     
     # OCR 결과에서 텍스트 추출 및 정렬
