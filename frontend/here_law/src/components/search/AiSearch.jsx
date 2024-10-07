@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Switch from "./Switch";
 import SendIcon from "../../assets/search/searchsend.png";
-import fastaxiosInstance from "../../utils/fastaxiosInstance";
+import axiosInstance from "../../utils/axiosInstance";
 import "./AiSearch.css";
 
 function AiSearch({ isAiMode, onToggle }) {
@@ -22,7 +22,7 @@ function AiSearch({ isAiMode, onToggle }) {
       const token = localStorage.getItem("token");
       console.log("토큰", token);
       try {
-        const response = await fastaxiosInstance.get(
+        const response = await axiosInstance.get(
           "/fastapi_ec2/chat/case_search/new",
           {
             headers: {
@@ -60,7 +60,7 @@ function AiSearch({ isAiMode, onToggle }) {
 
     try {
       // GPT에게 요청 보내기
-      const response = await fastaxiosInstance.post(
+      const response = await axiosInstance.post(
         "/fastapi_ec2/chat/case_search",
         {
           input_data: inputValue,
