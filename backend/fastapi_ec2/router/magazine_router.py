@@ -110,7 +110,7 @@ def get_recent_magazines(conn):
         cur.execute(query)
         return cur.fetchall()
 
-@magazine_router.get("/")
+@magazine_router.get("")
 def magazine_mount(request: Request, token: str = Depends(get_current_user)):
     """
     사용자의 관심사에 따라 magazine 목록을 제공하는 API 엔드포인트입니다.
