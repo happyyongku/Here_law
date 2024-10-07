@@ -146,24 +146,6 @@ def magazine_mount(request: Request, token: str = Depends(get_current_user)):
 
     return magazines
 
-@magazine_router.get("/{magazine_id}")
-def get_magazine(request: Request, magazine_id: int, token: str = Depends(get_current_user)):
-    with db_connection.get_connection() as conn:
-        # magazine을 조회
-        magazine = get_magazine_by_id(conn, magazine_id)
-        if not magazine:
-            raise HTTPException(status_code=404, detail="해당 magazine을 찾을 수 없습니다.")
-        
-        # view_count 업데이트
-        update_query = "UPDATE magazines SET view_count = view_count + 1 WHERE magazine_id = %s"
-        with conn.cursor() as cur:
-            cur.execute(update_query, (magazine_id,))
-            conn.commit()  # 트랜잭션 커밋
-
-        # 업데이트된 view_count 값을 다시 가져옴
-        magazine = get_magazine_by_id(conn, magazine_id)  # 업데이트 후 다시 가져오기
-
-    return magazine
 
 @magazine_router.post("/{magazine_id}/like")
 def toggle_like(request: Request, magazine_id: int, token: str = Depends(get_current_user)):
@@ -256,3 +238,22 @@ def get_top_viewed_magazines(request: Request, token: str = Depends(get_current_
             top_viewed_magazines = cur.fetchall()
 
     return top_viewed_magazines
+
+@magazine_router.get("/{magazine_id}")
+def get_magazine(request: Request, magazine_id: int, token: str = Depends(get_current_user)):
+    with db_connection.get_connection() as conn:
+        # magazine을 조회
+        magazine = get_magazine_by_id(conn, magazine_id)
+        if not magazine:
+            raise HTTPException(status_code=404, detail="해당 magazine을 찾을 수 없습니다.")
+        
+        # view_count 업데이트
+        update_query = "UPDATE magazines SET view_count = view_count + 1 WHERE magazine_id = %s"
+        with conn.cursor() as cur:
+            cur.execute(update_query, (magazine_id,))
+            conn.commit()  # 트랜잭션 커밋
+
+        # 업데이트된 view_count 값을 다시 가져옴
+        magazine = get_magazine_by_id(conn, magazine_id)  # 업데이트 후 다시 가져오기
+
+    return magazine
