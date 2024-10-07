@@ -210,5 +210,12 @@ def toggle_like(request: Request, magazine_id: int, token: str = Depends(get_cur
             count_likes_query = "SELECT COUNT(*) FROM user_magazine_likes WHERE magazine_id = %s"
             cur.execute(count_likes_query, (magazine_id,))
             like_count = cur.fetchone()['count']
+            
+            # magazines 테이블의 likes 필드 업데이트
+            update_magazine_query = "UPDATE magazines SET likes = %s WHERE magazine_id = %s"
+            cur.execute(update_magazine_query, (like_count, magazine_id))
+
+            # 다시 한번 트랜잭션 커밋 (likes 업데이트 반영)
+            conn.commit()
 
     return {"message": action, "updated_likes": like_count}
