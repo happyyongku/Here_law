@@ -23,7 +23,7 @@
 }
 
 .bar-sort div {
-  width: 75px;
+  width: 85px;
   height: 30px;
   border-radius: 8px;
   display: flex;
@@ -67,17 +67,23 @@
   color: #555555;
 }
 
+.light-icon {
+  width: 30px;
+  margin-left: 25px;
+  margin-bottom: 5px;
+}
+
 .guide-box {
   background-color: #f55e00;
-  width: 65px;
-  height: 27px;
+  width: 69px;
+  height: 29px;
   border-radius: 8px;
   color: white;
   align-items: center;
   display: flex;
   justify-content: center;
   margin-right: 25px;
-  margin-left: 37px;
+  margin-left: 10px;
 }
 
 .detail-title {

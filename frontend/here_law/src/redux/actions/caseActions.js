@@ -134,3 +134,7 @@ export const loadCases = (query = "", page = 1) => {
     },
   };
 };
+
+export const FETCH_CASE_DETAIL_REQUEST = "FETCH_CASE_DETAIL_REQUEST"; // 판례 상세 요청
+export const FETCH_CASE_DETAIL_SUCCESS = "FETCH_CASE_DETAIL_SUCCESS"; // 판례 상세 성공
+export const FETCH_CASE_DETAIL_FAILURE = "FETCH_CASE_DETAIL_FAILURE"; // 판례 상세 실패
