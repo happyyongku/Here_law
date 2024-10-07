@@ -24,9 +24,6 @@ DB_PORT_FASTAPI = os.environ.get("DB_PORT_FASTAPI")
 DB_NAME = os.environ.get("DB_NAME")
 
 DATABASE_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT_FASTAPI}/{DB_NAME}"
-
-print(f"DATABASE_URL={DATABASE_URL}")
-
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
