@@ -1,98 +1,136 @@
-from http import server
-from turtle import st
-from fastapi import APIRouter, HTTPException, Depends, status, Request
+from fastapi import APIRouter, HTTPException, Depends, Request
 from utils.security import get_current_user
-from pydantic import BaseModel
-from sqlalchemy import BIGINT, VARCHAR, BigInteger, Boolean, ForeignKey, create_engine, Column, Integer, String, Text, TIMESTAMP, null, ForeignKey
-from sqlalchemy.ext. declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session, relationship
-from sqlalchemy.sql import func
-# from dotenv import load_dotenv
-import requests
-import os
 import logging
-
+from contextlib import contextmanager
+from psycopg.rows import dict_row
+from utils.db_connection import DBConnection
 
 router = APIRouter()
-# load_dotenv()
 
-DB_USERNAME = os.environ.get('DB_USERNAME')
-DB_PASSWORD = os.environ.get('DB_PASSWORD')
-DB_DOMAIN = os.environ.get("DB_DOMAIN")
-DB_HOST = os.environ.get("DB_HOST")
-DB_PORT_FASTAPI = os.environ.get("DB_PORT_FASTAPI")
-DB_NAME = os.environ.get("DB_NAME")
+# DBConnection 클래스의 인스턴스 생성
+db_connection = DBConnection()
 
-DATABASE_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT_FASTAPI}/{DB_NAME}"
-
-print(f"DATABASE_URL={DATABASE_URL}")
-
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-Base = declarative_base()
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-        
-class UserEntity(Base):
-    __tablename__="user_entity"
-    id = Column(BigInteger, primary_key=True, index=True)
-    created_date = Column(TIMESTAMP, server_default=func.now(), nullable=False)
-    email = Column(String(255), nullable=True)
-    email_token=Column(String(255), nullable=True)
-    is_email_verified = Column(Boolean, nullable=True)
-    is_first=Column(Boolean, nullable=True)
-    nickname=Column(String(255), nullable=True)
-    password=Column(String(255), nullable=True)
-    phone_number=Column(String(255), nullable=True)
-    update_date=Column(TIMESTAMP, server_default=func.now(), nullable=True)
-    user_type=Column(String(255), nullable=True)
+# 유저 정보를 이메일로 조회하는 함수
+def get_user_by_email(conn, email):
+    """
+    주어진 이메일을 통해 사용자 정보를 조회합니다.
     
-    interests = relationship("UserInterests", back_populates="user")
-
-class UserInterests(Base):
-    __tablename__="user_entity_interests"
-    user_entity_id = Column(BigInteger, ForeignKey("user_entity.id"), nullable=False, primary_key=True)
-    interests = Column(String(255))
-    user = relationship("UserEntity", back_populates="interests")
-        
-class Magazine(Base):
-    __tablename__ = "magazines"
-    magazine_id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(255), nullable=False)
-    category = Column(String(100), nullable=False)
-    created_at = Column(TIMESTAMP, server_default=func.now(), nullable=False)
-    image = Column(String(255), default='default.jpg')
-    content = Column(Text, nullable=False)
-    view_count = Column(Integer, default=0)
-    likes = Column(Integer, default=0)
+    Parameters:
+    conn (Connection): 데이터베이스 연결 객체
+    email (str): 조회할 사용자의 이메일
     
+    Returns:
+    dict: 사용자 정보
+    """
+    query = """
+    SELECT id, email, is_email_verified, nickname, phone_number 
+    FROM user_entity 
+    WHERE email = %s
+    """
+    with conn.cursor(row_factory=dict_row) as cur:
+        cur.execute(query, (email,))
+        return cur.fetchone()
 
+# 유저의 관심사를 조회하는 함수
+def get_user_interests(conn, user_id):
+    """
+    주어진 사용자 ID를 통해 사용자의 관심사를 조회합니다.
+    
+    Parameters:
+    conn (Connection): 데이터베이스 연결 객체
+    user_id (int): 사용자의 ID
+    
+    Returns:
+    list: 관심사 목록
+    """
+    query = """
+    SELECT interests 
+    FROM user_entity_interests 
+    WHERE user_entity_id = %s
+    """
+    with conn.cursor(row_factory=dict_row) as cur:
+        cur.execute(query, (user_id,))
+        return cur.fetchall()
+
+# 관심사를 기준으로 magazine를 조회하는 함수
+def get_magazines_by_category(conn, categories):
+    """
+    사용자의 관심사를 기반으로 magazine 목록을 조회합니다.
+    
+    Parameters:
+    conn (Connection): 데이터베이스 연결 객체
+    categories (list): 관심사 카테고리 목록
+    
+    Returns:
+    list: magazine 목록
+    """
+    query = """
+    SELECT magazine_id, title, category, created_at, image, content, view_count, likes, law_id
+    FROM magazines 
+    WHERE category = ANY(%s)
+    ORDER BY created_at DESC
+    LIMIT 5
+    """
+    with conn.cursor(row_factory=dict_row) as cur:
+        cur.execute(query, (categories,))
+        return cur.fetchall()
+
+# 최근 magazine를 조회하는 함수
+def get_recent_magazines(conn):
+    """
+    최신 순으로 magazine 목록을 조회합니다.
+    
+    Parameters:
+    conn (Connection): 데이터베이스 연결 객체
+    
+    Returns:
+    list: 최신 magazine 목록
+    """
+    query = """
+    SELECT magazine_id, title, category, created_at, image, content, view_count, likes, law_id
+    FROM magazines 
+    ORDER BY created_at DESC
+    LIMIT 5
+    """
+    with conn.cursor(row_factory=dict_row) as cur:
+        cur.execute(query)
+        return cur.fetchall()
 
 @router.get("/")
-def magazine_mount(request:Request, token:str=Depends(get_current_user), db: Session=Depends(get_db)):
+def magazine_mount(request: Request, token: str = Depends(get_current_user)):
+    """
+    사용자의 관심사에 따라 magazine 목록을 제공하는 API 엔드포인트입니다.
+    만약 사용자의 관심사에 해당하는 magazine가 없을 경우 최신 magazine를 제공합니다.
+    
+    Parameters:
+    request (Request): FastAPI Request 객체
+    token (str): 인증된 사용자의 토큰 (get_current_user를 통해 의존성 주입)
+    
+    Returns:
+    list: magazine 목록
+    """
+    # 토큰에서 이메일 추출
     user_email = str(token).split("'")[1]
-    user = db.query(UserEntity).filter(UserEntity.email == user_email).first()
-    print("///////////////////////////////")
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    user_intersts = db.query(UserInterests).filter(UserInterests.user_entity_id == user.id).all()
-    interest_categories = [interest.interests for interest in user_intersts]
-    if not interest_categories:
-        raise HTTPException(status_code=404, detail="Interest not found")
-    
-    magazines = (db.query(Magazine)
-                .filter(Magazine.category.in_(interest_categories))
-                .order_by(Magazine.created_at.desc())
-                .limit(5)
-                .all())
-    if not magazines:
-        magazines = db.query(Magazine).order_by(Magazine.created_at.desc()).limit(5).all() 
+
+    # DB 연결 획득 및 작업 처리
+    with db_connection.get_connection() as conn:
+        # 사용자 정보 조회
+        user = get_user_by_email(conn, user_email)
+        if not user:
+            raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+        
+        # 사용자의 관심사 조회
+        user_interests = get_user_interests(conn, user['id'])
+        interest_categories = [interest['interests'] for interest in user_interests]
+        
+        # 관심사가 없을 경우 오류 반환
+        if not interest_categories:
+            raise HTTPException(status_code=404, detail="관심사를 찾을 수 없습니다.")
+        
+        # 관심사를 기반으로 magazine 조회
+        magazines = get_magazines_by_category(conn, interest_categories)
+        if not magazines:
+            # 관심사와 맞는 magazine가 없을 경우 최신 magazine 제공
+            magazines = get_recent_magazines(conn)
 
     return magazines

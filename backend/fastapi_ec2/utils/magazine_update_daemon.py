@@ -11,6 +11,9 @@ from datetime import datetime
 import difflib  # 중간에 있던 import를 최상단으로 이동
 from openai import OpenAI
 
+import re
+from datetime import datetime
+
 from utils.db_connection import DBConnection
 from psycopg.rows import dict_row
 
@@ -43,7 +46,7 @@ class MagazineUpdateDaemon:
 
             # 데이터베이스 연결 설정
             self.pool = DBConnection()
-            self.ai_client = OpenAI(api_key=self._OPENAI_API_KEY)  # 여기에 자신의 OpenAI API 키를 입력하세요.
+            self.ai_client = OpenAI(api_key=self._OPENAI_API_KEY)
 
             # 스레드 관련 변수 초기화
             self.api_routine = threading.Thread(target=self._daemon_thread, daemon=True)
@@ -110,13 +113,16 @@ class MagazineUpdateDaemon:
             # 5. 기사를 생성합니다.
             article_content = self.generate_article(prompt)
 
+            # 기사 내용을 파싱
+            title, category, content = self.parse_article_content(article_content)
+        
+            if not title or not category or not content:
+                logging.error("기사 생성 실패: 제목, 분류, 본문 중 일부가 누락되었습니다.")
+                continue
+
             # 6. 기사를 DB에 저장합니다.
-            self.save_magazine_article(
-                law_id=law_id,
-                title=f"신규 시행 법령: {law_info['law_name_kr']}",
-                category="법률",
-                content=article_content
-            )
+            self.save_magazine_article(law_id, title, category, content)
+            logging.info(f"law_id {law_id}에 대한 기사를 성공적으로 저장했습니다.")            
 
     def check_magazine_exists(self, law_id: str) -> bool:
         """magazines 테이블에 해당 law_id의 기사가 이미 존재하는지 확인합니다."""
@@ -218,7 +224,7 @@ class MagazineUpdateDaemon:
         {law_text}"""
         
         if diff_text is not None:
-            prompt += """
+            prompt += f"""
             
             이전 법령과의 변경 사항은 다음과 같습니다:
             {diff_text}"""
@@ -229,7 +235,7 @@ class MagazineUpdateDaemon:
         위 내용을 바탕으로 일반인이 이해하기 쉬운 기사 형식으로 작성해 주세요.
 
         문체는 존댓말을 사용하세요."""
-        logging.debug("create_prompt: ChatGPT 프롬프트를 생성했습니다.")
+        logging.debug(f"create_prompt: ChatGPT 프롬프트를 생성했습니다:\n{prompt}")
         return prompt
 
     def generate_article(self, prompt: str) -> str:
@@ -237,7 +243,13 @@ class MagazineUpdateDaemon:
         response = self.ai_client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "당신은 한국의 법률 기사 작성 기자입니다. 기사를 써주세요. 기사 형식은 다음과 같습니다:\n제목:{기사 제목}\n{기사 본문}"},
+                {"role": "system", "content": """당신은 한국의 법률 기사 작성 기자입니다. 기사를 써주세요. 기사 형식은 다음과 같습니다:
+                 제목:{기사 제목}
+                 분류:{11가지 기사 분류 중 하나}
+                 본문:{기사 본문}
+                 
+                 11가지 기사 분류는 다음과 같습니다:
+                 가족법, 형사법, 민사법, 부동산 및 건설, 회사 및 상사법, 국제 및 무역법, 노동 및 고용법, 조세 및 관세법, 지적재산권, 의료 및 보험법, 행정 및 공공법"""},
                 {"role": "user", "content": prompt}
             ]
         )
@@ -283,3 +295,16 @@ class MagazineUpdateDaemon:
             with conn.cursor() as cursor:
                 cursor.execute(sql, data)
                 logging.debug(f"save_magazine_article: law_id {law_id}에 대한 기사를 저장했습니다.")
+    
+    @staticmethod
+    def parse_article_content(article_content: str):
+        """AI가 생성한 기사 내용을 파싱합니다."""
+        title_match = re.search(r"제목:\s*(.*)", article_content)
+        category_match = re.search(r"분류:\s*(.*)", article_content)
+        content_match = re.search(r"본문:\s*(.*)", article_content, re.DOTALL)
+
+        title = title_match.group(1).strip() if title_match else ""
+        category = category_match.group(1).strip() if category_match else ""
+        content = content_match.group(1).strip() if content_match else ""
+
+        return title, category, content

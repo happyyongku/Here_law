@@ -1,6 +1,4 @@
-import os
 import re
-import json
 import xml.etree.ElementTree as ET
 
 from typing import List, Dict
@@ -10,18 +8,6 @@ _SPCHAR_TO_NUMBER_MAP = {
     "①": 1, "②": 2, "③": 3, "④": 4, "⑤": 5,
     "⑥": 6, "⑦": 7, "⑧": 8, "⑨": 9, "⑩": 10
 }
-
-# 기본 정보 데이터 삽입 함수
-# def insert_rule_info(data):
-#     cur.execute("""
-#         INSERT INTO law_info (law_id, proclamation_date, proclamation_number, language, law_type, law_name_kr, law_name_ch, law_short_name, is_title_changed, is_korean_law, part_code, related_department, phone_number, enforcement_date, revision_type, is_annex_included, is_proclaimed, contact_department)
-#         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-#     """, (
-#         data['법령ID'], data['공포일자'], data['공포번호'], data['언어'], data['법종구분'], 
-#         data['법령명_한글'], data['법령명_한자'], data.get('법령명약칭'), data['제명변경여부'], data['한글법령여부'], 
-#         data['편장절관'], data.get('소관부처'), data.get('전화번호'), data['시행일자'], data['제개정구분'], 
-#         data['별표편집여부'], data['공포법령여부'], json.dumps(data.get('연락부서'))
-#     ))
 
 def _xml_to_dict(element):
     """
@@ -114,7 +100,7 @@ def _is_section_title(text):
 def _clean_spchar(text):
     if text is None:
         return ""
-    for special_char in _SPCHAR_TO_NUMBER_MAP.keys():  # 클래스 변수 접근 수정
+    for special_char in _SPCHAR_TO_NUMBER_MAP.keys():
         text = text.replace(special_char, "")
     return text.strip()
 
