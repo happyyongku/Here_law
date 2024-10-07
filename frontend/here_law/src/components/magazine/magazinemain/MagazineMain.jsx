@@ -3,20 +3,76 @@ import MagazineMainHeaderCard from "./MagazineMainHeaderCard";
 import MagazineMainCateCard from "./MagazineMainCateCard";
 import MagazineHotfix from "../magazinehotfix/MagazineHotfix";
 import MagazineMainCustomCard from "./MagazineMainCustomCard";
+import axiosInstance from "../../../utils/axiosInstance";
 import "./MagazineMain.css";
 
 // 임시 이미지 imoprt
 import prom1 from "../../../assets/magazine/prom1.png";
 import prom2 from "../../../assets/magazine/prom2.png";
+import { useEffect } from "react";
 
 function MagazineMain() {
   // 기사 유형별 axios 요청이 필요하다
+  // 한번에 받는걸로 정함
   // 1. 맞춤형
   // 2. 패치노트
   // 3. 인기순
   // 4. 분야별
 
   const navigate = useNavigate();
+
+  // 여기서 axios로 의안 정보 호출
+  const getBillData = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axiosInstance.get(
+        "/fastapi_ec2/bill/bills"
+        //   {
+        //   headers: { Authorization: `Bearer ${token}` },
+        // }
+      );
+      console.log("의안 조회 성공", response.data);
+      // setUserData(response.data);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        console.log("Token expired. Please log in again.");
+        localStorage.removeItem("token");
+      } else {
+        console.error("Error fetching user data", error);
+      }
+    } finally {
+      // setLoading(false);
+      // 데이터 요청 후 로딩 상태 업데이트
+    }
+  };
+
+  // 여기서 axios로 매거진 포스팅 정보 호출
+  const getMagazineData = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axiosInstance.get("/fastapi_ec2/magazine", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log("포스팅 조회 성공", response.data);
+      // setUserData(response.data);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        console.log("Token expired. Please log in again.");
+        localStorage.removeItem("token");
+      } else {
+        console.error("Error fetching user data", error);
+      }
+    } finally {
+      // setLoading(false);
+      // 데이터 요청 후 로딩 상태 업데이트
+    }
+  };
+
+  useEffect(() => {
+    getBillData();
+    getMagazineData();
+  }, []);
+
   const interests = [
     "가족법",
     "형사법",
