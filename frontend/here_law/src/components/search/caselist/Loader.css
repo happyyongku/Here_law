@@ -1,0 +1,27 @@
+.loader-wrapper {
+  margin-top: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* 로딩 창의 높이를 설정 (필요에 따라 조정 가능) */
+}
+
+.loader {
+  border: 10px inset #f55e00;
+  padding: 12px;
+  transform: rotate(45deg);
+  animation: loader1 1s ease-in-out infinite;
+}
+
+@keyframes loader1 {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+  100% {
+    opacity: 0;
+  }
+}

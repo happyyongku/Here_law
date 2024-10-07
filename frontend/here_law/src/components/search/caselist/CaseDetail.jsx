@@ -1,17 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-
+import axios from "axios";
 import "./CaseDetail.css";
 import Save from "./Save";
+import Light from "../../../assets/search/light.gif";
+import axiosInstance from "../../../utils/axiosInstance";
 
 const CaseDetail = () => {
-  const { id } = useParams(); // URL에서 id 가져오기
-  const caseData = useSelector((state) => state.cases); // 리덕스 스토어에서 데이터 가져오기
-  const caseItem = caseData.cases.find((c) => c.id === Number(id)); // 해당 id에 맞는 caseItem 찾기
-
+  const { caseInfoId } = useParams();
+  const [caseItem, setCaseItem] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // 상세 조회 axios 요청
+  const CaseDetailRequest = async () => {
+    const token = localStorage.getItem("token");
+    // console.log("아이디", caseInfoId);
+    try {
+      const response = await axiosInstance.get(
+        `/spring_api/cases/${caseInfoId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log("판례 상세 조회 성공", response.data);
+      setCaseItem(response.data);
+      setIsLoading(false);
+    } catch (error) {
+      console.log("판례 상세 조회 실패", error);
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    CaseDetailRequest();
+  }, [caseInfoId]);
+
+  // 더보기
   const toggleText = () => {
     setIsExpanded(!isExpanded);
   };
@@ -22,23 +47,30 @@ const CaseDetail = () => {
     }
     return text;
   };
+  // 로딩 중일 때 로딩 메시지 표시
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  // 기존에 작성한 전체 텍스트를 변수에 담기
-  const caseDetails = {
-    경위: "원고 A씨는 피고 B씨와 부동산 매매 원고 A씨는 피고 B씨와 부동산 매매 원고 A씨는 피고 B씨와 부동산 매매 원고 A씨는 피고 B씨와 부동산 매매  계약을 체결하였습니다. 계약서에는 매매 대금 5,000만 원을 계약 체결 후 30일 이내에 지급하고, 계약이행 보증금 50반에 해당하는지, 그리고 그로 인해 원고가 입은 손해의 배상 범위입니다.",
-    쟁점: "이 사건의 주요 쟁점은 피고가 계약에서 정한 매매 대금을 지급하지 않았다는 사실이 계약원고 A씨는 피고 B씨와 부동산 매매 원고 A씨는 피고 B씨와 부동산 매매 원고 A씨는 피고 B씨와 부동산 매매 원고 A씨는 피고 B씨와 부동산 매매  위반에 해당하는지, 그리고 그로 인해 원고가 입은 손해의 배상 범위입니다.",
-  };
+  // caseItem이 없을 경우 처리
+  if (!caseItem) {
+    return <div>No case details found</div>;
+  }
 
   return (
     <div>
       <div className="case-detail-page">
         {/* 사건명 */}
-        <div className="case-detail-title">{caseItem.title}</div>
+        <div className="case-detail-title">{caseItem.caseName}</div>
         <div className="case-detail-bar">
           <div className="bar-sort">
-            <div>A</div>
-            <div style={{ backgroundColor: "#F7E111" }}>B</div>
-            <div style={{ backgroundColor: "#FF9898" }}>C</div>
+            <div>{caseItem.caseType}</div>
+            <div style={{ backgroundColor: "#F7E111" }}>
+              {caseItem.courtName}
+            </div>
+            <div style={{ backgroundColor: "#FF9898" }}>
+              {caseItem.judgment}
+            </div>
           </div>
 
           <div className="bar-save">
@@ -52,17 +84,32 @@ const CaseDetail = () => {
           <div>조문</div>
         </div>
         <div className="case-detail-guide">
+          <img src={Light} alt="Light Icon" className="light-icon" />
           <div className="guide-box">요점보기</div>
           <div>
             AI가 추출한 핵심 문장으로 판결문 요점을 빠르게 파악해 보세요.
           </div>
         </div>
-        <div className="detail-title">요약</div>
-        <div className="detail-text">{caseItem.summary}</div>
-        <div className="detail-title">주문</div>
-        <div className="detail-text" style={{ textAlign: "center" }}>
-          “피고는 원고에게 1000만원을 지급하라”
+        <div className="detail-title">판결 요약</div>
+
+        {/* 판결 요약을 클릭하면 아래 내용이 나오도록 해줘 */}
+
+        <div className="case-detail-guide">
+          <img src={Light} alt="Light Icon" className="light-icon" />
+          <div className="guide-box">판결</div>
+          <div>판결을 요약해서 보여드립니다.</div>
         </div>
+
+        <div className="detail-text">{caseItem.judgmentSummary}</div>
+
+        <div className="detail-title">판결 결과</div>
+        <div className="detail-text" style={{ textAlign: "center" }}>
+          “{caseItem.judgment}”
+        </div>
+
+        <div className="detail-title">주요 쟁점</div>
+        <div className="detail-text">{caseItem.issues}</div>
+
         <div>
           <div className="detail-title">전문</div>
           <div
@@ -70,17 +117,8 @@ const CaseDetail = () => {
           >
             <div style={{ fontWeight: "bold" }}>사건의 경위</div>
             {isExpanded
-              ? caseDetails.경위
-              : truncateText(caseDetails.경위, 100)}
-          </div>
-
-          <div
-            className={`detail-text ${isExpanded ? "expanded" : "collapsed"}`}
-          >
-            <div style={{ fontWeight: "bold" }}>쟁점</div>
-            {isExpanded
-              ? caseDetails.쟁점
-              : truncateText(caseDetails.쟁점, 100)}
+              ? caseItem.fullText // API에서 전문 부분이 있으면 불러오기
+              : truncateText(caseItem.fullText, 100)}
           </div>
 
           <div style={{ marginTop: "10px" }}>
@@ -91,33 +129,11 @@ const CaseDetail = () => {
         </div>
         <div className="detail-title">조문</div>
         <div className="detail-text">
-          <span style={{ fontWeight: "bold" }}>민법 제390조</span> : 계약의
-          이행이 불가능한 경우에는 상대방에게 손해를 배상할 책임이 있다.
-        </div>
-        <div className="detail-text">
-          <span style={{ fontWeight: "bold" }}>상법 제397조</span> : 계약의
-          당사자는 계약을 이행할 의무가 있으며, 이행하지 아니한 경우
-          손해배상책임을 진다.
+          <span style={{ fontWeight: "bold" }}>참조조문</span> :{" "}
+          {caseItem.referenceClause}
         </div>
         <div className="detail-title">변호사 추천</div>
-        <div className="detail-lawyer-list">
-          <div className="lawyer-text">
-            <div className="lawyer-name">강경민 변호사</div>
-            <div className="lawyer-detail">
-              실전에 강한 변호사. 이혼 전문입니다.
-            </div>
-            <div style={{ display: "flex", gap: "10px" }}>
-              <div className="lawyer-sort">분야</div>
-              <div
-                className="lawyer-sort"
-                style={{ backgroundColor: "#85B6FF" }}
-              >
-                분야
-              </div>
-            </div>
-          </div>
-          <div className="lawyer-image"></div>
-        </div>
+        {/* 변호사 추천 데이터 */}
         <div className="detail-lawyer-list">
           <div className="lawyer-text">
             <div className="lawyer-name">강경민 변호사</div>
