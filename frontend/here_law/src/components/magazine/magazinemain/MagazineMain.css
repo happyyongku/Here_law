@@ -108,3 +108,8 @@
 .magazine-main-custom-title {
   font-size: 60px;
 }
+
+.magazine-main-custom-posting-content {
+  display: flex;
+  justify-content: space-between;
+}

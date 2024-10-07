@@ -1,0 +1,27 @@
+.magazine-custom-card-container {
+  width: 230px;
+  height: 380px;
+  display: flex;
+  flex-direction: column;
+  background-color: darkgreen;
+}
+
+.magazine-custom-card-img {
+  width: 100%;
+}
+
+.magazine-custom-card-title {
+  font-size: 22px;
+}
+
+.magazine-custom-view-rec {
+  display: flex;
+}
+
+.magazine-custom-card-content {
+  font-size: 14px;
+  display: -webkit-box; /* flexbox 사용 */
+  -webkit-box-orient: vertical; /* 수직 방향으로 정렬 */
+  -webkit-line-clamp: 4; /* 표시할 줄 수 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+}
