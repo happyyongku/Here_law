@@ -37,7 +37,7 @@ class News(BaseModel):
 @news_router.get("/news/", response_model=List[News])
 def get_all_news(skip: int = 0, limit: int = 10, db: psycopg2.extensions.connection = Depends(get_db)):
     cursor = db.cursor()
-    query = "SELECT * FROM news ORDER BY created_at DESC OFFSET %s LIMIT %s;"
+    query = "SELECT * FROM news ORDER BY created_at DESC;"
     cursor.execute(query, (skip, limit))
     news_list = cursor.fetchall()
     return news_list
