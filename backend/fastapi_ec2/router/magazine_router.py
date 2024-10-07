@@ -203,7 +203,7 @@ def toggle_like(request: Request, magazine_id: int, token: str = Depends(get_cur
                 cur.execute(insert_like_query, (user['id'], magazine_id))
                 action = "좋아요를 추가했습니다."
 
-            # 트랜잭션 커밋
+            # 트랜잭션 커밋 (좋아요 추가/취소 이후에 반영)
             conn.commit()
 
             # 좋아요 수 카운트 (user_magazine_likes에서 레코드 수 계산)
