@@ -1,6 +1,6 @@
 import os
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from router.bill_router import bill_router
@@ -19,20 +19,24 @@ import logging
 
 app = FastAPI()
 
-# origins = [
-#   # "*"
-#   "https://j11b109.p.ssafy.io",
-#   "http://3.36.85.129",
-#   "http://localhost"
-# ]
+origins = [
+    "http://localhost:5173",
+]
 
-# app.add_middleware(
-#   CORSMiddleware,
-#   allow_origins = origins,
-#   allow_credentials=True,
-#   allow_method=["*"],
-#   allow_headers=["*"]
-# )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Specify allowed origins explicitly
+    allow_credentials=True,  # This allows Authorization headers or cookies
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers including Authorization
+)
+
+@app.middleware("http")
+async def log_request_origin(request: Request, call_next):
+    origin = request.headers.get("origin")
+    print(f"Request Origin: {origin}")
+    response = await call_next(request)
+    return response
 
 app.include_router(chat_router, prefix="/fastapi_ec2/chat")
 app.include_router(clause_analysis_router, prefix="/fastapi_ec2/clause")
