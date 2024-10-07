@@ -37,6 +37,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost:5173",
+    "https://j11b109.p.ssafy.io"
 ]
 
 app.add_middleware(
