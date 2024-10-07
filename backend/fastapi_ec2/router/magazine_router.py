@@ -164,5 +164,3 @@ def get_magazine(request: Request, magazine_id: int, token: str = Depends(get_cu
         magazine = get_magazine_by_id(conn, magazine_id)  # 업데이트 후 다시 가져오기
 
     return magazine
-
-    return magazine
