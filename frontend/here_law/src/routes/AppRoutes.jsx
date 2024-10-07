@@ -19,7 +19,7 @@ import MagazineDetail from "../components/magazine/magazinemain/MagazineDetail";
 // import MagazineMy from "../components/magazine/magazinemy/MagazineMy";
 
 import RentDocument from "../pages/RentDocument";
-import RentDocumentUpload from "../pages/RentDocumentUpload";
+import DocumentUpload from "../pages/DocumentUpload";
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -51,6 +51,8 @@ function AppRoutes() {
 
       <Route path="/search/case" element={<CaseList />} />
       <Route path="/search/case/:caseInfoId" element={<CaseDetail />} />
+
+      <Route path="/document/upload" element={<DocumentUpload />} />
 
       <Route path="/magazine" element={<Magazine />}>
         <Route path="" element={<MagazineMain />}></Route>

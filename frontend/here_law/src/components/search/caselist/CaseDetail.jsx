@@ -6,8 +6,9 @@ import Save from "./Save";
 import Light from "../../../assets/search/light.gif";
 import axiosInstance from "../../../utils/axiosInstance";
 
-const CaseDetail = () => {
-  const { caseInfoId } = useParams();
+const CaseDetail = ({ caseInfoId: propsCaseInfoId }) => {
+  const { caseInfoId: paramsCaseInfoId } = useParams();
+  const caseInfoId = propsCaseInfoId || paramsCaseInfoId;
   const [caseItem, setCaseItem] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태
   const [isExpanded, setIsExpanded] = useState(false);
@@ -33,6 +34,7 @@ const CaseDetail = () => {
   };
 
   useEffect(() => {
+    console.log("Received caseInfoId in CaseDetail: ", caseInfoId); // caseInfoId 확인
     CaseDetailRequest();
   }, [caseInfoId]);
 
@@ -108,7 +110,9 @@ const CaseDetail = () => {
         </div>
 
         <div className="detail-title">주요 쟁점</div>
-        <div className="detail-text">{caseItem.issues}</div>
+        <div className="detail-text" style={{ textAlign: "center" }}>
+          {caseItem.issues}
+        </div>
 
         <div>
           <div className="detail-title">전문</div>
