@@ -7,8 +7,16 @@ import Singup from "../pages/Signup";
 import Search from "../pages/Search";
 import CaseList from "../pages/CaseList";
 import CaseDetail from "../components/search/caselist/CaseDetail";
-import Magazine from "../pages/Magazine";
 import Signout from "../pages/Signout";
+
+// 매거진 컴포넌트 모음
+import Magazine from "../pages/Magazine";
+import MagazineMain from "../components/magazine/magazinemain/MagazineMain";
+import MagazineHotfix from "../components/magazine/magazinehotfix/MagazineHotfix";
+import MagazineHotpost from "../components/magazine/magazinehotpost/MagazineHotpost";
+import CaseType from "../components/magazine/magazinemain/CaseType";
+import MagazineDetail from "../components/magazine/magazinemain/MagazineDetail";
+// import MagazineMy from "../components/magazine/magazinemy/MagazineMy";
 import RentDocument from "../pages/RentDocument";
 import RentDocumentUpload from "../pages/RentDocumentUpload";
 
@@ -44,9 +52,6 @@ function AppRoutes() {
       <Route path="/search/case/:caseInfoId" element={<CaseDetail />} />
 
       <Route path="/magazine" element={<Magazine />} />
-
-      <Route path="/rentdocument" element={<RentDocument />} />
-      <Route path="/rentdocument/upload" element={<RentDocumentUpload />} />
     </Routes>
   );
 }

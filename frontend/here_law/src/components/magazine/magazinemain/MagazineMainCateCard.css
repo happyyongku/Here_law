@@ -1,0 +1,21 @@
+.magazine-main-cate-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100px;
+}
+
+.cate-card-title {
+  width: 100px;
+  height: 40px;
+  background-color: blueviolet;
+  margin-top: 15px;
+  border: none;
+}
+
+.cate-card-img {
+  width: 100px;
+  height: 120px;
+  background-color: bisque;
+}

@@ -56,7 +56,7 @@ function UserInfo({
         <div className="user-basic-info">
           <img
             className="normal-user-img"
-            src={profileImg}
+            src={`http://localhost:8080${profileImg}`}
             alt="normaluserimg"
           />
           <div className="name-and-update">

@@ -27,7 +27,20 @@ public class EmailVerificationController {
     private static final Logger logger = LoggerFactory.getLogger(EmailVerificationController.class);
 
     // 이메일 인증번호 발송
-    @Operation(summary = "인증번호 발송", description = "인증번호 발송")
+    @Operation(
+            summary = "인증번호 발송",
+            description = "인증번호 발송",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "인증번호 발송 예시",
+                                    summary = "이메일로 인증번호를 발송하는 요청 예시",
+                                    value = "{\"email\": \"example@example.com\"}"
+                            )
+                    )
+            )
+    )
     @PostMapping("/send-verification-code")
     public ResponseEntity<String> sendVerificationCode(@RequestBody Map<String, String> request) {
         String email = request.get("email");
@@ -43,7 +56,20 @@ public class EmailVerificationController {
         }
     }
 
-    @Operation(summary = "인증번호 입력", description = "인증번호 입력")
+    @Operation(
+            summary = "인증번호 입력",
+            description = "인증번호 입력",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "인증번호 입력 예시",
+                                    summary = "이메일과 인증번호를 검증하는 요청 예시",
+                                    value = "{\"email\": \"example@example.com\", \"code\": \"123456\"}"
+                            )
+                    )
+            )
+    )
     @PostMapping("/verify-code")
     public ResponseEntity<String> verifyCode(@RequestBody Map<String, String> request) {
         String email = request.get("email");
