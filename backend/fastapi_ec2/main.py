@@ -19,20 +19,20 @@ import logging
 
 app = FastAPI()
 
-origins = [
-  # "*"
-  "https://j11b109.p.ssafy.io",
-  "http://3.36.85.129",
-  "http://localhost"
-]
+# origins = [
+#   # "*"
+#   "https://j11b109.p.ssafy.io",
+#   "http://3.36.85.129",
+#   "http://localhost"
+# ]
 
-app.add_middleware(
-  CORSMiddleware,
-  allow_origins = origins,
-  allow_credentials=True,
-  allow_method=["*"],
-  allow_headers=["*"]
-)
+# app.add_middleware(
+#   CORSMiddleware,
+#   allow_origins = origins,
+#   allow_credentials=True,
+#   allow_method=["*"],
+#   allow_headers=["*"]
+# )
 
 app.include_router(chat_router, prefix="/fastapi_ec2/chat")
 app.include_router(clause_analysis_router, prefix="/fastapi_ec2/clause")
