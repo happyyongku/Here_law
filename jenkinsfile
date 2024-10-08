@@ -6,9 +6,9 @@ pipeline {
         SSH_KEY='f7745d84-3b92-4a34-9da8-ab8b48c2f6bf' 
     }
 
-    // options {
-    //     skipDefaultCheckout()
-    // }
+    options {
+        skipDefaultCheckout()
+    }
     
     stages {
         stage('Checkout or Update Code'){
@@ -31,14 +31,17 @@ pipeline {
             steps {
                 script {
                     echo "DOCKER_CREDENTIALS_ID: ${DOCKER_CREDENTIALS_ID}"
-                    try {
-                        docker.withRegistry('https://index.docker.io/v1/', env.DOCKER_CREDENTIALS_ID) {
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
                             echo 'Logged in Dockerhub'
                         }
-                    } catch (Exeption e) {
-                        echo "Docker login failed: ${e.getMessage()}"
-                        error "Docker login failed"
-                    }
+                    // try {
+                    //     docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                    //         echo 'Logged in Dockerhub'
+                    //     }
+                    // } catch (Exeption e) {
+                    //     echo "Docker login failed: ${e.getMessage()}"
+                    //     error "Docker login failed"
+                    // }
                 }
             }
         }
