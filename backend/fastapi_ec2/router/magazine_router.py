@@ -216,9 +216,13 @@ def get_top_liked_magazines(request: Request, token: str = Depends(get_current_u
         """
         with conn.cursor(row_factory=dict_row) as cur:
             cur.execute(query)
-            top_liked_magazines = cur.fetchall()
+            top_liked_magazines = cur.fetchall()  # 쿼리 실행 후 데이터 가져오기
 
-    return top_liked_magazines
+            if not top_liked_magazines:
+                raise HTTPException(status_code=404, detail="No magazines found.")
+
+    return top_liked_magazines  # 결과를 명시적으로 반환
+
 
 
 @magazine_router.get("/top-viewed")
@@ -257,3 +261,25 @@ def get_magazine(request: Request, magazine_id: int, token: str = Depends(get_cu
         magazine = get_magazine_by_id(conn, magazine_id)  # 업데이트 후 다시 가져오기
 
     return magazine
+
+
+@magazine_router.get("/category/{category}")
+def get_magazines_by_category_endpoint(category: str, request: Request, token: str = Depends(get_current_user)):
+    """
+    카테고리별로 magazine 목록을 반환하는 API 엔드포인트입니다.
+    """
+    with db_connection.get_connection() as conn:
+        query = """
+        SELECT magazine_id, title, category, created_at, image, content, view_count, likes, law_id
+        FROM magazines
+        WHERE category = %s
+        ORDER BY created_at DESC;
+        """
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute(query, (category,))
+            magazines = cur.fetchall()  # 해당 카테고리의 데이터 가져오기
+
+            if not magazines:
+                raise HTTPException(status_code=404, detail=f"해당 카테고리 '{category}'에 해당하는 magazine을 찾을 수 없습니다.")
+
+    return magazines  # 카테고리별 magazine 목록 반환
