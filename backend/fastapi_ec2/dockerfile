@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
 
 COPY ./font/NanumGothic.ttf /usr/share/fonts/truetype/nanum/NanumGothic.ttf
 
-RUN fc-cache-fv
+RUN fc-cache -fv
 
 RUN pip install --no-cache-dir -r requirements.txt
 
