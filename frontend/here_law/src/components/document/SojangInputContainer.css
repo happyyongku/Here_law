@@ -1,0 +1,120 @@
+.sojang-wrap {
+  display: flex;
+
+  justify-content: center;
+  height: 100vh; /* 화면 높이를 100%로 설정 */
+  margin: 0;
+  padding: 0;
+}
+.sojang-top {
+  width: 100%;
+  height: 46px;
+  background-color: #f3f2f2;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  padding-left: 50px;
+}
+
+.tip-box {
+  width: 40px;
+  height: 22px;
+  background-color: #ff5e00;
+  color: white;
+  font-size: 12px;
+  border-radius: 5px;
+  padding-left: 11px;
+  margin-right: 15px;
+}
+.sojang-page {
+  width: 860px;
+
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: center;
+}
+
+.sojang-title-text {
+  font-size: 19px;
+  font-weight: bold;
+  margin-top: 8px;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.sojang-icon {
+  width: 60px;
+  height: 60px;
+}
+.sojang-input-title {
+  font-size: 17px;
+  font-weight: bold;
+  margin-top: 22px;
+}
+.sojang-input-wrap {
+  margin-top: 15px;
+  width: 672px;
+  height: 50px;
+  border: 1px solid #bbb7b7;
+  border-radius: 5px;
+}
+.sojang-input-wrap input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  padding: 0 18px;
+  box-sizing: border-box; /* 패딩 포함한 크기 계산 */
+  background-color: transparent;
+}
+/* .sojang-tip {
+  width: 672px;
+  height: 90px;
+  background-color: #ffeee4;
+  margin-top: 18px;
+  padding-left: 28px;
+  padding-top: 16px;
+} */
+/* .sojang-light-icon {
+  width: 23px;
+  height: 23px;
+  margin-right: 5px;
+} */
+
+.sojang-input-address-wrap {
+  margin-top: 15px;
+  width: 480px;
+  height: 50px;
+  border: 1px solid #bbb7b7;
+  border-radius: 5px;
+}
+
+.sojang-input-address-wrap input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  padding: 0 18px;
+  box-sizing: border-box; /* 패딩 포함한 크기 계산 */
+  background-color: transparent;
+}
+
+.sojang-input-box {
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+}
+
+.sojang-address-button {
+  margin-top: 13px;
+  /* border: 1px solid black; */
+  margin-left: 5px;
+  width: 190px;
+  height: 50px;
+  border-radius: 5px;
+  border: none;
+  background-color: #ffeee4;
+  font-weight: bold;
+  color: #ff5e00;
+}

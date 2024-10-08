@@ -1,22 +1,18 @@
-import os
+
 import time
 import logging
 import threading
-import pandas as pd
-import json
-import requests
-from time import localtime, strftime
-from typing import List, Dict, Optional
 from datetime import datetime
-import difflib  # 중간에 있던 import를 최상단으로 이동
+
 from openai import OpenAI
 
 import re
 from datetime import datetime, timedelta, timezone
 
 from utils.db_connection import DBConnection
+from utils.law_service import generate_diff, get_law_infos_by_enforcement_date, reconstruct_law_text_from_sections, get_law_sections_by_law_id, get_law_info_by_law_id
+from utils.magazine_service import insert_magazine_article, check_magazine_exists
 from psycopg.rows import dict_row
-
 
 class MagazineUpdateDaemon:
     # Singleton 패턴 구현을 위한 클래스 변수
@@ -53,6 +49,12 @@ class MagazineUpdateDaemon:
             self.routine_running = False  # 루틴 실행 여부 플래그
             self.should_stop = False  # 루틴 중지 플래그
             self.initialized = True  # 초기화 완료 플래그
+    
+    @classmethod
+    def get_instance(cls):
+        if cls._instance is None:
+            raise RuntimeError("The instance has not been initialized!")
+        return cls._instance
 
     def __call__(self):
         if not self.routine_running:
@@ -87,134 +89,53 @@ class MagazineUpdateDaemon:
         today = datetime.now().strftime("%Y-%m-%d")
         if custom_day is not None:
             today = custom_day
-        law_infos = self.get_law_infos_by_enforcement_date(today)
+        law_infos = get_law_infos_by_enforcement_date(today)
 
         for law_info in law_infos:
             law_id = law_info['law_id']
-            # 이미 매거진에 해당 법령이 있는지 확인합니다.
-            if self.check_magazine_exists(law_id):
-                logging.debug(f"update_magazines: law_id {law_id}에 대한 매거진이 이미 존재합니다. 건너뜁니다.")
-                continue
-
-            # 2. 해당 법령의 law_sections를 가져옵니다.
-            current_law_sections = self.get_law_sections_by_law_id(law_id)
-            current_law_text = self.reconstruct_law_text(current_law_sections)
-
-            previous_law_text = ""
-            if law_info.get('previous_law_id'):
-                # 3. 이전 법령의 law_sections를 가져옵니다.
-                previous_law_sections = self.get_law_sections_by_law_id(law_info['previous_law_id'])
-                previous_law_text = self.reconstruct_law_text(previous_law_sections)
-
-            # 4. ChatGPT에 전달할 데이터를 생성합니다.
-            diff_text = self.generate_diff(previous_law_text, current_law_text)
-            prompt = self.create_prompt(current_law_text, diff_text)
-
-            # 5. 기사를 생성합니다.
-            article_content = self.generate_article(prompt)
-
-            # 기사 내용을 파싱
-            title, category, content = self.parse_article_content(article_content)
-        
-            if not title or not category or not content:
-                logging.error("기사 생성 실패: 제목, 분류, 본문 중 일부가 누락되었습니다.")
-                continue
-
-            # 6. 기사를 DB에 저장합니다.
-            self.save_magazine_article(law_id, title, category, today,content)
-            logging.info(f"law_id {law_id}에 대한 기사를 성공적으로 저장했습니다.")            
-
-    def check_magazine_exists(self, law_id: str) -> bool:
-        """magazines 테이블에 해당 law_id의 기사가 이미 존재하는지 확인합니다."""
-        sql = """
-        SELECT 1 FROM magazines WHERE law_id = %(law_id)s LIMIT 1;
+            self.generate_and_insert_article(law_id, today)
+    
+    def generate_and_insert_article(self, law_id:str, generation_day=None):
         """
-        with self.pool.get_connection() as conn:
-            with conn.cursor(row_factory=dict_row) as cursor:
-                cursor.execute(sql, {'law_id': law_id})
-                result = cursor.fetchone()
-                exists = result is not None
-        logging.debug(f"check_magazine_exists: law_id {law_id}에 대한 기사가 {'존재합니다' if exists else '존재하지 않습니다'}.")
-        return exists
-
-    def get_law_infos_by_enforcement_date(self, date_str: str) -> List[Dict]:
-        """특정 시행일자의 모든 법령 정보를 가져옵니다."""
-        sql = """
-        SELECT
-            law_id,
-            law_name_kr,
-            previous_law_id
-        FROM
-            law_info
-        WHERE
-            enforcement_date = %(enforcement_date)s
+            Daemon thread의 작동 여부와 관계없이 law_id 를 주면 자동으로 Chatgpt를 이용해 Article을 생성한다.
+        Args:
+            law_id (str): 법령 id
+            generation_day (_type_, optional): iso 포맷에 맞는 날짜. 이 날짜에 생성된 걸로 들어가게 된다. format yyyy-mm-dd.\nDefaults to None.
         """
-        with self.pool.get_connection() as conn:
-            with conn.cursor(row_factory=dict_row) as cursor:
-                cursor.execute(sql, {'enforcement_date': date_str})
-                law_infos = cursor.fetchall()
-        logging.debug(f"get_law_infos_by_enforcement_date: {len(law_infos)}개의 법령 정보를 가져왔습니다.")
-        return law_infos
+        # 이미 매거진에 해당 법령이 있는지 확인합니다.
+        if check_magazine_exists(law_id):
+            logging.debug(f"update_magazines: law_id {law_id}에 대한 매거진이 이미 존재합니다.")
+            return
 
-    def get_law_sections_by_law_id(self, law_id: str) -> List[Dict]:
-        """특정 law_id의 모든 law_sections를 가져옵니다."""
-        sql = """
-        SELECT
-            part,
-            chapter,
-            section,
-            article,
-            clause,
-            content
-        FROM
-            law_sections
-        WHERE
-            law_id = %(law_id)s
-        ORDER BY
-            part, chapter, section, article, clause
-        """
-        with self.pool.get_connection() as conn:
-            with conn.cursor(row_factory=dict_row) as cursor:
-                cursor.execute(sql, {'law_id': law_id})
-                law_sections = cursor.fetchall()
-        logging.debug(f"get_law_sections_by_law_id: law_id {law_id}에 대한 {len(law_sections)}개의 조항을 가져왔습니다.")
-        return law_sections
+        # 2. 해당 법령의 law_sections를 가져옵니다.
+        current_law_sections = get_law_sections_by_law_id(law_id)
+        current_law_text = reconstruct_law_text_from_sections(current_law_sections)
 
-    def reconstruct_law_text(self, law_sections: List[Dict]) -> str:
-        """law_sections를 이용하여 법령 원문을 재구성합니다."""
-        lines = []
-        for section in law_sections:
-            # 각 필드가 None인 경우 빈 문자열로 처리
-            part = section['part'] or ''
-            chapter = section['chapter'] or ''
-            section_ = section['section'] or ''
-            article = section['article'] or ''
-            clause = section['clause'] or ''
-            content = section['content'] or ''
+        previous_law_text = ""
+        law_info = get_law_info_by_law_id(law_id)[0]
 
-            # 각 요소를 결합하여 한 줄의 텍스트로 만듭니다.
-            line_elements = [part, chapter, section_, article, clause, content]
-            line = ' '.join(filter(None, line_elements)).strip()
-            lines.append(line)
-        law_text = "\n".join(lines)
-        logging.debug(f"reconstruct_law_text: {len(lines)}개의 라인으로 구성된 법령 텍스트를 재구성했습니다.")
-        return law_text
+        if law_info.get('previous_law_id'):
+            # 3. 이전 법령의 law_sections를 가져옵니다.
+            previous_law_sections = get_law_sections_by_law_id(law_info['previous_law_id'])
+            previous_law_text = reconstruct_law_text_from_sections(previous_law_sections)
 
-    def generate_diff(self, old_text: str, new_text: str) -> Optional[str]:
-        """이전 법령과 새로운 법령의 차이점을 생성합니다. 만약 이전 법령이 없으면(빈 문자열) None return."""
-        if old_text == "":
-            return None
-        
-        diff = difflib.unified_diff(
-            old_text.splitlines(),
-            new_text.splitlines(),
-            fromfile='이전 법령',
-            tofile='신규 법령',
-            lineterm=''
-        )
-        diff_text = '\n'.join(diff)
-        logging.debug("generate_diff: 법령의 차이점을 생성했습니다.")
-        return diff_text
+        # 4. ChatGPT에 전달할 데이터를 생성합니다.
+        diff_text = generate_diff(previous_law_text, current_law_text)
+        prompt = self.create_prompt(current_law_text, diff_text)
+
+        # 5. 기사를 생성합니다.
+        article_content = self.generate_article(prompt)
+
+        # 기사 내용을 파싱
+        title, category, content = self.parse_article_content(article_content)
+    
+        if not title or not category or not content:
+            logging.error("기사 생성 실패: 제목, 분류, 본문 중 일부가 누락되었습니다.")
+            return
+
+        # 6. 기사를 DB에 저장합니다.
+        insert_magazine_article(law_id, title, category, generation_day, content)
+        logging.info(f"law_id {law_id}에 대한 기사를 성공적으로 저장했습니다.")
 
     def create_prompt(self, law_text: str, diff_text: str) -> str:
         """ChatGPT에 전달할 프롬프트를 생성합니다."""
@@ -244,7 +165,7 @@ class MagazineUpdateDaemon:
         response = self.ai_client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": """당신은 한국의 법률 기사 작성 기자입니다. 기사를 써주세요. 기사 형식은 다음과 같습니다:
+                {"role": "system", "content": """당신은 한국의 법률 기사 작성 기자입니다. 최대 1000자 이내의 길이로 기사를 써주세요. 기사 형식은 다음과 같습니다:
                  제목:{기사 제목}
                  분류:{11가지 기사 분류 중 하나}
                  본문:{기사 본문}
@@ -258,49 +179,6 @@ class MagazineUpdateDaemon:
         logging.debug(f"generate_article: 기사를 생성했습니다. 생성된 기사: \n{article_content}")
         return article_content
 
-    def save_magazine_article(self, law_id: str, title: str, category: str, current_day: str, content: str):
-        """생성된 기사를 DB에 저장합니다."""
-        kst = timezone(timedelta(hours=9))
-
-        # Convert the string to a datetime object and set the KST timezone
-        date_obj_kst = datetime.fromisoformat(current_day).replace(tzinfo=kst)
-        sql = """
-        INSERT INTO magazines (
-            title,
-            category,
-            created_at,
-            image,
-            content,
-            view_count,
-            likes,
-            law_id
-        ) VALUES (
-            %(title)s,
-            %(category)s,
-            %(created_at)s,
-            %(image)s,
-            %(content)s,
-            %(view_count)s,
-            %(likes)s,
-            %(law_id)s
-        )
-        ON CONFLICT (law_id) DO NOTHING;
-        """
-        data = {
-            'title': title,
-            'category': category,
-            'created_at': date_obj_kst,
-            'image': None,
-            'content': content,
-            'view_count': 0,
-            'likes': 0,
-            'law_id': law_id
-        }
-        with self.pool.get_connection() as conn:
-            with conn.cursor() as cursor:
-                cursor.execute(sql, data)
-                logging.debug(f"save_magazine_article: law_id {law_id}에 대한 기사를 저장했습니다.")
-    
     @staticmethod
     def parse_article_content(article_content: str):
         """AI가 생성한 기사 내용을 파싱합니다."""

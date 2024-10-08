@@ -43,7 +43,9 @@ function Signup() {
     formData.append("nickname", nickname);
     formData.append("email", email);
     formData.append("password", password);
-    formData.append("interests", JSON.stringify(interest));
+    interest.forEach((item) => {
+      formData.append("interests", item);
+    });
     if (profileImg) {
       formData.append("profileImgFile", profileImg);
     }
