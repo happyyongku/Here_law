@@ -9,6 +9,8 @@ import subprocess
 from openai import OpenAI
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI
+from docx.shared import Pt, RGBColor
+from docx.oxml.ns import qn
 
 # FastAPI 앱 생성
 app = FastAPI()
