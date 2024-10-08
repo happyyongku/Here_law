@@ -2,17 +2,11 @@ import { useNavigate } from "react-router-dom";
 import "./ViewCard.css";
 
 function ViewCard({ posting }) {
-  // console.log(posting.title);
-  // console.log(posting.content);
-  // console.log(posting.magazine_id);
-  // console.log(posting.likes);
-  // console.log(posting.created_at);
-  // console.log(posting.view_count);
   const navigate = useNavigate();
   return (
     <div
       className="view-card-container"
-      //   onClick={() => navigate(`/magazine/${posting.magazine_id}`)}
+      onClick={() => navigate(`/magazine/${posting.magazine_id}`)}
     >
       {/* 사진 대신 임시로 쓰는 div 태그  */}
       <div className="img-alt"></div>

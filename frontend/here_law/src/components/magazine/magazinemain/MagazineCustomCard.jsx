@@ -1,10 +1,12 @@
+import { useNavigate } from "react-router-dom";
 import "./MagazineCustomCard.css";
 
 function MagazineCustomCard({ item }) {
+  const navigate = useNavigate();
   return (
     <div className="magazine-custom-card-container">
       <img src="" alt="" className="magazine-custom-card-img" />
-      <div>
+      <div onClick={() => navigate(`/magazine/${item.magazine_id}`)}>
         <div className="magazine-custom-card-title">{item.title}</div>
         <div className="magazine-custom-card-etc-info">
           <div className="magazine-custom-view-rec">
