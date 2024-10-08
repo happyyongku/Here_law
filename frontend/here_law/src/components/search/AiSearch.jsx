@@ -55,7 +55,7 @@ function AiSearch({ isAiMode, onToggle }) {
     try {
       // GPT에게 요청 보내기
       const response = await axiosInstance.post(
-        "/fastapi_ec2/chat/case_search/",
+        "/fastapi_ec2/chat/case_search",
         {
           input_data: inputValue,
         }

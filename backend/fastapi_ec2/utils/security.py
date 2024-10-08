@@ -30,17 +30,22 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        logging.debug(f"get_current_user: got {token}")
+        logging.debug(f"get_current_user: token received: {token}")
         payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
         username: Optional[str] = payload.get("sub")
+        logging.debug(f"get_current_user: payload extracted, username: {username}")
         if username is None:
+            logging.debug("get_current_user: no username in token payload.")
             raise credentials_exception
     except jwt.ExpiredSignatureError:
+        logging.error("get_current_user: Token has expired.")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token has expired.",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    except PyJWTError:
+    except PyJWTError as e:
+        logging.error(f"get_current_user: JWT error: {str(e)}")
         raise credentials_exception
     return User(email=username)
+
