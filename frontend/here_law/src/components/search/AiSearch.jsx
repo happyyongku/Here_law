@@ -58,6 +58,7 @@ function AiSearch({ isAiMode, onToggle }) {
         "/fastapi_ec2/chat/case_search",
         {
           input_data: inputValue,
+          session_id: sessionId,
         }
       );
 
