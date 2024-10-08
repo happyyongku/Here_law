@@ -39,8 +39,8 @@ pipeline {
                             echo 'Logged in Dockerhub'
                         }
                     } catch (err) {
-                        error "Docker login failed: ${err}"
                         echo "DOCKER_CREDENTIALS_ID: ${DOCKER_CREDENTIALS_ID}"
+                        error "Docker login failed: ${err}"
                     }
                 }
             }
