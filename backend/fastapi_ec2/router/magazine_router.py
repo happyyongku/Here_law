@@ -142,7 +142,7 @@ def get_top_viewed_magazines(request: Request, token: str = Depends(get_current_
 def get_magazine(request: Request, magazine_id: int, token: str = Depends(get_current_user)):
     with DBConnection().get_connection() as conn:
         # magazine을 조회
-        magazine = get_magazine_by_id(conn, magazine_id)
+        magazine = get_magazine_by_id(magazine_id)
         if not magazine:
             raise HTTPException(status_code=404, detail="해당 magazine을 찾을 수 없습니다.")
         
@@ -153,7 +153,7 @@ def get_magazine(request: Request, magazine_id: int, token: str = Depends(get_cu
             conn.commit()  # 트랜잭션 커밋
 
         # 업데이트된 view_count 값을 다시 가져옴
-        magazine = get_magazine_by_id(conn, magazine_id)  # 업데이트 후 다시 가져오기
+        magazine = get_magazine_by_id(magazine_id)  # 업데이트 후 다시 가져오기
 
     return magazine
 
