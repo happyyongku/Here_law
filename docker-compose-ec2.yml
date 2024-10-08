@@ -58,7 +58,9 @@ services:
       SESSIONS_CLEANUP_INTERVAL: ${SESSIONS_CLEANUP_INTERVAL}
       ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES}
       FASTAPI_SERVER_PORT: ${FASTAPI_SERVER_PORT}
-      API_KEY: $API_KEY
+      API_KEY: ${API_KEY}
+      CLOVA_KEY: ${CLOVA_KEY}
+      CLOVA_URL: ${CLOVA_URL}
     # depends_on:
     #   - postgres
 
@@ -79,36 +81,6 @@ services:
       - spring
     networks:
       - app-network
-  
-  # postgres:
-  #   image: happyyongku/j11b109:postgres
-  #   ports:
-  #     - "5433:5432"
-  #     - "3345:5432"
-  #   volumes:
-  #     - type: volume
-  #       source: database
-  #       target: /var/lib/postgresql/data
-  #     - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-  #     - /home/ubuntu/j11b109/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
-  #   environment:
-  #     POSTGRES_DB: ${DB_NAME}
-  #     POSTGRES_USER: ${DB_USERNAME}
-  #     POSTGRES_PASSWORD: ${DB_PASSWORD}
-
-  # elasticsearch:
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.17.3
-  #   environment:
-  #     discovery.type: single-node
-  #     ES_JAVA_OPTS: -Xms512m -Xms512m
-  #     ELA_PASSWORD: ${ELA_PASSWORD}
-  #   ports:
-  #     - "9200:9200"
-  #     - "9300:9300"
-  #   networks:
-  #     - app-network
-  #   volumes:
-  #     - elasticsearch-data:/usr/share/elasticsearch/data
 
 volumes:
   certs:

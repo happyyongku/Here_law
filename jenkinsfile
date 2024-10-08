@@ -58,7 +58,9 @@ pipeline {
                             echo SESSIONS_CLEANUP_INTERVAL=$SESSIONS_CLEANUP_INTERVAL >> .env &&
                             echo ACCESS_TOKEN_EXPIRE_MINUTES=$ACCESS_TOKEN_EXPIRE_MINUTES >> .env &&
                             echo FASTAPI_SERVER_PORT=$FASTAPI_SERVER_PORT >> .env &&
-                            echo API_KEY=$API_KEY >> .env
+                            echo API_KEY=$API_KEY >> .env &&
+                            echo CLOVA_KEY=$CLOVA_KEY >> .env &&
+                            echo CLOVA_URL=$CLOVA_URL >> .env
                             "
                         '''
                     }
