@@ -1,18 +1,14 @@
 # chat_router.py
-from typing import Dict, Any, List, Optional
-from fastapi import APIRouter, HTTPException, Depends, status
+from typing import Optional
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 import os
-import json
-import threading
-import time
 import logging
 
 from agents.rag_agent import CaseRagAgent
 from dto.user_model import User
 from utils.security import get_current_user
 from utils.session_storage import SessionStorage
-from datetime import datetime, timedelta, timezone
 from langchain_core.messages.tool import ToolMessage
 from langchain_core.messages.ai import AIMessage
 
