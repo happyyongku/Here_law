@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import List, Dict
 from docx import Document
@@ -30,16 +31,17 @@ class UserInfo(BaseModel):
     case_details: str
 
 @sojang_router.post("/generate")
-async def generate_legal_document(user_info: UserInfo):
+async def generate_legal_document(user_info: UserInfo, response_class=FileResponse):
     try:
         # 청구 취지 및 내용 생성
         generated_content = generate_content(user_info.dict())
 
         # Word 파일로 저장
         doc_filename = f"{user_info.plaintiff}_{user_info.case_title}.docx"
-        save_to_word(user_info.dict(), generated_content, filename=doc_filename)
+        doc_filepath = save_to_word(user_info.dict(), generated_content, filename=doc_filename)
 
-        return {"message": f"'{doc_filename}' 파일로 저장되었습니다."}
+        # 파일 반환 (MIME 타입을 Word 파일로 설정)
+        return FileResponse(doc_filepath, media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document', filename=doc_filename)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
