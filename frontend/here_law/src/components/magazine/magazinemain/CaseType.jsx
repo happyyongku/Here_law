@@ -1,12 +1,72 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import CaseTypeCard from "./CaseTypeCard";
+import axiosInstance from "../../../utils/axiosInstance";
 import "./CaseType.css";
 
 function CaseType() {
   const { type } = useParams();
-  const navigate = useNavigate();
 
-  // axios 코드를 작성해야 한다. params로 받아서 request 보내야함.
+  const [categoryData, setCategoryData] = useState([]);
+
+  // 카테고리 데이터 axios 코드를 작성
+  const getMagazineLCateData = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axiosInstance.get(
+        `/fastapi_ec2/magazine/category/${type}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("카테고리 조회 성공", response.data);
+      setCategoryData(response.data);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        console.log("Token expired. Please log in again.");
+        localStorage.removeItem("token");
+      } else {
+        console.error("Error fetching user data, 카테고리 조회 실패", error);
+      }
+    } finally {
+      // setLoading(false);
+      // 데이터 요청 후 로딩 상태 업데이트
+    }
+  };
+
+  // 구독 요청 axios
+  // const subscriptionRequest = async () => {
+  //   const token = localStorage.getItem("token");
+  //   try {
+  //     const response = await axiosInstance.get(
+  //       `/fastapi_ec2/magazine/category/${type}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     console.log("카테고리 조회 성공", response.data);
+  //     setCategoryData(response.data);
+  //   } catch (error) {
+  //     if (error.response && error.response.status === 401) {
+  //       console.log("Token expired. Please log in again.");
+  //       localStorage.removeItem("token");
+  //     } else {
+  //       console.error("Error fetching user data, 카테고리 조회 실패", error);
+  //     }
+  //   } finally {
+  //     // setLoading(false);
+  //     // 데이터 요청 후 로딩 상태 업데이트
+  //   }
+  // };
+
+  useEffect(() => {
+    getMagazineLCateData();
+  }, []);
+
   const something = ["", "", ""];
 
   return (
@@ -21,8 +81,8 @@ function CaseType() {
         <button className="case-subscribe-button">SUBSCRIBE</button>
       </div>
       <div className="case-type-content-box">
-        {something.map((item, index) => (
-          <CaseTypeCard key={index} />
+        {categoryData.map((item, index) => (
+          <CaseTypeCard key={index} item={item} />
         ))}
       </div>
     </div>

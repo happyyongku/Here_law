@@ -20,3 +20,15 @@
   width: 24px;
   height: 24px;
 }
+
+.case-type-card-title {
+  width: 600px;
+}
+
+.case-type-card-content {
+  width: 550px;
+  display: -webkit-box; /* flexbox 사용 */
+  -webkit-box-orient: vertical; /* 수직 방향으로 정렬 */
+  -webkit-line-clamp: 3; /* 표시할 줄 수 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+}

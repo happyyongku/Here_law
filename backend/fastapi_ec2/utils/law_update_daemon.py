@@ -7,8 +7,10 @@ import requests
 from time import localtime, strftime
 from typing import List, Dict
 from psycopg.rows import dict_row
-from utils.law_xml_parser import get_law_dict, get_law_clauses
+from utils.law_service import get_law_dict, get_law_clauses
 from utils.db_connection import DBConnection
+
+from typing import Optional
 
 class LawUpdateDaemon:
     # Singleton 패턴 구현을 위한 클래스 변수
@@ -73,7 +75,7 @@ class LawUpdateDaemon:
             self.should_stop = True
             return "중지를 예약했습니다. 곧 중지됩니다..."
 
-    def _fetch_verbose(self, url: str, timeout: int, name_invoker: str = "_fetch_verbose") -> requests.Response:
+    def _fetch_verbose(self, url: str, timeout: int, name_invoker: str = "_fetch_verbose") -> Optional[requests.Response]:
         for attempt in range(self._FETCH_RETRIES):
             try:
                 response = requests.get(url, timeout=timeout)
@@ -85,7 +87,8 @@ class LawUpdateDaemon:
             except requests.exceptions.RequestException as e:
                 logging.error(f"{name_invoker}: 요청 중 오류 발생: {e}", exc_info=True)
                 time.sleep(self._FETCH_RETRY_INTERVAL)
-        raise Exception(f"{name_invoker}: {self._FETCH_RETRIES}회 재시도 후에도 실패했습니다.")
+        raise logging.error(f"{name_invoker}: {self._FETCH_RETRIES}회 재시도 후에도 실패했습니다.")
+        return None
 
     def fetch_new_laws(self, target_date: str) -> List[Dict]:
         DISPLAY_COUNT = 100  # 페이지당 표시할 항목 수
@@ -95,7 +98,10 @@ class LawUpdateDaemon:
             url = f"https://www.law.go.kr/DRF/lawSearch.do?target=lsHstInf&refAdr=law.go.kr&OC={self._LAW_API_KEY}" \
                 f"&display={DISPLAY_COUNT}&page={page}&regDt={target_date}&type=json"
             response = self._fetch_verbose(url, self._FETCH_TIMEOUT, name_invoker="fetch_new_laws").json()
-            
+            if(response is None):
+                logging.warning("fetch_new_laws: fetch 실패.")
+                break
+
             if "LawSearch" in response and "law" in response["LawSearch"]:
                 laws = response["LawSearch"]["law"]
                 # 딕셔너리인 경우 리스트로 변환
@@ -156,7 +162,11 @@ class LawUpdateDaemon:
     def insert_law(self, row, previous_law_id=None):
         law_id = row["법령일련번호"]
         law_url = "https://www.law.go.kr" + row['법령상세링크'].replace("HTML", "XML")
-        law_str = self._fetch_verbose(law_url, timeout=self._FETCH_TIMEOUT, name_invoker="insert_law").text
+        law_response = self._fetch_verbose(law_url, timeout=self._FETCH_TIMEOUT, name_invoker="insert_law")
+        if(law_response is None):
+            logging.warning("insert_law: fetch 실패.")
+            return
+        law_str = law_response.text
         law_dict = get_law_dict(law_str)
         law_info = law_dict["기본정보"]
         law_clauses = get_law_clauses(law_dict)
