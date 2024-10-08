@@ -3,7 +3,17 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-RUN apt-get update && apt-get install -y libreoffice
+RUN apt-get update && apt-get install -y \
+    libreoffice \
+    wget \
+    uzip \
+    fonts-nanum \
+    --no-install-recommends
+
+RUN wget https://github.com/naver/nanumfont/releases/download/v1.0/NanumFont_TTF_ALL.zip -O /tmp/NanumFont.zip && \
+    unzip /tmp/NanumFont.zip -d /usr/share/fonts/truetype/nanum && \
+    fc-cache -fv && \
+    rm /tmp/NanumFont.zip
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 

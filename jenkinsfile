@@ -6,21 +6,11 @@ pipeline {
         SSH_KEY='f7745d84-3b92-4a34-9da8-ab8b48c2f6bf' 
     }
 
-    // when {
-    //     expression {
-    //         return env.GIT_BRANCH == 'origin/master' || env.BRANCH_NAME == 'master'
-    //     }
-    // }
-
+    options {
+        skipDefaultCheckout()
+    }
+    
     stages {
-        stage ('Branch Info') {
-            steps {
-                script {
-                    echo "Build branch: ${env.BRANCH_NAME}"
-                    echo "Full Git branch: ${env.GIT_BRANCH}"
-                }
-            }
-        }
         stage('Checkout or Update Code'){
             steps {
                 git url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git', branch: 'master', credentialsId: env.GITLAB_CREDENTIALS_ID
