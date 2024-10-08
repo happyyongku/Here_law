@@ -31,8 +31,13 @@ pipeline {
             steps {
                 script {
                     echo "DOCKER_CREDENTIALS_ID: ${DOCKER_CREDENTIALS_ID}"
-                    docker.withRegistry('https://index.docker.io/v1/', env.DOCKER_CREDENTIALS_ID) {
-                        echo 'Logged in Dockerhub'
+                    try {
+                        docker.withRegistry('https://index.docker.io/v1/', env.DOCKER_CREDENTIALS_ID) {
+                            echo 'Logged in Dockerhub'
+                        }
+                    } catch (Exeption e) {
+                        echo "Docker login failed: ${e.getMessage()}"
+                        error "Docker login failed"
                     }
                 }
             }
