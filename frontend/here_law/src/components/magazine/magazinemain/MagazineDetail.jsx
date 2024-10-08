@@ -35,6 +35,32 @@ function MagazineDetail() {
     }
   };
 
+  // 추천 여부 axios 요청
+  const [isRec, setIsRec] = useState(false);
+  const checkRecRequest = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axiosInstance.get(
+        `/fastapi_ec2/magazine/${params.id}/like-status`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log("포스팅 상세 조회 성공", response.data);
+      setIsRec(response.data);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        console.log("Token expired. Please log in again.");
+        localStorage.removeItem("token");
+      } else {
+        console.error("Error fetching user data, 상세 요청 실패입니다.", error);
+      }
+    } finally {
+      // setLoading(false);
+      // 데이터 요청 후 로딩 상태 업데이트
+    }
+  };
+
   // 포스팅 추천하기 axios 요청
   const recRequest = async () => {
     const token = localStorage.getItem("token");
@@ -65,6 +91,7 @@ function MagazineDetail() {
 
   useEffect(() => {
     getMagazineDetailData();
+    checkRecRequest();
   }, []);
 
   return (

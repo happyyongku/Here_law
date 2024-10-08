@@ -61,15 +61,12 @@ function AiSearch({ isAiMode, onToggle }) {
         {
           input_data: inputValue,
           session_id: sessionId,
-<<<<<<< HEAD
-=======
         },
         {
           headers: {
             Authorization: `Bearer ${token}`, // Add the authorization header
             accept: "application/json",
-          }
->>>>>>> master
+          },
         }
       );
 
