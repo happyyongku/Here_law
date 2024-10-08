@@ -63,6 +63,7 @@
   display: flex;
   justify-content: center; /* 수평 중앙 정렬 */
   align-items: center; /* 수직 중앙 정렬 */
+  cursor: pointer;
 }
 .document-upload-icon {
   width: 21px;
@@ -85,4 +86,4 @@
   justify-content: center;
   margin-top: 75px;
   margin-bottom: 85px;
-}
+  cursor: pointer;
