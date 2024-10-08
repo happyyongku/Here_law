@@ -30,9 +30,16 @@ pipeline {
         stage('Docker login') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                        echo "Loggig ${DOCKER_CREDENTIALS_ID}"
-                        echo 'Logged in Dockerhub'
+                    // echo "DOCKER_CREDENTIALS_ID: ${DOCKER_CREDENTIALS_ID}"
+                    // docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                    //         echo 'Logged in Dockerhub'
+                    //     }
+                    try {
+                        docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                            echo 'Logged in Dockerhub'
+                        }
+                    } catch (err) {
+                        error "Docker login failed: ${err}"
                     }
                 }
             }
