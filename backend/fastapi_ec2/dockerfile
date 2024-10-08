@@ -3,7 +3,14 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-RUN apt-get update && apt-get install -y libreoffice
+RUN apt-get update && apt-get install -y \
+    libreoffice \
+    fontconfig \
+    --no-install-recommends
+
+COPY /home/ubuntu/kbg_workspace/S11P21B109/backend/fastapi_ec2/font/NanumGothic.ttf /usr/share/fonts/truetype/nanum/NanumGothic.ttf
+
+RUN fc-cache-fv
 
 RUN pip install --no-cache-dir -r requirements.txt
 
