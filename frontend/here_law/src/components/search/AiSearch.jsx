@@ -53,12 +53,23 @@ function AiSearch({ isAiMode, onToggle }) {
     setInputValue("");
 
     try {
+      const token = localStorage.getItem("token");
+
       // GPT에게 요청 보내기
       const response = await axiosInstance.post(
         "/fastapi_ec2/chat/case_search",
         {
           input_data: inputValue,
           session_id: sessionId,
+<<<<<<< HEAD
+=======
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Add the authorization header
+            accept: "application/json",
+          }
+>>>>>>> master
         }
       );
 
