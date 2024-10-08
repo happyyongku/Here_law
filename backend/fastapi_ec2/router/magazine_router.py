@@ -66,20 +66,21 @@ def toggle_like(request: Request, magazine_id: int, token: str = Depends(get_cur
     check_like_query = """
     SELECT * FROM user_magazine_likes WHERE user_id = %s AND magazine_id = %s
     """
-    with DBConnection.get_connection().cursor(row_factory=dict_row) as cur:
-        cur.execute(check_like_query, (user['id'], magazine_id))
-        existing_like = cur.fetchone()
+    with DBConnection.get_connection() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute(check_like_query, (user['id'], magazine_id))
+            existing_like = cur.fetchone()
 
-        if existing_like:
-            # 이미 좋아요를 눌렀다면 좋아요 취소 (기록 삭제)
-            delete_like_query = "DELETE FROM user_magazine_likes WHERE id = %s"
-            cur.execute(delete_like_query, (existing_like['id'],))
-            action = "좋아요를 취소했습니다."
-        else:
-            # 좋아요를 누르지 않았다면 좋아요 추가 (기록 삽입)
-            insert_like_query = "INSERT INTO user_magazine_likes (user_id, magazine_id) VALUES (%s, %s)"
-            cur.execute(insert_like_query, (user['id'], magazine_id))
-            action = "좋아요를 추가했습니다."
+            if existing_like:
+                # 이미 좋아요를 눌렀다면 좋아요 취소 (기록 삭제)
+                delete_like_query = "DELETE FROM user_magazine_likes WHERE id = %s"
+                cur.execute(delete_like_query, (existing_like['id'],))
+                action = "좋아요를 취소했습니다."
+            else:
+                # 좋아요를 누르지 않았다면 좋아요 추가 (기록 삽입)
+                insert_like_query = "INSERT INTO user_magazine_likes (user_id, magazine_id) VALUES (%s, %s)"
+                cur.execute(insert_like_query, (user['id'], magazine_id))
+                action = "좋아요를 추가했습니다."
 
         # 트랜잭션 커밋 (좋아요 추가/취소 이후에 반영)
         conn.commit()
@@ -118,8 +119,6 @@ def get_top_liked_magazines(request: Request, token: str = Depends(get_current_u
                 raise HTTPException(status_code=404, detail="No magazines found.")
 
     return top_liked_magazines  # 결과를 명시적으로 반환
-
-
 
 @magazine_router.get("/top-viewed")
 def get_top_viewed_magazines(request: Request, token: str = Depends(get_current_user)):
