@@ -71,7 +71,7 @@ services:
       - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/ip-block-list.conf:/etc/nginx/ip-block-list.conf
+      - /home/ubuntu/j11b109/nginx/ip-block-list.conf:/etc/nginx/ip-block-list.conf
       # - certs:/etc/letsencrypt/live/j11b109.p.ssafy.io
       - ./certs/live/j11b109.p.ssafy.io:/etc/letsencrypt/live/j11b109.p.ssafy.io
 
