@@ -1,6 +1,6 @@
 import DocumentUploadContainer from "../components/document/DocumentUploadContainer";
 
-function RentDocumenUpload() {
+function DocumenUpload() {
   return (
     <>
       <DocumentUploadContainer />
@@ -8,4 +8,4 @@ function RentDocumenUpload() {
   );
 }
 
-export default RentDocumenUpload;
+export default DocumenUpload;
