@@ -6,9 +6,9 @@ pipeline {
         SSH_KEY='f7745d84-3b92-4a34-9da8-ab8b48c2f6bf' 
     }
 
-    options {
-        skipDefaultCheckout()
-    }
+    // options {
+    //     skipDefaultCheckout()
+    // }
     
     stages {
         stage('Checkout or Update Code'){
