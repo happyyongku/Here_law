@@ -11,7 +11,7 @@ from datetime import datetime, timedelta, timezone
 
 from utils.db_connection import DBConnection
 from utils.law_service import generate_diff, get_law_infos_by_enforcement_date, reconstruct_law_text_from_sections, get_law_sections_by_law_id, get_law_info_by_law_id
-from magazine_service import insert_magazine_article, check_magazine_exists
+from utils.magazine_service import insert_magazine_article, check_magazine_exists
 from psycopg.rows import dict_row
 
 class MagazineUpdateDaemon:
