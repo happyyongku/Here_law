@@ -1,6 +1,6 @@
 import os
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -18,6 +18,22 @@ from utils.law_update_daemon import LawUpdateDaemon
 
 import logging
 
+# Create a logger
+
+logger = logging.getLogger("fastapi_logger")
+logger.setLevel(logging.DEBUG)  # Set log level to DEBUG
+
+# Create a file handler to write logs to a file
+file_handler = logging.FileHandler("fastapi_debug.log")
+file_handler.setLevel(logging.DEBUG)
+
+# Create a logging format
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(formatter)
+
+# Add the handlers to the logger
+logger.addHandler(file_handler)
+
 app = FastAPI()
 
 origins = [
@@ -29,12 +45,19 @@ origins = [
 ]
 
 app.add_middleware(
-  CORSMiddleware,
-  allow_origins = origins,
-  allow_credentials=True,
-  allow_methods=["*"],
-  allow_headers=["*"]
+    CORSMiddleware,
+    allow_origins=origins,  # Specify allowed origins explicitly
+    allow_credentials=True,  # This allows Authorization headers or cookies
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers including Authorization
 )
+
+@app.middleware("http")
+async def log_request_origin(request: Request, call_next):
+    origin = request.headers.get("origin")
+    print(f"Request Origin: {origin}")
+    response = await call_next(request)
+    return response
 
 app.include_router(chat_router, prefix="/fastapi_ec2/chat")
 app.include_router(clause_analysis_router, prefix="/fastapi_ec2/clause")
