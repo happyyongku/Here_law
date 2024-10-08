@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import RentHeader from "./RentHeader";
 
+import axiosInstance from "../../utils/axiosInstance";
+
 import UploadIcon from "../../assets/document/uploadicon.png";
 import CloseIcon from "../../assets/document/closeicon.png";
 
@@ -8,6 +10,9 @@ import "./DocumentUploadContainer.css";
 
 function RentUpload() {
   const [selectedFile, setSelectedFile] = useState(null); // 선택된 파일 저장
+
+  const [isUploading, setIsUploading] = useState(false); // 업로드 상태 관리
+  const [uploadResult, setUploadResult] = useState(null); // 서버 응답 결과 저장
 
   // 파일 선택 시 처리 함수
   const handleFileChange = (event) => {
@@ -25,6 +30,41 @@ function RentUpload() {
   // 업로드 버튼 클릭 시 파일 탐색기 열기
   const handleUploadClick = () => {
     document.getElementById("file-upload").click();
+  };
+
+  // 위험도 분석 버튼 클릭 시 파일 업로드 및 요청 전송
+  const handleAnalyze = async () => {
+    if (!selectedFile) {
+      alert("파일을 먼저 업로드해 주세요.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    try {
+      setIsUploading(true); // 업로드 시작
+
+      // axiosInstance를 사용하여 POST 요청
+      const response = await axiosInstance.post(
+        "/fastapi_ec2/clause/analyze-clause", // API 엔드포인트
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // multipart/form-data 설정
+            accept: "application/json", // JSON 응답
+          },
+        }
+      );
+
+      setIsUploading(false); // 업로드 완료
+      setUploadResult(response.data); // 응답 결과 저장
+      alert("분석이 완료되었습니다.");
+    } catch (error) {
+      setIsUploading(false);
+      console.error("업로드 실패:", error);
+      alert("파일 업로드에 실패했습니다.");
+    }
   };
 
   return (
