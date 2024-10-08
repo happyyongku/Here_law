@@ -3,8 +3,17 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-RUN apt-get update && apt-get install -y libreoffice
+RUN apt-get update && apt-get install -y \
+    libreoffice \
+    fontconfig \
+    --no-install-recommends
+
+COPY ./font/NanumGothic.ttf /usr/share/fonts/truetype/nanum/NanumGothic.ttf
+
+RUN fc-cache -fv
+
 RUN pip install --no-cache-dir -r requirements.txt
+
 RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 
 COPY . .
