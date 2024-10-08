@@ -50,8 +50,6 @@ pipeline {
                         }
                     } catch (Exception e) {
                         echo "DOCKER_CREDENTIALS_ID: ${DOCKER_CREDENTIALS_ID}"
-                        sh "echo Username: ${DOCKER_USERNAME}"
-                        sh "echo Password: ${DOCKER_PASSWORD.length()}"
                         error "Docker login failed: ${e.getMessage()}"
                     }
                 }
