@@ -3,8 +3,13 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS_ID = '53c0e6f0-2c1e-43b2-a1a1-3d3e56fd1cae'
         GITLAB_CREDENTIALS_ID = '2f379a74-002d-471d-a051-6bd615828532'
-        SSH_KEY='f7745d84-3b92-4a34-9da8-ab8b48c2f6bf'
+        SSH_KEY='f7745d84-3b92-4a34-9da8-ab8b48c2f6bf' 
     }
+
+    when {
+        branch 'master'
+    }
+
     stages {
         stage('Checkout or Update Code'){
             steps {
