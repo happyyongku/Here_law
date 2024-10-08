@@ -27,24 +27,24 @@ pipeline {
                 }
             }
         }
-        stage('Docker login') {
-            steps {
-                script {
-                    // echo "DOCKER_CREDENTIALS_ID: ${DOCKER_CREDENTIALS_ID}"
-                    // docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                    //         echo 'Logged in Dockerhub'
-                    //     }
-                    try {
-                        docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                            echo 'Logged in Dockerhub'
-                        }
-                    } catch (err) {
-                        echo "DOCKER_CREDENTIALS_ID: ${DOCKER_CREDENTIALS_ID}"
-                        error "Docker login failed: ${err}"
-                    }
-                }
-            }
-        }
+        // stage('Docker login') {
+        //     steps {
+        //         script {
+        //             // echo "DOCKER_CREDENTIALS_ID: ${DOCKER_CREDENTIALS_ID}"
+        //             // docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+        //             //         echo 'Logged in Dockerhub'
+        //             //     }
+        //             try {
+        //                 docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+        //                     echo 'Logged in Dockerhub'
+        //                 }
+        //             } catch (err) {
+        //                 echo "DOCKER_CREDENTIALS_ID: ${DOCKER_CREDENTIALS_ID}"
+        //                 error "Docker login failed: ${err}"
+        //             }
+        //         }
+        //     }
+        // }
         stage('Create .env') {
             steps {
                 script{
