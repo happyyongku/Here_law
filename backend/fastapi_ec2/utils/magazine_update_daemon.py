@@ -112,7 +112,7 @@ class MagazineUpdateDaemon:
         current_law_text = reconstruct_law_text_from_sections(current_law_sections)
 
         previous_law_text = ""
-        law_info = get_law_info_by_law_id
+        law_info = get_law_info_by_law_id(law_id)[0]
 
         if law_info.get('previous_law_id'):
             # 3. 이전 법령의 law_sections를 가져옵니다.

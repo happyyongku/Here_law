@@ -103,7 +103,7 @@ def get_top_liked_magazines(request: Request, token: str = Depends(get_current_u
     """
     좋아요 순으로 정렬된 magazine 목록을 30개까지 반환하는 API 엔드포인트입니다.
     """
-    with db_connection.get_connection() as conn:
+    with DBConnection().get_connection() as conn:
         query = """
         SELECT magazine_id, title, category, created_at, image, content, view_count, likes, law_id
         FROM magazines
@@ -126,7 +126,7 @@ def get_top_viewed_magazines(request: Request, token: str = Depends(get_current_
     """
     조회수 순으로 정렬된 magazine 목록을 30개까지 반환하는 API 엔드포인트입니다.
     """
-    with db_connection.get_connection() as conn:
+    with DBConnection().get_connection() as conn:
         query = """
         SELECT magazine_id, title, category, created_at, image, content, view_count, likes, law_id
         FROM magazines
@@ -141,7 +141,7 @@ def get_top_viewed_magazines(request: Request, token: str = Depends(get_current_
 
 @magazine_router.get("/{magazine_id}")
 def get_magazine(request: Request, magazine_id: int, token: str = Depends(get_current_user)):
-    with db_connection.get_connection() as conn:
+    with DBConnection().get_connection() as conn:
         # magazine을 조회
         magazine = get_magazine_by_id(conn, magazine_id)
         if not magazine:
@@ -164,7 +164,7 @@ def get_magazines_by_category_endpoint(category: str, request: Request, token: s
     """
     카테고리별로 magazine 목록을 반환하는 API 엔드포인트입니다.
     """
-    with db_connection.get_connection() as conn:
+    with DBConnection().get_connection() as conn:
         query = """
         SELECT magazine_id, title, category, created_at, image, content, view_count, likes, law_id
         FROM magazines

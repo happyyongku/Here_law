@@ -39,7 +39,7 @@ def get_law_sections_by_law_id(law_id: str) -> List[Dict]:
     logging.debug(f"get_law_sections_by_law_id: law_id {law_id}에 대한 {len(law_sections)}개의 조항을 가져왔습니다.")
     return law_sections
 
-def get_law_info_by_law_id(law_id: str) -> Dict:
+def get_law_info_by_law_id(law_id: str) -> List[Dict]:
     """특정 law_id의 법령 정보를 가져옵니다."""
     sql = """
     SELECT

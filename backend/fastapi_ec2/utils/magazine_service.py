@@ -4,7 +4,6 @@ from utils.db_connection import DBConnection
 from psycopg.rows import dict_row
 
 from datetime import datetime
-from utils.db_connection import DBConnection
 
 def insert_magazine_article(law_id: str, title: str, category: str, current_day: str, content: str, conn_given=None):
     """생성된 기사를 DB에 저장합니다."""
