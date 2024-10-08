@@ -1,35 +1,73 @@
-from fastapi import APIRouter, HTTPException, Depends, Request
-import psycopg2
+from datetime import datetime, timedelta
+from fastapi import APIRouter, Depends, Query, HTTPException
 from psycopg.rows import dict_row
+from pydantic import BaseModel
+from typing import Dict, List
+
 from utils.db_connection import DBConnection
+from utils.law_service import (
+    get_law_sections_by_law_id,
+    reconstruct_law_text_from_sections,
+    generate_diff,
+    parse_diff,
+    LawDifferenceModel,
+)
+from utils.magazine_service import get_magazine_by_law_id
 from utils.security import get_current_user
+from utils.magazine_update_daemon import MagazineUpdateDaemon
 
-# DBConnection 클래스의 인스턴스 생성
-db_connection = DBConnection()
-
-# APIRouter 객체 생성
 revision_router = APIRouter()
 
-# proclamation_date로 개정 정보를 조회하는 라우터
-@revision_router.get("/law-revision/{proclamation_date}")
-def get_law_by_proclamation_date(proclamation_date: str, request: Request, token: str = Depends(get_current_user)):
+@revision_router.get("/law-revision", response_model=Dict[str, LawDifferenceModel])
+def get_law_diffs(
+    date: str = Query(..., description="Proclamation date in YYYY-MM-DD format"),
+    span: int = Query(30, description="Number of days before the proclamation date"),
+    _: str = Depends(get_current_user),
+):
     """
-    특정 공포일에 해당하는 법률 개정 정보를 반환하는 API
+    Returns law revision information for a specific proclamation date.
     """
-    # DB 연결 획득 및 작업 처리
-    with db_connection.get_connection() as conn:
+    try:
+        end_date = datetime.strptime(date, "%Y-%m-%d").date()
+        start_date = end_date - timedelta(days=span)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD.")
+
+    with DBConnection().get_connection() as conn:
         query = """
-        SELECT law_name, proclamation_date, revision_date, status, content, reason
-        FROM law_revision
-        WHERE proclamation_date = %s
+        SELECT law_id, proclamation_date, previous_law_id
+        FROM law_info
+        WHERE previous_law_id IS NOT NULL
+        AND proclamation_date BETWEEN %s AND %s
         """
         with conn.cursor(row_factory=dict_row) as cur:
-            cur.execute(query, (proclamation_date,))
+            cur.execute(query, (start_date, end_date))
             law_info = cur.fetchall()
 
-            # 해당 날짜에 법률 정보가 없을 경우
-            if not law_info:
-                raise HTTPException(status_code=404, detail="해당 공포일에 해당하는 법률 정보를 찾을 수 없습니다.")
-    
-    # 결과 반환
-    return law_info
+    result = {}
+    for row in law_info:
+        new_sections = get_law_sections_by_law_id(row["law_id"])
+        old_sections = get_law_sections_by_law_id(row["previous_law_id"])
+        new_text = reconstruct_law_text_from_sections(new_sections)
+        old_text = reconstruct_law_text_from_sections(old_sections)
+
+        magazine_info = get_magazine_by_law_id(row["law_id"])
+        if magazine_info is None:
+            daemon_instance = MagazineUpdateDaemon.get_instance()
+            daemon_instance.generate_and_insert_article(row["law_id"], row["proclamation_date"])
+            magazine_info = get_magazine_by_law_id(row["law_id"])
+            if magazine_info is None:
+                raise HTTPException(
+                    status_code=500,
+                    detail="Error generating magazine for revision categorization.",
+                )
+
+        diff_text = generate_diff(old_text=old_text, new_text=new_text)
+        diff_model = parse_diff(diff_text)
+
+        category = magazine_info["category"]
+        if category not in result:
+            result[category] = []
+        result[category].append(diff_model)
+
+    return result
