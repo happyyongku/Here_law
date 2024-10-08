@@ -3,7 +3,6 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import Dict
 from docx import Document
-from docx.shared import Pt
 from datetime import datetime
 import os
 import subprocess
@@ -15,10 +14,6 @@ from docx.oxml.ns import qn
 
 # FastAPI 앱 생성
 app = FastAPI()
-
-from docx.oxml.ns import qn
-from docx.oxml import OxmlElement
-from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 
 # 라우터 생성
 sojang_router = APIRouter()
@@ -47,7 +42,6 @@ async def generate_legal_document(user_info: UserInfo):
     try:
         # 청구 취지 및 내용 생성
         generated_content = generate_content(user_info.dict())
-        # return generated_content
 
         # Word 파일로 저장
         doc_filename = f"{user_info.plaintiff}_{user_info.case_title}.docx"
@@ -75,9 +69,7 @@ def generate_content(user_info: Dict[str, str]) -> Dict[str, str]:
     피고: {user_info['defendant']} (주소: {user_info['defendant_address']}, 전화번호: {user_info['defendant_phone']})
     사건 내용: {user_info['case_details']}
     소장은 정식 법률 문서 형식으로 작성되어야 하며, 필요한 모든 법적 요소를 포함해야 합니다.
-    반드시 [청구 취지], [청구 원인], [첨부 서류] 이런식으로 작성해 주세요.
-    이때 청구 취지는 반드시 '1. 피고는 원고에게 100만원을 지급하라' 와 같이 번호를 붙혀서 요구사항별로 제공해야하며, 마지막에는 '라는 판결을 구합니다'를 붙혀서 제공해야 합니다.
-    청구 원인 역시 반드시 '1. 피고는 원고에게 2021.03.23 사기를 쳤습니다'와 같이 단계별로 분리하여 번호를 붙혀서 제공해야합니다.
+    [청구 취지], [청구 원인], [첨부 서류] 이런식으로 작성해 주세요.
     """
 
     response = client.chat.completions.create(
@@ -105,68 +97,116 @@ def generate_content(user_info: Dict[str, str]) -> Dict[str, str]:
 
     return sections
 
-# Word로 저장하는 함수
+# Word로 저장하는 함수 (폰트 적용)
 def save_to_word(user_info: Dict[str, str], generated_content: Dict[str, str], filename="소장.docx"):
     SAVE_DIR = os.path.abspath(os.path.join(BASE_DIR, "docs", filename))
     doc = Document()
-    # return generated_content
-    print(f"Generated Content \n {generated_content}")
-    
-    try:
-    # -------------------------------------------------------------
-        style = doc.styles['Normal']
-        style.font.size = Pt(12)
-        
-        title = doc.add_heading('소      장', level=1)
-        title_run = title.runs[0]
-        title_run.font.size = Pt(14)
-        title_run.bold = True
-        title.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-        title.paragraph_format.space_after = Pt(24)
-        
-        plaintiff_block = doc.add_paragraph()
-        plaintiff_block_run = plaintiff_block.add_run(f"원    고 : {user_info['plaintiff']}\n")
-        plaintiff_block_run = plaintiff_block.add_run(f"           {user_info['plaintiff_address']}\n")
-        plaintiff_block_run = plaintiff_block.add_run(f"           {user_info['plaintiff_phone']}")
-        plaintiff_block_run.font.size = Pt(12)
-        
-        defendant_block = doc.add_paragraph()
-        defendant_block_run = defendant_block.add_run(f"피    고 : {user_info['defendant']}\n")
-        defendant_block_run = defendant_block.add_run(f"           {user_info['defendant_address']}\n")
-        defendant_block_run = defendant_block.add_run(f"           {user_info['defendant_phone']}")
-        defendant_block_run.font.size = Pt(12)
-        
-        case_title = doc.add_paragraph(f"\n사건명: {user_info['case_title']}")
-        case_title.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-        
-        doc.add_paragraph("\n청 구  취 지").alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-        doc.add_paragraph(generated_content['청구 취지'])
-        
-        doc.add_paragraph("\n청 구  원 인").alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-        doc.add_paragraph(generated_content['청구 원인'])
-        
-        doc.add_paragraph("\n 첨 부  서 류").alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-        for attachment in generated_content['첨부 서류'].split('\n'):
-            if attachment.strip():
-                doc.add_paragraph(f"- {attachment.strip()}")
-        
-        today = datetime.today().strftime('%Y    .   %m    .   %d    .')
-        date_paragraph = doc.add_paragraph(today)
-        date_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
-        
-        signature_paragraph = doc.add_paragraph("원고           (인)")
-        signature_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
-        
-        plaintiff_name_paragraph = doc.add_paragraph(user_info['plaintiff'])
-        plaintiff_name_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
-        
-        court_name_paragraph = doc.add_paragraph(f"\n{user_info['court_name']} 귀중")
-        court_name_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
-        # ---------------------------------------------------------------------------
-        doc.save(SAVE_DIR)
-    except Exception as e:
-        print(f"Error Occured in saving phase \n {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+
+    # 제목 추가
+    title = doc.add_heading('소      장', level=1)
+    title.alignment = 1  # 가운데 정렬
+    title_run = title.runs[0]
+    title_run.font.name = 'NanumGothic'
+    title_run._element.rPr.rFonts.set(qn('w:eastAsia'), 'NanumGothic')
+    title_run.font.size = Pt(24)
+
+    # 원고 정보
+    p1 = doc.add_paragraph(f"원    고 : {user_info['plaintiff']} (전화번호: {user_info['plaintiff_phone']})")
+    run1 = p1.runs[0]
+    run1.font.name = 'NanumGothic'
+    run1._element.rPr.rFonts.set(qn('w:eastAsia'), 'NanumGothic')
+
+    p2 = doc.add_paragraph(f"주    소 : {user_info['plaintiff_address']}")
+    run2 = p2.runs[0]
+    run2.font.name = 'NanumGothic'
+    run2._element.rPr.rFonts.set(qn('w:eastAsia'), 'NanumGothic')
+
+    # 피고 정보
+    p3 = doc.add_paragraph(f"피    고 : {user_info['defendant']} (전화번호: {user_info['defendant_phone']})")
+    run3 = p3.runs[0]
+    run3.font.name = 'NanumGothic'
+    run3._element.rPr.rFonts.set(qn('w:eastAsia'), 'NanumGothic')
+
+    p4 = doc.add_paragraph(f"주    소 : {user_info['defendant_address']}")
+    run4 = p4.runs[0]
+    run4.font.name = 'NanumGothic'
+    run4._element.rPr.rFonts.set(qn('w:eastAsia'), 'NanumGothic')
+
+    # 사건명
+    case_name = doc.add_paragraph(f"\n사건명: {user_info['case_title']}")
+    run_case_name = case_name.runs[0]
+    run_case_name.font.name = 'NanumGothic'
+    run_case_name._element.rPr.rFonts.set(qn('w:eastAsia'), 'NanumGothic')
+
+    # 청구 취지
+    title_claim = doc.add_heading('청 구  취 지', level=2)
+    title_claim.alignment = 1
+    title_claim_run = title_claim.runs[0]
+    title_claim_run.font.name = 'NanumGothic'
+    title_claim_run._element.rPr.rFonts.set(qn('w:eastAsia'), 'NanumGothic')
+
+    p5 = doc.add_paragraph(generated_content['청구 취지'])
+    run5 = p5.runs[0]
+    run5.font.name = 'NanumGothic'
+    run5._element.rPr.rFonts.set(qn('w:eastAsia'), 'NanumGothic')
+
+    # 청구 원인
+    title_reason = doc.add_heading('청 구  원 인', level=2)
+    title_reason.alignment = 1
+    title_reason_run = title_reason.runs[0]
+    title_reason_run.font.name = 'NanumGothic'
+    title_reason_run._element.rPr.rFonts.set(qn('w:eastAsia'), 'NanumGothic')
+
+    p6 = doc.add_paragraph(generated_content['청구 원인'])
+    run6 = p6.runs[0]
+    run6.font.name = 'NanumGothic'
+    run6._element.rPr.rFonts.set(qn('w:eastAsia'), 'NanumGothic')
+
+    # 첨부 서류
+    title_attachment = doc.add_heading('첨 부  서 류', level=2)
+    title_attachment.alignment = 1
+    title_attachment_run = title_attachment.runs[0]
+    title_attachment_run.font.name = 'NanumGothic'
+    title_attachment_run._element.rPr.rFonts.set(qn('w:eastAsia'), 'NanumGothic')
+
+    for attachment in generated_content['첨부 서류'].split('\n'):
+        if attachment.strip() != '':
+            p7 = doc.add_paragraph(f"- {attachment.strip()}")
+            run7 = p7.runs[0]
+            run7.font.name = 'NanumGothic'
+            run7._element.rPr.rFonts.set(qn('w:eastAsia'), 'NanumGothic')
+
+    # 날짜 및 서명
+    today = datetime.today().strftime('%Y    .   %m    .   %d    .')
+    date_paragraph = doc.add_paragraph(today, style='Normal')
+    date_paragraph.alignment = 2  # 오른쪽 정렬
+    date_run = date_paragraph.runs[0]
+    date_run.font.name = 'NanumGothic'
+    date_run._element.rPr.rFonts.set(qn('w:eastAsia'), 'NanumGothic')
+
+    p8 = doc.add_paragraph("원고           (인)", style='Normal')
+    p8.alignment = 2
+    run8 = p8.runs[0]
+    run8.font.name = 'NanumGothic'
+    run8._element.rPr.rFonts.set(qn('w:eastAsia'), 'NanumGothic')
+
+    p9 = doc.add_paragraph(user_info['plaintiff'], style='Normal')
+    p9.alignment = 2
+    run9 = p9.runs[0]
+    run9.font.name = 'NanumGothic'
+    run9._element.rPr.rFonts.set(qn('w:eastAsia'), 'NanumGothic')
+
+    # 법원 이름
+    court_paragraph = doc.add_paragraph(f"\n{user_info['court_name']} 귀중", style='Normal')
+    court_paragraph.alignment = 2
+    court_run = court_paragraph.runs[0]
+    court_run.font.name = 'NanumGothic'
+    court_run._element.rPr.rFonts.set(qn('w:eastAsia'), 'NanumGothic')
+
+    # Word 파일 저장
+    doc.save(SAVE_DIR)
+
+    return SAVE_DIR
 
 # Word 파일을 PDF로 변환하는 함수
 def convert_word_to_pdf(doc_filepath: str, pdf_filename: str):
@@ -196,6 +236,3 @@ async def download_word_file(doc_filename: str):
 
 # 정적 파일 제공 설정 (FastAPI 앱에 설정)
 app.mount("/files", StaticFiles(directory=os.path.join(BASE_DIR, "docs")), name="files")
-
-# 라우터를 FastAPI 앱에 등록
-app.include_router(sojang_router)
