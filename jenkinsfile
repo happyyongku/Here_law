@@ -40,6 +40,7 @@ pipeline {
                         }
                     } catch (err) {
                         error "Docker login failed: ${err}"
+                        echo "DOCKER_CREDENTIALS_ID: ${DOCKER_CREDENTIALS_ID}"
                     }
                 }
             }
