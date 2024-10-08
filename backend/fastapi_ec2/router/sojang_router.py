@@ -1,12 +1,17 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
-from typing import List, Dict
+from typing import Dict
 from docx import Document
-from docx.shared import Pt
 from datetime import datetime
 import os
+import subprocess
 from openai import OpenAI
+from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI
+
+# FastAPI 앱 생성
+app = FastAPI()
 
 # 라우터 생성
 sojang_router = APIRouter()
@@ -31,7 +36,7 @@ class UserInfo(BaseModel):
     case_details: str
 
 @sojang_router.post("/generate")
-async def generate_legal_document(user_info: UserInfo, response_class=FileResponse):
+async def generate_legal_document(user_info: UserInfo):
     try:
         # 청구 취지 및 내용 생성
         generated_content = generate_content(user_info.dict())
@@ -40,8 +45,15 @@ async def generate_legal_document(user_info: UserInfo, response_class=FileRespon
         doc_filename = f"{user_info.plaintiff}_{user_info.case_title}.docx"
         doc_filepath = save_to_word(user_info.dict(), generated_content, filename=doc_filename)
 
-        # 파일 반환 (MIME 타입을 Word 파일로 설정)
-        return FileResponse(doc_filepath, media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document', filename=doc_filename)
+        # Word 파일을 PDF로 변환
+        pdf_filename = doc_filename.replace(".docx", ".pdf")
+        pdf_filepath = convert_word_to_pdf(doc_filepath, pdf_filename)
+
+        # 파일의 상대 경로를 반환
+        return {
+            "pdf_url": f"/files/{pdf_filename}",
+            "docx_url": f"/files/{doc_filename}"
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -127,3 +139,37 @@ def save_to_word(user_info: Dict[str, str], generated_content: Dict[str, str], f
 
     # Word 파일 저장
     doc.save(SAVE_DIR)
+
+    return SAVE_DIR
+
+# Word 파일을 PDF로 변환하는 함수
+def convert_word_to_pdf(doc_filepath: str, pdf_filename: str):
+    pdf_filepath = os.path.join(BASE_DIR, "docs", pdf_filename)
+    
+    # 여기서 'libreoffice' 명령어를 사용하여 Word를 PDF로 변환
+    command = ["libreoffice", "--headless", "--convert-to", "pdf", "--outdir", os.path.dirname(pdf_filepath), doc_filepath]
+    subprocess.run(command, check=True)
+
+    return pdf_filepath
+
+# PDF 미리보기를 제공하는 라우트
+@sojang_router.get("/preview/{pdf_filename}")
+async def preview_pdf(pdf_filename: str):
+    pdf_filepath = os.path.join(BASE_DIR, "docs", pdf_filename)
+    if not os.path.exists(pdf_filepath):
+        raise HTTPException(status_code=404, detail="PDF 파일을 찾을 수 없습니다.")
+    return FileResponse(pdf_filepath, media_type='application/pdf')
+
+# Word 파일 다운로드를 제공하는 라우트
+@sojang_router.get("/download/{doc_filename}")
+async def download_word_file(doc_filename: str):
+    doc_filepath = os.path.join(BASE_DIR, "docs", doc_filename)
+    if not os.path.exists(doc_filepath):
+        raise HTTPException(status_code=404, detail="Word 파일을 찾을 수 없습니다.")
+    return FileResponse(doc_filepath, media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document', filename=doc_filename)
+
+# 정적 파일 제공 설정 (FastAPI 앱에 설정)
+app.mount("/files", StaticFiles(directory=os.path.join(BASE_DIR, "docs")), name="files")
+
+# 라우터를 FastAPI 앱에 등록
+app.include_router(sojang_router)
