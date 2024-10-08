@@ -84,7 +84,7 @@ pipeline {
         stage ('Build and Push Docker Images') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                    docker.withRegistry('https://index.docker.io/v1/', env.DOCKER_CREDENTIALS_ID) {
                     // Build spring image
                     dir('backend/spring') {
                         sh 'chmod +x gradlew'
