@@ -66,7 +66,7 @@ def toggle_like(request: Request, magazine_id: int, token: str = Depends(get_cur
     check_like_query = """
     SELECT * FROM user_magazine_likes WHERE user_id = %s AND magazine_id = %s
     """
-    with DBConnection.get_connection() as conn:
+    with DBConnection().get_connection() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
             cur.execute(check_like_query, (user['id'], magazine_id))
             existing_like = cur.fetchone()
