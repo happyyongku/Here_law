@@ -1,13 +1,6 @@
 import "./MagazineCustomCard.css";
 
 function MagazineCustomCard({ item }) {
-  // console.log(item.created_at);
-  // console.log(item.content);
-  // console.log(item.title);
-  // console.log(item.likes);
-  // console.log(item.view_count);
-  // console.log(item.category);
-
   return (
     <div className="magazine-custom-card-container">
       <img src="" alt="" className="magazine-custom-card-img" />

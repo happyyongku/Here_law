@@ -16,6 +16,7 @@ import MagazineHotfix from "../components/magazine/magazinehotfix/MagazineHotfix
 import MagazineHotpost from "../components/magazine/magazinehotpost/MagazineHotpost";
 import CaseType from "../components/magazine/magazinemain/CaseType";
 import MagazineDetail from "../components/magazine/magazinemain/MagazineDetail";
+import MagazineMy from "../components/magazine/magazinemy/MagazineMy";
 // import MagazineMy from "../components/magazine/magazinemy/MagazineMy";
 
 import RentDocument from "../pages/RentDocument";
@@ -57,7 +58,7 @@ function AppRoutes() {
         <Route path="hotfix" element={<MagazineHotfix />}></Route>
         <Route path="hotpost" element={<MagazineHotpost />}></Route>
         <Route path="case/:type" element={<CaseType />}></Route>
-        {/* <Route path="my" element={<MagazineMy />}></Route> */}
+        <Route path="my" element={<MagazineMy />}></Route>
       </Route>
       <Route path="/magazine/:id" element={<MagazineDetail />}></Route>
     </Routes>

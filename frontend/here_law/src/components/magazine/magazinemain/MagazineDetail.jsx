@@ -3,7 +3,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 import "./MagazineDetail.css";
 
 // 임시 사진
-import image from "../../../assets/magazine/image.png";
+import image from "../../../assets/magazine/prom3.png";
 import { useEffect, useState } from "react";
 
 function MagazineDetail() {

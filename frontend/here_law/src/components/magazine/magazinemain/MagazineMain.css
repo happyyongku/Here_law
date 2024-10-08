@@ -48,8 +48,13 @@
 }
 
 .magazine-main-header1-article-content {
-  font-size: 18px;
+  /* font-size: 18px; */
   text-align: center;
+  font-size: 14px;
+  display: -webkit-box; /* flexbox 사용 */
+  -webkit-box-orient: vertical; /* 수직 방향으로 정렬 */
+  -webkit-line-clamp: 4; /* 표시할 줄 수 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
 }
 
 .magazine-main-detail-button {
@@ -97,9 +102,14 @@
   width: 570px;
   height: 610px;
   background-color: aquamarine;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
 }
 
 .magazine-main-fetch-box {
+  position: relative;
   width: 570px;
   height: 610px;
   background-color: bisque;
@@ -112,4 +122,12 @@
 .magazine-main-custom-posting-content {
   display: flex;
   justify-content: space-between;
+}
+
+.magazine-main-fetch-button {
+  position: absolute;
+  right: 15px;
+  bottom: 10px;
+  width: 50px;
+  height: 50px;
 }
