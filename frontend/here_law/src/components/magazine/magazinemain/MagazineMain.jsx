@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import MagazineMainHeaderCard from "./MagazineMainHeaderCard";
 import MagazineMainCateCard from "./MagazineMainCateCard";
 import MagazineHotfix from "../magazinehotfix/MagazineHotfix";
@@ -6,24 +7,22 @@ import MagazineMainCustomCard from "./MagazineMainCustomCard";
 import axiosInstance from "../../../utils/axiosInstance";
 import fastaxiosInstance from "../../../utils/fastaxiosInstance";
 import MagazineCustomCard from "./MagazineCustomCard";
+import ViewCard from "./ViewCard";
 import "./MagazineMain.css";
 
 // 임시 이미지 imoprt
 import prom1 from "../../../assets/magazine/prom1.png";
 import prom2 from "../../../assets/magazine/prom2.png";
-import { useEffect, useState } from "react";
+import fetchButton from "../../../assets/magazine/fetchButton.png";
 
 function MagazineMain() {
   const navigate = useNavigate();
 
-  // 기사 유형별 axios 요청이 필요하다
-  // 한번에 받는걸로 정함
-  // 1. 맞춤형
-  // 2. 패치노트
-  // 3. 인기순
-  // 4. 분야별
-
   const [myPosting, setMyPosting] = useState([]);
+  const [viewPosting, setViewPosting] = useState([]);
+  const [recPosting, setRecPosting] = useState([]);
+  const [fetchData, setFetchData] = useState([]);
+  const [firstRecPosting, setFirstRecPosting] = useState("");
 
   // 1. 여기서 axios로 유저 맞춤형 매거진 포스팅 정보 호출 (interest, subsciption)
   const getMagazineData = async () => {
@@ -61,7 +60,7 @@ function MagazineMain() {
         }
       );
       console.log("조회순 포스팅 조회 성공", response.data);
-      // setMyPosting(response.data);
+      setViewPosting(response.data);
     } catch (error) {
       if (error.response && error.response.status === 401) {
         console.log("Token expired. Please log in again.");
@@ -91,7 +90,8 @@ function MagazineMain() {
         }
       );
       console.log("추천순 포스팅 조회 성공", response.data);
-      // setMyPosting(response.data);
+      setRecPosting(response.data);
+      setFirstRecPosting(response.data[0]);
     } catch (error) {
       if (error.response && error.response.status === 401) {
         console.log("Token expired. Please log in again.");
@@ -108,11 +108,38 @@ function MagazineMain() {
     }
   };
 
+  // 4. 패치 노트
+  const getMagazineLFetchData = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axiosInstance.get(
+        "/fastapi_ec2/revision/law-revision/2024-09-26",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("패치노트 조회 성공", response.data);
+      setFetchData(response.data);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        console.log("Token expired. Please log in again.");
+        localStorage.removeItem("token");
+      } else {
+        console.error("Error fetching user data, 패치노트 조회 실패", error);
+      }
+    } finally {
+      // setLoading(false);
+      // 데이터 요청 후 로딩 상태 업데이트
+    }
+  };
+
   useEffect(() => {
-    // getBillData();
     getMagazineData();
     getMagazineViewData();
     getMagazineLikeData();
+    getMagazineLFetchData();
   }, []);
 
   const interests = [
@@ -129,6 +156,8 @@ function MagazineMain() {
     "행정 및 공공법",
   ];
 
+  // console.log(myPosting[0].content);
+
   return (
     <div className="magazine-main">
       <div className="magazine-main-header">
@@ -136,14 +165,18 @@ function MagazineMain() {
           <img className="magazine-main-header1-img1" src={prom1} alt="" />
           <img className="magazine-main-header1-img2" src={prom2} alt="" />
           <h3 className="magazine-main-header1-title">
-            TOP 추천 기사 관심 <br /> 분야 <br /> 조회수 기반
+            TOP 추천 기사 관심 <br /> 분야 <br /> 추천수 기반
           </h3>
           <div className="magazine-main-header1-article-box">
             <div className="magazine-main-header1-article-content">
-              소상공인을 위한 법이 계정되었다. 관련 법에 대한 타협점이 필요로
-              하다.
+              {firstRecPosting.content}
             </div>
-            <button className="magazine-main-detail-button">자세히 보기</button>
+            <button
+              className="magazine-main-detail-button"
+              onClick={() => navigate(`${firstRecPosting.magazine_id}`)}
+            >
+              자세히 보기
+            </button>
           </div>
         </div>
         <div className="magazine-main-header2">
@@ -153,7 +186,7 @@ function MagazineMain() {
           />
           <MagazineMainHeaderCard
             cardTitle={"유저 기반 추천"}
-            navigateButton={() => navigate("hotfix")}
+            navigateButton={() => navigate("my")}
           />
         </div>
       </div>
@@ -170,10 +203,20 @@ function MagazineMain() {
           사용자 선택 TOP AI 포스팅/패치노트
         </div>
         <div className="magazine-main-posting-fetch-body">
-          <div className="magazine-main-posting-box"></div>
+          <div className="magazine-main-posting-box">
+            {/* 여기서 조회수 기반으로 반복문을 돌면 좋겠다. */}
+            {viewPosting.slice(0, 4).map((posting, index) => (
+              <ViewCard key={index} posting={posting} />
+            ))}
+          </div>
           <div className="magazine-main-fetch-box">
             <div>패치노트 바로 가기</div>
-            <img src="" alt="" />
+            <img
+              src={fetchButton}
+              alt="fetchbutton"
+              className="magazine-main-fetch-button"
+              onClick={() => navigate("hotfix")}
+            />
           </div>
         </div>
       </div>

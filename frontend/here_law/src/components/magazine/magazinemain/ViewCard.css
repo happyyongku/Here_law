@@ -1,0 +1,54 @@
+.view-card-container {
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  /* border: 1px solid black; */
+}
+
+.img-alt {
+  width: 120px;
+  height: 120px;
+  background-color: beige;
+}
+
+.view-card-content-box {
+  width: 370px;
+}
+
+.view-card-date {
+  font-size: 10px;
+  opacity: 60%;
+  margin-bottom: 5px;
+}
+
+.view-card-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.view-card-content {
+  font-size: 12px;
+  display: -webkit-box; /* flexbox 사용 */
+  -webkit-box-orient: vertical; /* 수직 방향으로 정렬 */
+  -webkit-line-clamp: 3; /* 표시할 줄 수 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+  margin-bottom: 5px;
+}
+
+.view-card-likes-view {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+}
+
+.view-card-likes {
+  font-size: 12px;
+}
+
+.view-card-view {
+  font-size: 12px;
+}
