@@ -178,3 +178,26 @@ def get_magazines_by_category_endpoint(category: str, request: Request, token: s
                 raise HTTPException(status_code=404, detail=f"해당 카테고리 '{category}'에 해당하는 magazine을 찾을 수 없습니다.")
 
     return magazines  # 카테고리별 magazine 목록 반환
+
+@magazine_router.get("/{magazine_id}/like-status")
+def check_like_status(magazine_id: int, token: str = Depends(get_current_user)):
+    """
+    사용자가 해당 magazine에 좋아요를 눌렀는지 여부를 확인하는 API
+    """
+    # 현재 로그인한 사용자 정보 가져오기
+    user_email = str(token).split("'")[1]
+    # 사용자 정보 조회
+    user = get_user_by_email(user_email)
+    if not user:
+        raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+
+    # 좋아요 여부 확인 쿼리
+    check_like_query = """
+    SELECT 1 FROM user_magazine_likes WHERE user_id = %s AND magazine_id = %s
+    """
+    with DBConnection.get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(check_like_query, (user['id'], magazine_id))
+            existing_like = cur.fetchone()
+
+    return {"liked": bool(existing_like)}  # 좋아요 여부 반환
