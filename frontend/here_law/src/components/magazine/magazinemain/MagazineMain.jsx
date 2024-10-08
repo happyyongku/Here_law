@@ -109,37 +109,37 @@ function MagazineMain() {
   };
 
   // 4. 패치 노트
-  const getMagazineLFetchData = async () => {
-    const token = localStorage.getItem("token");
-    try {
-      const response = await axiosInstance.get(
-        "/fastapi_ec2/revision/law-revision/2024-09-26",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("패치노트 조회 성공", response.data);
-      setFetchData(response.data);
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        console.log("Token expired. Please log in again.");
-        localStorage.removeItem("token");
-      } else {
-        console.error("Error fetching user data, 패치노트 조회 실패", error);
-      }
-    } finally {
-      // setLoading(false);
-      // 데이터 요청 후 로딩 상태 업데이트
-    }
-  };
+  // const getMagazineLFetchData = async () => {
+  //   const token = localStorage.getItem("token");
+  //   try {
+  //     const response = await axiosInstance.get(
+  //       "/fastapi_ec2/revision/law-revision/2024-09-26",
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     console.log("패치노트 조회 성공", response.data);
+  //     setFetchData(response.data);
+  //   } catch (error) {
+  //     if (error.response && error.response.status === 401) {
+  //       console.log("Token expired. Please log in again.");
+  //       localStorage.removeItem("token");
+  //     } else {
+  //       console.error("Error fetching user data, 패치노트 조회 실패", error);
+  //     }
+  //   } finally {
+  //     // setLoading(false);
+  //     // 데이터 요청 후 로딩 상태 업데이트
+  //   }
+  // };
 
   useEffect(() => {
     getMagazineData();
     getMagazineViewData();
     getMagazineLikeData();
-    getMagazineLFetchData();
+    // getMagazineLFetchData();
   }, []);
 
   const interests = [
@@ -225,8 +225,6 @@ function MagazineMain() {
           유저 맞춤형 TOP AI 포스팅
         </div>
         <div className="magazine-main-custom-posting-content">
-          {/* 여기에 기사 카드가 반복문으로 들어가야 한다 */}
-          {/* 요청으로 받아오고 반복 돌려야 한다 */}
           {myPosting.map((item, index) => (
             <MagazineCustomCard key={index} item={item} />
           ))}
