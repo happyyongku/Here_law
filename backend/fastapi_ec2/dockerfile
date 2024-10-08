@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     fontconfig \
     --no-install-recommends
 
-COPY /home/ubuntu/kbg_workspace/S11P21B109/backend/fastapi_ec2/font/NanumGothic.ttf /usr/share/fonts/truetype/nanum/NanumGothic.ttf
+COPY ./font/NanumGothic.ttf /usr/share/fonts/truetype/nanum/NanumGothic.ttf
 
 RUN fc-cache-fv
 
