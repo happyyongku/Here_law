@@ -15,9 +15,9 @@ pipeline {
             steps {
                 script {
                     sshagent (credentials: [env.SSH_KEY]) {
-                        sh 'scp -o StrictHostKeyChecking=no docker-compose-ec2.yml ubuntu@j11b109.p.ssafy.io:/home/ubuntu/j11b109/docker-compose-ec2.yml'
-                        sh 'scp -o StrictHostKeyChecking=no nginx/nginx.conf ubuntu@j11b109.p.ssafy.io:/home/ubuntu/j11b109/nginx/nginx.conf'
-                        sh 'scp -o StrictHostKeyChecking=no DB/init.sql ubuntu@j11b109.p.ssafy.io:/home/ubuntu/j11b109/init.sql'
+                        sh 'scp -P 243 -o StrictHostKeyChecking=no docker-compose-ec2.yml ubuntu@j11b109.p.ssafy.io:/home/ubuntu/j11b109/docker-compose-ec2.yml'
+                        sh 'scp -P 243 -o StrictHostKeyChecking=no nginx/nginx.conf ubuntu@j11b109.p.ssafy.io:/home/ubuntu/j11b109/nginx/nginx.conf'
+                        sh 'scp -P 243 -o StrictHostKeyChecking=no DB/init.sql ubuntu@j11b109.p.ssafy.io:/home/ubuntu/j11b109/init.sql'
                     }
                 }
             }
@@ -36,7 +36,7 @@ pipeline {
                 script{
                     sshagent (credentials: [env.SSH_KEY]) {
                         sh '''
-                            ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 &&
+                            ssh -P 243 -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 &&
                             echo DB_DOMAIN=$DB_DOMAIN > .env &&
                             echo DB_PORT=$DB_PORT >> .env &&
                             echo DB_PORT_SPRING=$DB_PORT_SPRING >> .env &&
@@ -108,7 +108,7 @@ pipeline {
                     echo 'Deploying EC2 and NGINX ...'
                     sshagent (credentials: [env.SSH_KEY]) {
                         sh '''
-                            ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 &&
+                            ssh -P 243 -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 &&
                             echo "shutting down old containers" &&
                             docker-compose -f docker-compose-ec2.yml down &&
                             echo "start pull" &&
