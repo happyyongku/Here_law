@@ -27,24 +27,9 @@ pipeline {
                 }
             }
         }
-        stage('Check varibale') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]){
-                        sh "echo Username: ${DOCKER_USERNAME}"
-                        sh "echo Password: ${DOCKER_PASSWORD}"
-                        sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
-                    }
-                }
-            }
-        }
         stage('Docker login') {
             steps {
                 script {
-                    // echo "DOCKER_CREDENTIALS_ID: ${DOCKER_CREDENTIALS_ID}"
-                    // docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                    //         echo 'Logged in Dockerhub'
-                    //     }
                     try {
                         docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
                             echo 'Logged in Dockerhub'
@@ -149,22 +134,6 @@ pipeline {
             }
         }
 
-        // stage('Run DB migration') {
-        //     steps {
-        //         script {
-        //             sh 'sleep 15'
-        //             sh 'docker exec -i j11b109_postgres_1 psql -U $DB_USERNAME -d postgres -f /docker-entrypoint-initdb.d/init.sql'
-        //         }
-        //     }
-        // }
-
-        // stage('Run postgres') {
-        //     steps {
-        //         script {
-        //             sh 'docker restart j11b109_postgres_1'
-        //         }
-        //     }
-        // }
     }
     post {
         success {
