@@ -8,10 +8,20 @@ from openai import OpenAI
 
 import re
 from datetime import datetime, timedelta, timezone
+from typing import Optional
 
 from utils.db_connection import DBConnection
-from utils.law_service import generate_diff, get_law_infos_by_enforcement_date, reconstruct_law_text_from_sections, get_law_sections_by_law_id, get_law_info_by_law_id
+from utils.law_service import (
+
+    get_law_infos_by_enforcement_date,
+    reconstruct_law_text_from_sections,
+    get_law_sections_by_law_id,
+    get_law_info_by_law_id,
+
+)
 from utils.magazine_service import insert_magazine_article, check_magazine_exists, LAW_CATEGORY
+from utils.magazine_vector_database import MagazineVectorDatabase
+from utils.law_revision_service import generate_diff, generate_and_insert_law_revision
 from psycopg.rows import dict_row
 
 class MagazineUpdateDaemon:
@@ -42,6 +52,7 @@ class MagazineUpdateDaemon:
 
             # 데이터베이스 연결 설정
             self.pool = DBConnection()
+            self.vector_db = MagazineVectorDatabase()
             self.ai_client = OpenAI(api_key=self._OPENAI_API_KEY)
 
             # 스레드 관련 변수 초기화
@@ -94,10 +105,16 @@ class MagazineUpdateDaemon:
         for law_info in law_infos:
             law_id = law_info['law_id']
             self.generate_and_insert_article(law_id, today)
+            self._generate_and_insert_magazine_vector(law_id)
+            generate_and_insert_law_revision(law_id)
+
+    def _generate_and_insert_magazine_vector(self, law_id:str):
+        self.vector_db.insert_magazine_vector(law_id)
     
-    def generate_and_insert_article(self, law_id:str, generation_day=None):
+    def generate_and_insert_article(self, law_id:str, generation_day=None) -> Optional[str]:
         """
             Daemon thread의 작동 여부와 관계없이 law_id 를 주면 자동으로 Chatgpt를 이용해 Article을 생성한다.
+            만약 저장이 완료되었으면 law_id return.
         Args:
             law_id (str): 법령 id
             generation_day (_type_, optional): iso 포맷에 맞는 날짜. 이 날짜에 생성된 걸로 들어가게 된다. format yyyy-mm-dd.\nDefaults to None.
@@ -128,7 +145,7 @@ class MagazineUpdateDaemon:
 
         # 기사 내용을 파싱
         title, category, content = self.parse_article_content(article_content)
-    
+
         if not title or not category or not content:
             logging.error("기사 생성 실패: 제목, 분류, 본문 중 일부가 누락되었습니다.")
             return
@@ -136,6 +153,8 @@ class MagazineUpdateDaemon:
         # 6. 기사를 DB에 저장합니다.
         insert_magazine_article(law_id, title, category, generation_day, content)
         logging.info(f"law_id {law_id}에 대한 기사를 성공적으로 저장했습니다.")
+
+        return law_id
 
     def create_prompt(self, law_text: str, diff_text: str) -> str:
         """ChatGPT에 전달할 프롬프트를 생성합니다."""

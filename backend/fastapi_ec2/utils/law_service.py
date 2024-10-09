@@ -1,10 +1,8 @@
 # 여러 Module에서 사용되는 법 관련 function들의 모음.
 import re
 import logging
-import difflib
 from typing import List, Dict, Optional, Literal
 from psycopg.rows import dict_row
-from pydantic import BaseModel, RootModel
 import xml.etree.ElementTree as ET
 
 from utils.db_connection import DBConnection #Singleton 이므로 생성자를 남발해도 문제 없음.
@@ -95,27 +93,6 @@ def reconstruct_law_text_from_sections(law_sections: List[Dict]) -> str:
     law_text = "\n".join(lines)
     logging.debug(f"reconstruct_law_text: {len(lines)}개의 라인으로 구성된 법령 텍스트를 재구성했습니다.")
     return law_text
-
-def generate_diff(old_text: str, new_text: str) -> Optional[str]:
-    """이전 법령과 새로운 법령의 차이점을 생성합니다. 만약 이전 법령이 없으면(빈 문자열) None return."""
-    if old_text == "":
-        return None
-    
-    diff = difflib.unified_diff(
-        old_text.splitlines(),
-        new_text.splitlines(),
-        fromfile='이전 법령',
-        tofile='신규 법령',
-        lineterm='',
-        n=0
-    )
-
-    
-    diff_text = '\n'.join(diff)
-    if diff_text == "":
-        return None
-    logging.debug("generate_diff: 법령의 차이점을 생성했습니다.")
-    return diff_text
 
 def _xml_to_dict(element):
     """
@@ -220,58 +197,3 @@ def _extract_structure(text):
         full_section = f"{section_type} {section_title}"
         return full_section
     return None
-
-# Model to represent each diff element
-class ClauseDifferenceElement(BaseModel):
-    index: str
-    content: str
-
-# Model to represent a pair of old and new diff elements
-class ClauseDifferencePair(BaseModel):
-    old: List[ClauseDifferenceElement]
-    new: List[ClauseDifferenceElement]
-
-LawDifferenceModel = RootModel[List[ClauseDifferencePair]]
-
-class LawDifferenceWithLawInfo(BaseModel):
-    law_name: str
-    law_id: str
-    proclamation_date:str
-    category: str
-    diff: LawDifferenceModel
-
-def parse_diff(diff_text) -> LawDifferenceModel:
-    # Split the diff text into blocks based on the @@...@@ markers
-    diff_blocks = re.split(r'@@.*@@', diff_text)
-
-    # To store the final result
-    differences = []
-
-    # Loop through each block (skip the first block as it’s before the first @@)
-    for block in diff_blocks[1:]:
-        old_list = []
-        new_list = []
-        
-        # Split the block into lines
-        lines = block.strip().splitlines()
-
-        for line in lines:
-            # Removed lines (old version, marked by '-')
-            if line.startswith('-'):
-                target_list = old_list
-            else: #line.startswith('+'):
-                target_list = new_list
-
-            # Remove the '-' and split into index and content
-            try:
-                index, content = line[1:].split(':', 1)
-            except ValueError: # index로 삼을 만한 게 없음
-                index = ""
-                content = line[1:]
-            target_list.append(ClauseDifferenceElement.model_construct(**{'index': index.strip(), 'content': content.strip()}))
-
-        # Add a pair of old and new dictionaries to differences
-        differences.append(ClauseDifferencePair.model_construct(**{"old" : old_list, "new" : new_list}))
-
-    return differences
-
