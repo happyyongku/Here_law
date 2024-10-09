@@ -4,6 +4,8 @@ import { useLocation } from "react-router-dom";
 import "./SojangResultContainer.css";
 import "./SojangStep2.css";
 
+import PDFIcon from "../../assets/document/pdficon.png";
+
 import SojangIcon from "../../assets/document/sojang.png";
 
 function SojangResultContainer() {
@@ -27,7 +29,10 @@ function SojangResultContainer() {
         </div>
 
         <div className="sojang-result-title">
-          <div className="sojang-result-title-title">소장 작성 완료</div>
+          <div className="sojang-result-title-title">
+            소장 작성 완료{" "}
+            <img src={PDFIcon} alt="pdf-icon" className="sojang-pdf-icon" />{" "}
+          </div>
         </div>
 
         {previewPdfUrl ? (
