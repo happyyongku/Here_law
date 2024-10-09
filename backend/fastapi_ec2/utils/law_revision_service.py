@@ -87,7 +87,7 @@ def parse_diff(diff_text) -> List[ClauseDifferencePair]:
 def insert_law_revision(law_id: str, data: LawDifferenceWithLawInfo, conn_given = None):
     """생성된 law_revision 저장"""
     # Flag to determine whether we need to commit/rollback based on connection ownership
-    sql = "INSERT INTO law_revision (law_id, data) VALUES (%s, %s)"
+    sql = "INSERT INTO law_revision (law_id, data) VALUES (%s, %s) ON CONFLICT DO NOTHING;"
     data_str = data.model_dump_json()
 
     own_connection = conn_given is None
