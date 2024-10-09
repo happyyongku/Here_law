@@ -24,6 +24,7 @@ import DocumentUpload from "../pages/DocumentUpload";
 import DocumentResult from "../pages/DocumentResult";
 
 import SojangInput from "../pages/SojangInput";
+import SojangResult from "../pages/SojangResult";
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -58,7 +59,9 @@ function AppRoutes() {
 
       <Route path="/document/upload" element={<DocumentUpload />} />
       <Route path="/document/result" element={<DocumentResult />} />
+
       <Route path="/sojang/input" element={<SojangInput />} />
+      <Route path="/sojang/result" element={<SojangResult />} />
 
       <Route path="/magazine" element={<Magazine />}>
         <Route path="" element={<MagazineMain />}></Route>
