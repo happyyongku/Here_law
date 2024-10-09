@@ -1,3 +1,6 @@
+from curses.ascii import HT
+from shutil import ExecError
+from turtle import st
 from fastapi import APIRouter, HTTPException, Depends, Request
 from utils.security import get_current_user
 import logging
@@ -201,3 +204,41 @@ def check_like_status(magazine_id: int, token: str = Depends(get_current_user)):
             existing_like = cur.fetchone()
 
     return {"liked": bool(existing_like)}  # 좋아요 여부 반환
+
+@magazine_router.post("/subscribe/{category}")
+def toggle_subscribe_category(category: str, token: str = Depends(get_current_user)):
+    """
+    사용자가 구독 버튼을 눌렀을 때 구독하거나 구독을 해제하는 API
+    """
+    # 사용자 확인
+    user_email = str(token).split("'")[1]
+    user = get_user_by_email(user_email)
+    if not user:
+        raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+    
+    check_subscibe_query = """
+    SELECT * FROM user_subscriptions WHERE user_id = %s AND subscriptions = %s
+    """
+    with DBConnection().get_connection() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            try:
+                cur.execute(check_subscibe_query, (user['id'], category))
+                existing_subscribe = cur.fetchone()
+                print(f"Existing_subscribe: {existing_subscribe}")
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"Error occured in existing_subscribe: {str(e)}")
+            
+            # 구독하였을 경우 구독 해제
+            if existing_subscribe:
+                delete_subscribe_query = "DELETE FROM user_subscriptions WHERE user_id = %s And subscriptions = %s"
+                cur.execute(delete_subscribe_query, (existing_subscribe['user_id'], existing_subscribe['subscriptions']))
+                action = "구독을 해제하였습니다"
+            # 구독하지 않았을 경우 구독
+            else:
+                insert_subscribe_query = "INSERT INTO user_subscriptions (user_id, subscriptions) VALUES (%s, %s)"
+                cur.execute(insert_subscribe_query, (user['id'], category))
+                action = "구독하였습니다"
+                
+            conn.commit()
+            
+    return {"message": action}
