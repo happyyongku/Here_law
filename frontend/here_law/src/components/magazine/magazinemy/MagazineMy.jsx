@@ -85,7 +85,7 @@ function MagazineMy() {
           </div>
           <div className="magazine-my-header-subs">
             <div className="magazine-my-subs-title">구독</div>
-            <div>
+            <div className="magazine-my-interest-card-box">
               {userSubscriptions.map((item, index) => (
                 <MySubCard key={index} item={item} />
               ))}

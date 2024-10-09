@@ -204,7 +204,6 @@ function MagazineMain() {
         </div>
         <div className="magazine-main-posting-fetch-body">
           <div className="magazine-main-posting-box">
-            {/* 여기서 조회수 기반으로 반복문을 돌면 좋겠다. */}
             {viewPosting.slice(0, 4).map((posting, index) => (
               <ViewCard key={index} posting={posting} />
             ))}
