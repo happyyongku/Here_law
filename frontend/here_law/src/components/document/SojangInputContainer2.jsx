@@ -150,16 +150,22 @@ function SojangInputContainer2() {
   return (
     <div className="sojang-input-container">
       <div className="sojang-header">
-        <div>Tip</div>
+        <div className="tip-box">Tip</div>
         <div>아래 내용을 입력하면 소장이 양식에 맞게 생성됩니다.</div>
       </div>
 
       <div className="sojang-page2">
+        <div class="progressbar-wrapper">
+          <div class="progressbar">
+            <div class="active">Step 1</div>
+            <div>Step 2</div>
+          </div>
+        </div>
+
         <div className="sojang-title-title">
           <div>소장 작성</div>
           <img src={SojangIcon} alt="sojang-icon" className="sojang-icon" />
         </div>
-
         <div className="sojang-title-box">
           <div>사건 제목</div>
           <input
@@ -172,7 +178,6 @@ function SojangInputContainer2() {
             // onBlur={handleBlur}
           />
         </div>
-
         {/* TIP 부분이 input 클릭 시에만 표시 */}
         {isTipVisible && (
           <div className="sojang-tip">
@@ -190,9 +195,7 @@ function SojangInputContainer2() {
             </div>
           </div>
         )}
-
         {isLoading && <Loader />}
-
         <div className="sojang-wongo-box">
           <div>
             원고
@@ -298,7 +301,6 @@ function SojangInputContainer2() {
             onChange={(e) => setDefendantPhone(e.target.value)}
           />
         </div>
-
         <div className="sojang-number-box">
           <div>법원명</div>
           <input
@@ -309,7 +311,6 @@ function SojangInputContainer2() {
             onChange={(e) => setCourtName(e.target.value)}
           />
         </div>
-
         <div className="sojang-content-box">
           <div>사건 내용</div>
           <textarea

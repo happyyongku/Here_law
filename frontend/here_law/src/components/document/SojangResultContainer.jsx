@@ -11,7 +11,7 @@ function SojangResultContainer() {
   return (
     <div className="sojang-result-container">
       <div className="sojang-header">
-        <div>결과</div>
+        <div className="tip-box-result">결과</div>
         <div>생성된 소장 정보를 확인하세요.</div>
       </div>
 

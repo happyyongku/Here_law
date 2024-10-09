@@ -9,10 +9,96 @@
   width: 100%;
   height: 46px;
   display: flex;
+  font-size: 14px;
+  align-items: center;
+  padding-left: 50px;
+}
+.tip-box {
+  width: 40px;
+  height: 22px;
+  background-color: #ff5e00;
+  color: white;
+  font-size: 12px;
+  border-radius: 5px;
+  padding-left: 11px;
+  margin-right: 15px;
 }
 
 .sojang-page2 {
   width: 670px;
+}
+
+.progressbar-wrapper {
+  background: #fff;
+  width: 100%;
+  padding-top: 40px;
+  padding-bottom: 100px;
+}
+
+.progressbar div {
+  list-style-type: none;
+  width: 50%;
+  float: left;
+  font-size: 13px;
+  position: relative;
+  text-align: center;
+  text-transform: uppercase;
+  color: #7d7d7d;
+}
+
+.progressbar div:before {
+  width: 40px;
+  height: 40px;
+  content: "";
+  line-height: 40px;
+  border: 2px solid #7d7d7d;
+  display: block;
+  text-align: center;
+  margin: 0 auto 4px auto;
+  border-radius: 50%;
+  position: relative;
+  z-index: 2;
+  background-color: #fff;
+}
+.progressbar div:after {
+  width: 100%;
+  height: 2px;
+  content: "";
+  position: absolute;
+  background-color: #7d7d7d;
+  top: 22px;
+  left: -50%;
+  z-index: 0;
+}
+.progressbar div:first-child:after {
+  content: none;
+}
+
+.progressbar div.active {
+  color: #ff5e00;
+  font-weight: bold;
+}
+.progressbar div.active:before {
+  border-color: #ff5e00;
+  background: green;
+}
+.progressbar div.active + div:after {
+  background-color: #55b776;
+}
+.progressbar div.active:before {
+  background: #55b776 url(user.svg) no-repeat center center;
+  background-size: 60%;
+}
+.progressbar div::before {
+  background: #fff url(user.svg) no-repeat center center;
+  background-size: 60%;
+}
+.progressbar {
+  counter-reset: step;
+}
+.progressbar div:before {
+  content: counter(step);
+  counter-increment: step;
 }
 
 .sojang-title-title {
