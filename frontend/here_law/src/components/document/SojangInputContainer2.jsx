@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "./SojangInputContainer2.css";
+import "./SojangStep.css";
 import LightIcon from "../../assets/search/light.gif";
-import SojangIcon from "../../assets/document/sojang.png";
+
+import WriteIcon from "../../assets/document/sojang2.png";
 
 import axiosInstance from "../../utils/axiosInstance";
 
@@ -164,7 +166,11 @@ function SojangInputContainer2() {
 
         <div className="sojang-title-title">
           <div>소장 작성</div>
-          <img src={SojangIcon} alt="sojang-icon" className="sojang-icon" />
+          <img
+            src={WriteIcon}
+            alt="sojang-write-icon"
+            className="sojang-write-icon"
+          />
         </div>
         <div className="sojang-title-box">
           <div>사건 제목</div>
