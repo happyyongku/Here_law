@@ -5,10 +5,25 @@ from psycopg.rows import dict_row
 
 from datetime import datetime
 
+#법령 카테고리. 법령 데이터에는 저장되지 않고 Magazine에 저장된다.
+LAW_CATEGORY = [
+    "가족법",
+    "형사법",
+    "민사법",
+    "부동산 및 건설",
+    "회사 및 상사법",
+    "국제 및 무역법",
+    "노동 및 고용법",
+    "조세 및 관세법",
+    "지적재산권",
+    "의료 및 보험법",
+    "행정 및 공공법",
+]
+
 def insert_magazine_article(law_id: str, title: str, category: str, current_day: str, content: str, conn_given=None):
     """생성된 기사를 DB에 저장합니다."""
     # Convert the string to a datetime object and set the KST timezone
-    date_obj_kst = datetime.fromisoformat(current_day)
+    date_obj_kst = current_day
     sql = """
     INSERT INTO magazines (
         title,
@@ -32,11 +47,11 @@ def insert_magazine_article(law_id: str, title: str, category: str, current_day:
     ON CONFLICT (law_id) DO NOTHING;
     """
     data = {
-        'title': title,
-        'category': category,
+        'title': title.strip("\""),
+        'category': category.strip("\""),
         'created_at': date_obj_kst,
         'image': None,
-        'content': content,
+        'content': content.strip("\""),
         'view_count': 0,
         'likes': 0,
         'law_id': law_id

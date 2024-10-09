@@ -10,7 +10,7 @@ from utils.law_service import (
     reconstruct_law_text_from_sections,
     generate_diff,
     parse_diff,
-    LawDifferenceModel,
+    LawDifferenceWithLawInfo
 )
 from utils.magazine_service import get_magazine_by_law_id
 from utils.security import get_current_user
@@ -18,7 +18,7 @@ from utils.magazine_update_daemon import MagazineUpdateDaemon
 
 revision_router = APIRouter()
 
-@revision_router.get("/law-revision", response_model=Dict[str, LawDifferenceModel])
+@revision_router.get("/law-revision", response_model=Dict[str, List[LawDifferenceWithLawInfo]])
 def get_law_diffs(
     date: str = Query(..., description="Proclamation date in YYYY-MM-DD format"),
     span: int = Query(30, description="Number of days before the proclamation date"),
@@ -35,7 +35,7 @@ def get_law_diffs(
 
     with DBConnection().get_connection() as conn:
         query = """
-        SELECT law_id, proclamation_date, previous_law_id
+        SELECT law_id, proclamation_date, previous_law_id, law_name_kr
         FROM law_info
         WHERE previous_law_id IS NOT NULL
         AND proclamation_date BETWEEN %s AND %s
@@ -61,13 +61,25 @@ def get_law_diffs(
                     status_code=500,
                     detail="Error generating magazine for revision categorization.",
                 )
+        category = magazine_info["category"]
 
         diff_text = generate_diff(old_text=old_text, new_text=new_text)
+        if diff_text is None: #차이점 없음
+            continue
+
         diff_model = parse_diff(diff_text)
 
-        category = magazine_info["category"]
+        dif_with_info = {
+            "law_name" : row["law_name_kr"],
+            "law_id" : row["law_id"],
+            "proclamation_date" : row["proclamation_date"].strftime('%Y-%m-%d'),
+            "category" : category,
+            "diff" : diff_model
+        }
+
         if category not in result:
             result[category] = []
-        result[category].append(diff_model)
-
+        result[category].append(dif_with_info)
+    with open("test.txt", 'w') as file:
+        file.write(str(result))
     return result

@@ -2,7 +2,7 @@
 import re
 import logging
 import difflib
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Literal
 from psycopg.rows import dict_row
 from pydantic import BaseModel, RootModel
 import xml.etree.ElementTree as ET
@@ -109,7 +109,11 @@ def generate_diff(old_text: str, new_text: str) -> Optional[str]:
         lineterm='',
         n=0
     )
+
+    
     diff_text = '\n'.join(diff)
+    if diff_text == "":
+        return None
     logging.debug("generate_diff: 법령의 차이점을 생성했습니다.")
     return diff_text
 
@@ -224,10 +228,17 @@ class ClauseDifferenceElement(BaseModel):
 
 # Model to represent a pair of old and new diff elements
 class ClauseDifferencePair(BaseModel):
-    old: ClauseDifferenceElement
-    new: ClauseDifferenceElement
+    old: List[ClauseDifferenceElement]
+    new: List[ClauseDifferenceElement]
 
 LawDifferenceModel = RootModel[List[ClauseDifferencePair]]
+
+class LawDifferenceWithLawInfo(BaseModel):
+    law_name: str
+    law_id: str
+    proclamation_date:str
+    category: str
+    diff: LawDifferenceModel
 
 def parse_diff(diff_text) -> LawDifferenceModel:
     # Split the diff text into blocks based on the @@...@@ markers
@@ -238,8 +249,8 @@ def parse_diff(diff_text) -> LawDifferenceModel:
 
     # Loop through each block (skip the first block as it’s before the first @@)
     for block in diff_blocks[1:]:
-        old_dict = None
-        new_dict = None
+        old_list = []
+        new_list = []
         
         # Split the block into lines
         lines = block.strip().splitlines()
@@ -247,26 +258,20 @@ def parse_diff(diff_text) -> LawDifferenceModel:
         for line in lines:
             # Removed lines (old version, marked by '-')
             if line.startswith('-'):
-                # Remove the '-' and split into index and content
+                target_list = old_list
+            else: #line.startswith('+'):
+                target_list = new_list
+
+            # Remove the '-' and split into index and content
+            try:
                 index, content = line[1:].split(':', 1)
-                old_dict = {'index': index.strip(), 'content': content.strip()}
-
-            # Added lines (new version, marked by '+')
-            elif line.startswith('+'):
-                # Remove the '+' and split into index and content
-                index, content = line[1:].split(':', 1)
-                new_dict = {'index': index.strip(), 'content': content.strip()}
-
-        # If old_dict is None (new line added), use an empty dictionary
-        if old_dict is None:
-            old_dict = {'index': '', 'content': ''}
-
-        # If new_dict is None (line removed), use an empty dictionary
-        if new_dict is None:
-            new_dict = {'index': '', 'content': ''}
+            except ValueError: # index로 삼을 만한 게 없음
+                index = ""
+                content = line[1:]
+            target_list.append(ClauseDifferenceElement.model_construct(**{'index': index.strip(), 'content': content.strip()}))
 
         # Add a pair of old and new dictionaries to differences
-        differences.append(ClauseDifferencePair.model_construct(**{"old" : old_dict, "new" : new_dict}))
+        differences.append(ClauseDifferencePair.model_construct(**{"old" : old_list, "new" : new_list}))
 
     return differences
 

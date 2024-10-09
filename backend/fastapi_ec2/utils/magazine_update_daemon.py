@@ -11,7 +11,7 @@ from datetime import datetime, timedelta, timezone
 
 from utils.db_connection import DBConnection
 from utils.law_service import generate_diff, get_law_infos_by_enforcement_date, reconstruct_law_text_from_sections, get_law_sections_by_law_id, get_law_info_by_law_id
-from utils.magazine_service import insert_magazine_article, check_magazine_exists
+from utils.magazine_service import insert_magazine_article, check_magazine_exists, LAW_CATEGORY
 from psycopg.rows import dict_row
 
 class MagazineUpdateDaemon:
@@ -165,13 +165,13 @@ class MagazineUpdateDaemon:
         response = self.ai_client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": """당신은 한국의 법률 기사 작성 기자입니다. 최대 1000자 이내의 길이로 기사를 써주세요. 기사 형식은 다음과 같습니다:
-                 제목:{기사 제목}
-                 분류:{11가지 기사 분류 중 하나}
-                 본문:{기사 본문}
+                {"role": "system", "content": f"""당신은 한국의 법률 기사 작성 기자입니다. 최대 1000자 이내의 길이로 기사를 써주세요. 기사 형식은 다음과 같습니다:
+                 제목:[기사 제목]
+                 분류:[11가지 기사 분류 중 하나]
+                 본문:[기사 본문]
                  
                  11가지 기사 분류는 다음과 같습니다:
-                 가족법, 형사법, 민사법, 부동산 및 건설, 회사 및 상사법, 국제 및 무역법, 노동 및 고용법, 조세 및 관세법, 지적재산권, 의료 및 보험법, 행정 및 공공법"""},
+                 {", ".join(LAW_CATEGORY)}"""},
                 {"role": "user", "content": prompt}
             ]
         )
