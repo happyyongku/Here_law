@@ -224,7 +224,7 @@ function MagazineMain() {
           유저 맞춤형 TOP AI 포스팅
         </div>
         <div className="magazine-main-custom-posting-content">
-          {myPosting.map((item, index) => (
+          {myPosting.slice(0, 5).map((item, index) => (
             <MagazineCustomCard key={index} item={item} />
           ))}
         </div>

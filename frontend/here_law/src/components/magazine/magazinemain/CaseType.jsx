@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import CaseTypeCard from "./CaseTypeCard";
 import CaseLawyerRec from "./CaseLawyerRec";
+import LawyerDetail from "./LawyerDetail";
 import axiosInstance from "../../../utils/axiosInstance";
 import "./CaseType.css";
 
@@ -120,8 +121,8 @@ function CaseType() {
           <div className="case-type-lawyer-rec-title">변호사 추천</div>
           <div>
             {/* 여기에 반복이 들어가야 한다. */}
-            {recedLawyer.map((item, index) => (
-              <CaseLawyerRec key={index} />
+            {recedLawyer.slice(0, 5).map((item, index) => (
+              <CaseLawyerRec key={index} item={item} />
             ))}
             <div></div>
           </div>
@@ -132,6 +133,8 @@ function CaseType() {
           <CaseTypeCard key={index} item={item} />
         ))}
       </div>
+
+      <LawyerDetail />
     </div>
   );
 }

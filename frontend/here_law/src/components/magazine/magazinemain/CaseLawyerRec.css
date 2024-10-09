@@ -1,0 +1,43 @@
+.lawyer-rec-container {
+  display: flex;
+  flex-direction: row;
+  /* justify-content: space-between; */
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.lawyer-rec-img {
+  width: 50px;
+  height: 50px;
+  background-color: black;
+  border-radius: 50%;
+  margin-right: 20px;
+  margin-left: 15px;
+}
+
+.lawyer-rec-text-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.lawyer-rec-nickname {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.lawyer-rec-expertise {
+  font-size: 12px;
+  /* background-color: antiquewhite; */
+}
+
+.lawyer-rec-desc {
+  font-size: 12px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+.lawyer-rec-phone {
+  font-size: 12px;
+}
