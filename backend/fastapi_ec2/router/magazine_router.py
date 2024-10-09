@@ -66,7 +66,7 @@ def toggle_like(request: Request, magazine_id: int, token: str = Depends(get_cur
     check_like_query = """
     SELECT * FROM user_magazine_likes WHERE user_id = %s AND magazine_id = %s
     """
-    with DBConnection.get_connection() as conn:
+    with DBConnection().get_connection() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
             cur.execute(check_like_query, (user['id'], magazine_id))
             existing_like = cur.fetchone()
@@ -82,20 +82,20 @@ def toggle_like(request: Request, magazine_id: int, token: str = Depends(get_cur
                 cur.execute(insert_like_query, (user['id'], magazine_id))
                 action = "좋아요를 추가했습니다."
 
-        # 트랜잭션 커밋 (좋아요 추가/취소 이후에 반영)
-        conn.commit()
+            # 트랜잭션 커밋 (좋아요 추가/취소 이후에 반영)
+            conn.commit()
 
-        # 좋아요 수 카운트 (user_magazine_likes에서 레코드 수 계산)
-        count_likes_query = "SELECT COUNT(*) FROM user_magazine_likes WHERE magazine_id = %s"
-        cur.execute(count_likes_query, (magazine_id,))
-        like_count = cur.fetchone()['count']
-        
-        # magazines 테이블의 likes 필드 업데이트
-        update_magazine_query = "UPDATE magazines SET likes = %s WHERE magazine_id = %s"
-        cur.execute(update_magazine_query, (like_count, magazine_id))
+            # 좋아요 수 카운트 (user_magazine_likes에서 레코드 수 계산)
+            count_likes_query = "SELECT COUNT(*) FROM user_magazine_likes WHERE magazine_id = %s"
+            cur.execute(count_likes_query, (magazine_id,))
+            like_count = cur.fetchone()['count']
+            
+            # magazines 테이블의 likes 필드 업데이트
+            update_magazine_query = "UPDATE magazines SET likes = %s WHERE magazine_id = %s"
+            cur.execute(update_magazine_query, (like_count, magazine_id))
 
-        # 다시 한번 트랜잭션 커밋 (likes 업데이트 반영)
-        conn.commit()
+            # 다시 한번 트랜잭션 커밋 (likes 업데이트 반영)
+            conn.commit()
 
     return {"message": action, "updated_likes": like_count}
 
@@ -195,7 +195,7 @@ def check_like_status(magazine_id: int, token: str = Depends(get_current_user)):
     check_like_query = """
     SELECT 1 FROM user_magazine_likes WHERE user_id = %s AND magazine_id = %s
     """
-    with DBConnection.get_connection() as conn:
+    with DBConnection().get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute(check_like_query, (user['id'], magazine_id))
             existing_like = cur.fetchone()
