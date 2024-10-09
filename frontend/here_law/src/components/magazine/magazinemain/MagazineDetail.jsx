@@ -36,7 +36,7 @@ function MagazineDetail() {
   };
 
   // 추천 여부 axios 요청
-  const [isRec, setIsRec] = useState(false);
+  const [isRec, setIsRec] = useState(null);
   const checkRecRequest = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -46,8 +46,8 @@ function MagazineDetail() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log("포스팅 상세 조회 성공", response.data);
-      setIsRec(response.data);
+      console.log("추천 여부 조회 성공", response.data.liked);
+      setIsRec(response.data.liked);
     } catch (error) {
       if (error.response && error.response.status === 401) {
         console.log("Token expired. Please log in again.");
@@ -106,14 +106,26 @@ function MagazineDetail() {
       </div>
       <img src={image} alt="" className="magazine-detail-img" />
       <div className="magazine-detail-content">{postingDetail.content}</div>
-      <button
-        className="magazine-detail-like-button"
-        onClick={() => {
-          recRequest();
-        }}
-      >
-        개추 button
-      </button>
+
+      {!isRec ? (
+        <button
+          className="magazine-detail-like-button"
+          onClick={() => {
+            recRequest();
+          }}
+        >
+          개추 button
+        </button>
+      ) : (
+        <button
+          className="magazine-detail-like-button"
+          onClick={() => {
+            recRequest();
+          }}
+        >
+          취소 button
+        </button>
+      )}
     </div>
   );
 }

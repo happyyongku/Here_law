@@ -1,0 +1,51 @@
+.magazine-my-container {
+  padding: 50px 170px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.magazine-my-header {
+  /* background-color: bisque; */
+  width: 30%;
+  margin-right: 30px;
+}
+
+.magazine-my-header-title-box {
+  margin-bottom: 25px;
+}
+
+.magazine-my-header-interest {
+  margin-bottom: 15px;
+}
+
+.magazine-my-header-title {
+  font-size: 34px;
+  font-weight: bold;
+}
+
+.magazine-my-header-desc {
+  font-size: 14px;
+}
+
+.magazine-my-content {
+  /* background-color: azure; */
+  width: 70%;
+}
+
+.magazine-my-interest-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.magazine-my-subs-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.magazine-my-interest-card-box {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  gap: 8px;
+}

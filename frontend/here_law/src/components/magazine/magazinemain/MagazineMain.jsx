@@ -31,7 +31,7 @@ function MagazineMain() {
       const response = await axiosInstance.get("/fastapi_ec2/magazine", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("포스팅 조회 성공", response.data);
+      console.log("맞춤형 포스팅 조회 성공", response.data);
       setMyPosting(response.data);
     } catch (error) {
       if (error.response && error.response.status === 401) {
