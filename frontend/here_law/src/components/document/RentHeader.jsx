@@ -6,9 +6,9 @@ function RentHeader() {
     <div>
       <div className="rent-header">
         <div className="rent-header-text">
-          <div className="rent-header-text-title">전세사기 피해 예방</div>
+          <div className="rent-header-text-title">계약서 분석 및 평가</div>
           <div className="rent-header-text-sub">
-            등기부등본을 분석해 위험도를 측정하고 핵심 내용 요약을 제공합니다.
+            계약서의 주요 조항을 분석해 위험 요소를 평가합니다.
           </div>
         </div>
         <img src={RentImage} alt="rent image" className="rent-image" />
