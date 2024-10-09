@@ -232,13 +232,13 @@ def toggle_subscribe_category(category: str, token: str = Depends(get_current_us
             if existing_subscribe:
                 delete_subscribe_query = "DELETE FROM user_subscriptions WHERE user_id = %s And subscriptions = %s"
                 cur.execute(delete_subscribe_query, (existing_subscribe['user_id'], existing_subscribe['subscriptions']))
-                action = "구독을 해제하였습니다"
+                action = True
             # 구독하지 않았을 경우 구독
             else:
                 insert_subscribe_query = "INSERT INTO user_subscriptions (user_id, subscriptions) VALUES (%s, %s)"
                 cur.execute(insert_subscribe_query, (user['id'], category))
-                action = "구독하였습니다"
+                action = False
                 
             conn.commit()
             
-    return {"message": action}
+    return {"response": action}
