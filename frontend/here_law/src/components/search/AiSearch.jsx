@@ -66,7 +66,7 @@ function AiSearch({ isAiMode, onToggle }) {
           headers: {
             Authorization: `Bearer ${token}`, // Add the authorization header
             accept: "application/json",
-          }
+          },
         }
       );
 
