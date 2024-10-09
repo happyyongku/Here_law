@@ -2,7 +2,7 @@ import logging
 
 from utils.db_connection import DBConnection
 from psycopg.rows import dict_row
-
+from typing import List, Dict
 from datetime import datetime
 
 #법령 카테고리. 법령 데이터에는 저장되지 않고 Magazine에 저장된다.
@@ -110,7 +110,27 @@ def get_magazine_by_id(magazine_id):
             cur.execute(query, (magazine_id,))
             return cur.fetchone()
 
-def get_magazine_by_law_id(law_id:str):
+def get_magazines_by_user_liked(user_id: str, limit = 10) -> List[Dict]:
+    """
+    특정 User가 liked 한 Magazine을 최근에 Like한 순서대로 가져옴
+    """
+    query = """
+    SELECT m.magazine_id, m.title, m.category, m.created_at, m.image, m.content, m.view_count, m.likes, m.law_id
+    FROM magazines m
+    JOIN (
+        SELECT magazine_id, created_at
+        FROM user_magazine_likes
+        WHERE user_id = %s
+    ) uml ON m.magazine_id = uml.magazine_id
+    ORDER BY uml.created_at DESC
+    LIMIT %s
+    """
+    with DBConnection().get_connection() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute(query, (user_id, limit))
+            return cur.fetchall()
+
+def get_magazine_by_law_id(law_id:str) -> Dict:
     """
     특정 law_id 에 대한 magazine 정보를 조회합니다.
     """
@@ -123,6 +143,23 @@ def get_magazine_by_law_id(law_id:str):
         with conn.cursor(row_factory=dict_row) as cur:
             cur.execute(query, (law_id,))
             return cur.fetchone()
+
+def get_magazines_by_law_ids(law_ids: List[str]) -> List[Dict]:
+    """
+    주어진 law_id들의 리스트에 해당하는 magazine 정보를 조회합니다.
+    """
+    placeholders = ','.join(['%s'] * len(law_ids))
+    query = f"""
+    SELECT magazine_id, title, category, created_at, image, content, view_count, likes, law_id
+    FROM magazines 
+    WHERE law_id IN ({placeholders})
+    ORDER BY created_at DESC
+    """
+    with DBConnection().get_connection() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute(query, law_ids)
+            return cur.fetchall()
+
 
 def get_recent_magazines(limit=5):
     """
