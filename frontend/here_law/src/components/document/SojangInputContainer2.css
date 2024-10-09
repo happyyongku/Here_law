@@ -187,7 +187,7 @@
 
   outline: none;
   padding: 0 15px;
-  box-sizing: border-box; /* 패딩 포함한 크기 계산 */
+  box-sizing: border-box;
 }
 
 .sojang-submit-button {
