@@ -205,7 +205,7 @@ function MagazineMain() {
         </div>
         <div className="magazine-main-custom-posting-content">
           {myPosting.slice(0, 5).map((item, index) => (
-            <MagazineCustomCard key={index} item={item} />
+            <MagazineCustomCard key={index} item={item} index={index} />
           ))}
         </div>
       </div>

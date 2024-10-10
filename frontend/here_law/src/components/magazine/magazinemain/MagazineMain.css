@@ -7,6 +7,7 @@
   justify-content: space-between;
   height: 600px;
   margin-top: 25px;
+  margin-bottom: 30px;
 }
 
 .magazine-main-header1 {
@@ -87,12 +88,13 @@
 }
 
 .magazine-main-cate-container {
-  margin-bottom: 50px;
+  margin-bottom: 70px;
 }
 
 .magazine-main-cate-title {
-  font-size: 24px;
-  margin-bottom: 20px;
+  font-size: 34px;
+  font-weight: bold;
+  margin-bottom: 25px;
 }
 
 .magazine-main-cate-contents {
@@ -102,7 +104,9 @@
 }
 
 .magazine-main-posting-fetch-title {
-  font-size: 60px;
+  font-size: 34px;
+  font-weight: bold;
+  margin-bottom: 30px;
 }
 
 .magazine-main-posting-fetch-body {
@@ -131,7 +135,9 @@
 }
 
 .magazine-main-custom-title {
-  font-size: 60px;
+  font-size: 34px;
+  font-weight: bold;
+  margin-bottom: 30px;
 }
 
 .magazine-main-custom-posting-content {
@@ -145,4 +151,8 @@
   bottom: 10px;
   width: 50px;
   height: 50px;
+}
+
+.magazine-main-posting-fetch-container {
+  margin-bottom: 60px;
 }
