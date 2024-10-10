@@ -1,0 +1,2 @@
+- [CLOVA OCR](https://www.ncloud.com/product/aiService/ocr)
+- [OPEN AI API](https://platform.openai.com/)
