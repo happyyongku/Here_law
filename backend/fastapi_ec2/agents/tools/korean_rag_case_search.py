@@ -19,7 +19,7 @@ def korean_rag_case_search_factory(db_url, gpu_url, **retriever_kwargs):
     def korean_rag_case_search(query: str) -> Tuple[str, List[int]]:
         """판례 RAG 검색기입니다. user의 상황을 설명하는 한국어 query를 제공하면 비슷한 상황의 판례를 검색하여 제공합니다."""
         results = retriever.invoke(query)
-        doc_separater = "[doc_separater]>"
+        doc_separater = "[doc_separater]"
         result_str = doc_separater
         result_ints = []
         for doc in results:
