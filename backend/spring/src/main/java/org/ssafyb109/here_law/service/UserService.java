@@ -1,8 +1,8 @@
 package org.ssafyb109.here_law.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
@@ -19,20 +19,21 @@ import org.ssafyb109.here_law.repository.jpa.VerificationTokenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 public class UserService {
 
     private static final String UPLOAD_DIR = "/app/here_law_profile_img/";
+    private static final String DEFAULT_PROFILE_IMG = "default.png";
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private final JavaMailSender mailSender;
@@ -118,5 +119,35 @@ public class UserService {
         return fileName.substring(lastIndexOfDot + 1);
     }
 
+    public Resource getCurrentProfileImg() throws Exception {
+        UserEntity userEntity;
+        FileInputStream fileInputStream = null;
+        try {
+            userEntity = getCurrentUserEntity();
+            String path = userEntity.getProfileImg();
+            if (path == null || path.isEmpty()) {
+                path = Paths.get(UPLOAD_DIR).resolve(DEFAULT_PROFILE_IMG).toString();
+            }
+            logger.debug("getCurrentProfileImg Service path:{}", path);
+            FileSystemResource resource = new FileSystemResource(path);
+            if (!resource.exists()) {
+                throw new IOException("File not found: " + path);
+            }
+            return resource;
+        } catch (Exception e) {
+            throw new IOException("File not found: ");
+        }
+    }
+
+    public UserEntity getCurrentUserEntity(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null || !authentication.isAuthenticated())
+            throw new RuntimeException("유저 인증정보가 없거나 인증하지 못했습니다.");
+        String userEmail = authentication.getName();
+        if(userEmail == null)
+            throw new RuntimeException("유저 인증정보는 있지만 유저 Email이 없습니다.");
+        UserEntity userEntity = userJpaRepository.findByEmail(userEmail);
+        return userEntity;
+    }
 }
 

@@ -1,12 +1,13 @@
 package org.ssafyb109.here_law.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.Resource;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,9 @@ import org.ssafyb109.here_law.service.EmailService;
 import org.ssafyb109.here_law.service.EmailVerificationService;
 import org.ssafyb109.here_law.service.UserService;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -162,6 +166,41 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/profileimg")
+    public ResponseEntity<?> getProfileImg() {
+        try {
+            Resource resource = userService.getCurrentProfileImg();
+
+            if (resource == null || !resource.exists()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            // MIME 타입 설정 (파일 확장자에 따라 다를 수 있음)
+            String contentType = Files.probeContentType(Paths.get(resource.getURI()));
+
+            if (contentType == null) {
+                contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE; // 기본 MIME 타입
+            }
+
+            // HTTP 헤더 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType(contentType));
+            logger.debug("parseMediaType :{}", MediaType.parseMediaType(contentType));
+            headers.setContentLength(resource.contentLength()); // 파일 크기 설정
+            logger.debug("resource.contentLength() : {}", resource.contentLength());
+            headers.setContentDisposition(ContentDisposition.inline().filename(resource.getFilename()).build()); // 파일 이름 설정
+            logger.debug("PROFILE IMAGE LOAD Success");
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(resource);
+
+        } catch (IOException e) {
+            logger.error("PROFILE IMAGE LOAD ERROR: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Operation(
             summary = "회원 탈퇴",
