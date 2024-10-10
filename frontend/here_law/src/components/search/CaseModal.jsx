@@ -1,6 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "./CaseModal.css"; // 스타일을 위한 CSS 파일
+import "./CaseModal.css";
+import CloseIcon from "../../assets/mypage/closeimg.png";
+import ModalPen from "../../assets/search/modalpen.png";
+import ModalArrow from "../../assets/search/modalarrow.gif";
 
 const CaseModal = ({ judgmentSummary, closeModal, artifact }) => {
   const navigate = useNavigate();
@@ -17,13 +20,37 @@ const CaseModal = ({ judgmentSummary, closeModal, artifact }) => {
 
       {/* 모달 창 */}
       <div className="modal">
-        <button onClick={closeModal}>닫기</button>
-        <h2>판결 요약</h2>
-        <p>{judgmentSummary}</p>
+        <img
+          src={CloseIcon}
+          alt="close-icon"
+          className="case-modal-close"
+          onClick={closeModal}
+        />
+        <div className="case-madal-summary-title">
+          판결 요약
+          <img src={ModalPen} alt="modal-pen" className="case-modal-pen" />
+        </div>
+        <hr
+          style={{
+            backgroundColor: "#F55e00",
+            height: "1.4px",
+            border: "none",
+          }}
+        />
+        <div className="case-madal-summary-content">{judgmentSummary}</div>
 
         {/* 판례 상세 보기 버튼 */}
-        <button onClick={goToCaseDetail} style={{ marginTop: "20px" }}>
-          판례 상세 보기
+        <button
+          onClick={goToCaseDetail}
+          style={{ marginTop: "20px" }}
+          className="case-modal-detail-go"
+        >
+          상세 보기{" "}
+          <img
+            src={ModalArrow}
+            alt="case-modal-arrow"
+            className="case-modal-arrow"
+          />
         </button>
       </div>
     </>

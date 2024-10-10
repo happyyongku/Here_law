@@ -81,3 +81,22 @@
   align-self: flex-end;
   font-size: 15px;
 }
+
+/* 판례 보여주기 */
+.case-show-button {
+  background-color: transparent;
+  font-size: 14px;
+  font-weight: bold;
+  color: #f55e00;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  display: block;
+
+  padding: 10px;
+}
+
+.case-modal-light-icon {
+  width: 25px;
+  margin-right: 3px;
+}
