@@ -1,9 +1,7 @@
 import "./MagazineHotfixCard.css";
 
 function MagazineHotfixCard({ item }) {
-  // 반복용으로 임시로 만든거임
-  const something = ["", ""];
-  console.log(item[1]);
+  // console.log(item[1]);
 
   return (
     <div className="magazine-hotfix-card-container">
@@ -12,22 +10,28 @@ function MagazineHotfixCard({ item }) {
         <div className="design-box"></div>
       </div>
       <hr />
-      {/* 반복으로 돌려서 컨텐츠 뽑아야 한다. */}
-
       <div className="magazine-hotfix-content-box">
         {item[1].map((item, index) => (
           <div key={index} className="magazine-hotfix-content-box-title">
-            {item.law_name}
+            {/* <div>-------------------------</div> */}
+            <div className="law-name">{item.law_name}</div>
             <div>
               {item.diff.map((item2, index) => (
-                <div key={index}>
+                <div key={index} className="mini-box">
                   {Object.entries(item2).map((item3, index) => (
-                    <div key={index}>
-                      <div>{item3[0]}</div>
+                    <div key={index} className="just-mini-box">
+                      {/* <div>========</div> */}
+                      <div>
+                        {item3[0] === "old" ? (
+                          <div className="rowjdwjs">개정 전</div>
+                        ) : (
+                          <div className="rowjdgn">개정 후</div>
+                        )}
+                      </div>
                       <div>
                         {item3[1].map((item4, index) => (
-                          <div key={index}>
-                            <div>{item4.index}</div>
+                          <div key={index} className="mini-mini-box">
+                            <div className="just-text-title">{item4.index}</div>
                             <div className="magazine-hotfix-content-box-content">
                               {item4.content}
                             </div>
