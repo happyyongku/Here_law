@@ -29,29 +29,6 @@
   margin-bottom: 30px;
 }
 
-.case-type-card-container {
-  display: flex;
-}
-
-.case-type-card-img {
-  width: 118px;
-  height: 118px;
-  background-color: cadetblue;
-}
-
-.case-type-card-box {
-  display: flex;
-  flex-direction: column;
-}
-
-.case-type-card-title {
-  font-size: 24px;
-}
-
-.case-type-card-content {
-  font-size: 12px;
-}
-
 .case-type-lawyer-rec-title {
   font-size: 24px;
   font-weight: bold;
