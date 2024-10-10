@@ -1,13 +1,13 @@
 package org.ssafyb109.here_law.controller;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.Resource;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -27,41 +27,31 @@ import org.ssafyb109.here_law.service.UserService;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 
 @Tag(name = "회원관리")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/spring_api")
 public class UserController {
 
-    @Autowired
-    private UserJpaRepository userJpaRepository;
+    private final UserJpaRepository userJpaRepository;
 
-    @Autowired
-    private LawyerRepository lawyerRepository;
+    private final LawyerRepository lawyerRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
 
-    @Autowired
-    private VerificationTokenRepository verificationTokenRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private EmailVerificationService emailVerificationService;
+    private final EmailVerificationService emailVerificationService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-
-    // 이미지 저장 디렉토리 경로
-    private static final String UPLOAD_DIR = "C:/uploads/images/";
 
     @Operation(
             summary = "회원가입",
@@ -123,21 +113,10 @@ public class UserController {
         logger.info("회원 정보 유효성 검사 통과");
 
         // 파일 업로드 처리
-        String profileImgPath = null;
+        String imgStr = null;
         if (profileImgFile != null && !profileImgFile.isEmpty()) {
             try {
-                String fileName = UUID.randomUUID() + "_" + profileImgFile.getOriginalFilename();
-                Path dirPath = Paths.get(UPLOAD_DIR);
-                if (!Files.exists(dirPath)) {
-                    Files.createDirectories(dirPath); // 디렉토리가 없으면 생성
-                }
-                Path filePath = dirPath.resolve(fileName);
-                Files.write(filePath, profileImgFile.getBytes());
-
-                String serverUrl = "https://j11b109.p.ssafy.io";
-                profileImgPath = serverUrl + "/images/" + fileName;  // 절대 경로
-
-                logger.info("프로필 이미지 저장 완료: {}", profileImgPath);
+                imgStr = userService.uploadProfile(profileImgFile);
             } catch (Exception e) {
                 logger.error("파일 업로드 중 오류 발생: ", e);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 오류가 발생했습니다.");
@@ -149,7 +128,7 @@ public class UserController {
         user.setNickname(userDTO.getNickname());
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setProfileImg(profileImgPath);
+        user.setProfileImg(imgStr);
         user.setUserType(userDTO.getUserType());
         user.setIsFirst(true);
         user.setCreatedDate(LocalDateTime.now());
@@ -187,6 +166,41 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/profileimg")
+    public ResponseEntity<?> getProfileImg() {
+        try {
+            Resource resource = userService.getCurrentProfileImg();
+
+            if (resource == null || !resource.exists()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            // MIME 타입 설정 (파일 확장자에 따라 다를 수 있음)
+            String contentType = Files.probeContentType(Paths.get(resource.getURI()));
+
+            if (contentType == null) {
+                contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE; // 기본 MIME 타입
+            }
+
+            // HTTP 헤더 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType(contentType));
+            logger.debug("parseMediaType :{}", MediaType.parseMediaType(contentType));
+            headers.setContentLength(resource.contentLength()); // 파일 크기 설정
+            logger.debug("resource.contentLength() : {}", resource.contentLength());
+            headers.setContentDisposition(ContentDisposition.inline().filename(resource.getFilename()).build()); // 파일 이름 설정
+            logger.debug("PROFILE IMAGE LOAD Success");
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(resource);
+
+        } catch (IOException e) {
+            logger.error("PROFILE IMAGE LOAD ERROR: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Operation(
             summary = "회원 탈퇴",
@@ -207,7 +221,6 @@ public class UserController {
     @DeleteMapping("/user/profile") //회원 탈퇴
     public ResponseEntity<String> deleteUser(Authentication authentication, @RequestBody UserDeleteDTO userDeleteDTO) {
         logger.info("회원 탈퇴 요청 수신");
-
         UserEntity user = userJpaRepository.findByEmail(authentication.getName());
         logger.debug("현재 사용자: {}", user.getEmail());
 
