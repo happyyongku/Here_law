@@ -3,14 +3,46 @@ import { useLocation } from "react-router-dom";
 
 import "./SojangResultContainer.css";
 import "./SojangStep2.css";
+import axiosInstance from "../../utils/axiosInstance";
 
 import PDFIcon from "../../assets/document/pdficon.png";
 
 function SojangResultContainer() {
   const location = useLocation();
   const { pdfUrl, previewPdfUrl, docxUrl } = location.state || {};
-
+  console.log(docxUrl);
   console.log(previewPdfUrl);
+
+  // docxUrl에서 파일명 부분 추출
+  const doc_filename = docxUrl ? docxUrl.split("/").pop() : null;
+  console.log(doc_filename);
+
+  // 파일명을 인코딩하여 URL 생성
+  const encodedDownloadUrl = `http://3.36.85.129:8000/fastapi_ec2/sojang/download/${encodeURIComponent(
+    doc_filename
+  )}`;
+  console.log(encodedDownloadUrl);
+
+  // Word 파일 다운로드 함수
+  const handleWordDownload = async () => {
+    try {
+      const response = await axiosInstance.get(encodedDownloadUrl, {
+        responseType: "blob", // 파일 데이터를 Blob 형식으로 가져옴
+      });
+
+      // Blob을 사용하여 파일 다운로드
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", doc_filename); // 다운로드할 파일명 설정
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Word 파일 다운로드 실패:", error);
+    }
+  };
+
   return (
     <div className="sojang-result-container">
       <div className="sojang-header">
@@ -36,7 +68,7 @@ function SojangResultContainer() {
         {previewPdfUrl ? (
           <div className="sojang-pdf-viewer">
             <iframe
-              src={previewPdfUrl} // previewPdfUrl로 PDF 렌더링
+              src={previewPdfUrl}
               title="소장 PDF 미리보기"
               width="100%"
               height="1130px"
@@ -49,11 +81,9 @@ function SojangResultContainer() {
         )}
 
         <div className="sojang-down-wrap">
-          {pdfUrl && (
-            <div>
-              <a href={pdfUrl} download="소장.pdf">
-                <div className="sojang-down-button">PDF 다운로드</div>
-              </a>
+          {doc_filename && (
+            <div onClick={handleWordDownload}>
+              <div className="sojang-down-button">Word 다운로드</div>
             </div>
           )}
         </div>
