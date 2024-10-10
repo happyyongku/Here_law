@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import CaseTypeCard from "./CaseTypeCard";
-// import CaseLawyerRec from "./CaseLawyerRec";
 import axiosInstance from "../../../utils/axiosInstance";
 import "./CaseType.css";
 
 function CaseType() {
   const { type } = useParams();
-
   const [categoryData, setCategoryData] = useState([]);
 
-  // 카테고리 데이터 axios 코드를 작성
+  // 1. 카테고리 데이터 axios 코드를 작성
   const getMagazineLCateData = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -37,7 +35,8 @@ function CaseType() {
     }
   };
 
-  // 구독 요청 axios
+  // 2. 구독 요청 axios
+  const [forRand, setForRand] = useState(true);
   const subscriptionRequest = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -50,8 +49,8 @@ function CaseType() {
           },
         }
       );
-      console.log("카테고리 구독 성공", response.data);
-      // setCategoryData(response.data);
+      console.log("카테고리 구독 성공", response.data.response);
+      setForRand(!forRand);
     } catch (error) {
       if (error.response && error.response.status === 401) {
         console.log("Token expired. Please log in again.");
@@ -65,38 +64,42 @@ function CaseType() {
     }
   };
 
-  // 변호사 추천 axios
-  // const [recedLawyer, setRecedLawyer] = useState([]);
-  // const getLawyerRec = async () => {
-  //   const token = localStorage.getItem("token");
-  //   try {
-  //     const response = await axiosInstance.get(
-  //       `/fastapi_ec2/lawyer/recommended-lawyers-cosine`,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-  //     console.log("변호사 추천 조회 성공", response.data);
-  //     setRecedLawyer(response.data);
-  //   } catch (error) {
-  //     if (error.response && error.response.status === 401) {
-  //       console.log("Token expired. Please log in again.");
-  //       localStorage.removeItem("token");
-  //     } else {
-  //       console.error("Error fetching user data, 변호사 추천 실패", error);
-  //     }
-  //   } finally {
-  //     // setLoading(false);
-  //     // 데이터 요청 후 로딩 상태 업데이트
-  //   }
-  // };
+  // 3. 구독 여부 axios 요청
+  const [isSubscribed, setIsSubscribed] = useState(null);
+  const getIsSubscribe = async () => {
+    const token = localStorage.getItem("token");
+    // console.log(type);
+    try {
+      const response = await axiosInstance.get(
+        `/fastapi_ec2/magazine/subscribe_check/${type}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("카테고리 구독여부 조회 성공", response.data);
+      setIsSubscribed(response.data.subscribe);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        console.log("Token expired. Please log in again.");
+        localStorage.removeItem("token");
+      } else {
+        console.error(
+          "Error fetching user data, 카테고리 구독여부 조회 실패",
+          error
+        );
+      }
+    } finally {
+      // setLoading(false);
+      // 데이터 요청 후 로딩 상태 업데이트
+    }
+  };
 
   useEffect(() => {
     getMagazineLCateData();
-    // getLawyerRec();
-  }, []);
+    getIsSubscribe();
+  }, [forRand]);
 
   return (
     <div className="case-type-container">
@@ -107,24 +110,26 @@ function CaseType() {
           부동산 관련 사건 등 다양한 민사 사건에 대한 포스팅을 인공지능을 통해서
           제공합니다.
         </div>
-        <button
-          className="case-subscribe-button"
-          onClick={() => {
-            subscriptionRequest();
-          }}
-        >
-          SUBSCRIBE
-        </button>
 
-        {/* <div className="case-type-lawyer-rec">
-          <div className="case-type-lawyer-rec-title">변호사 추천</div>
-          <div>
-            {recedLawyer.slice(0, 5).map((item, index) => (
-              <CaseLawyerRec key={index} item={item} />
-            ))}
-            <div></div>
-          </div>
-        </div> */}
+        {!isSubscribed ? (
+          <button
+            className="case-subscribe-button"
+            onClick={() => {
+              subscriptionRequest();
+            }}
+          >
+            SUBSCRIBE
+          </button>
+        ) : (
+          <button
+            className="case-subscribe-button"
+            onClick={() => {
+              subscriptionRequest();
+            }}
+          >
+            SUBSCRIBE x
+          </button>
+        )}
       </div>
       <div className="case-type-content-box">
         {categoryData.map((item, index) => (
