@@ -60,6 +60,10 @@ def get_recommended_lawyers_by_cosine_similarity(token: str = Depends(get_curren
     vectorizer = TfidfVectorizer()
     vectors = vectorizer.fit_transform([user_profile] + lawyer_profiles)
     cosine_similarities = cosine_similarity(vectors[0:1], vectors[1:]).flatten()
+    print(f"User profile: {user_profile}")
+    print(f"Lawyer profiles: {lawyer_profiles}")
+    print(f"Cosine similarities: {cosine_similarities}")
+
 
     # 유사도 정렬 및 상위 10명 추출
     lawyer_similarity_scores = sorted(zip(lawyer_ids, cosine_similarities), key=lambda x: x[1], reverse=True)
