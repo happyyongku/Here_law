@@ -16,8 +16,18 @@ function MagazineCustomCard({ item, index }) {
   const navigate = useNavigate();
   return (
     <div className="magazine-custom-card-container">
-      <img src={imgArray[index]} alt="" className="magazine-custom-card-img" />
-      <div onClick={() => navigate(`/magazine/${item.magazine_id}`)}>
+      <img
+        src={imgArray[index]}
+        alt="my-rec-img"
+        className="magazine-custom-card-img"
+      />
+      <div
+        onClick={() =>
+          navigate(`/magazine/${item.magazine_id}`, {
+            state: { image1: imgArray[index] },
+          })
+        }
+      >
         <div className="magazine-custom-card-title">{item.title}</div>
         <div className="magazine-custom-card-etc-info">
           <div className="magazine-custom-date">{item.created_at}</div>
