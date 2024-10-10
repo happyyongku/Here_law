@@ -4,10 +4,17 @@ import MySubCard from "./MySubCard";
 import MyIntCard from "./MyIntCard";
 import CaseLawyerRec from "../magazinemain/CaseLawyerRec";
 import axiosInstance from "../../../utils/axiosInstance";
+import LawyerDetail from "../magazinemain/LawyerDetail";
 import "./MagazineMy.css";
 
 function MagazineMy() {
   const [myPosting, setMyPosting] = useState([]);
+
+  // 모달관련 코드 작성하는 곳
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [lawyerId, setLawyerId] = useState(0);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   // 1. 여기서 axios로 유저 맞춤형 매거진 포스팅 정보 호출 (interest, subsciption)
   const getMagazineData = async () => {
@@ -127,7 +134,12 @@ function MagazineMy() {
             <div>
               {/* 여기에 반복이 들어가야 한다. */}
               {recedLawyer.slice(0, 5).map((item, index) => (
-                <CaseLawyerRec key={index} item={item} />
+                <CaseLawyerRec
+                  key={index}
+                  item={item}
+                  onClick={openModal}
+                  setLawyerId={setLawyerId}
+                />
               ))}
               <div></div>
             </div>
@@ -139,6 +151,12 @@ function MagazineMy() {
           <MyCard key={index} item={item} index={index} />
         ))}
       </div>
+      {/* <button onClick={openModal}></button> */}
+      <LawyerDetail
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        lawyerId={lawyerId}
+      />
     </div>
   );
 }
