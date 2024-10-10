@@ -125,15 +125,26 @@
   align-items: center;
   justify-content: space-evenly;
 }
-
 .magazine-main-fetch-box {
   position: relative;
   width: 570px;
   height: 610px;
-  background-color: bisque;
   border-radius: 0px 10px 10px 0px;
+  background-image: url("../../../assets/magazine/note1.png");
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.3s ease;
 }
 
+.magazine-main-fetch-box:hover {
+  transform: scale(1.02);
+}
+.fetch-title {
+  font-size: 35px;
+  color: white;
+  margin-top: 480px;
+  margin-left: 50px;
+}
 .magazine-main-custom-title {
   font-size: 34px;
   font-weight: bold;
