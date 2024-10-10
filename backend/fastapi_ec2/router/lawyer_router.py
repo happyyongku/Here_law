@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
 from utils.security import get_current_user
 from psycopg.rows import dict_row
 from utils.db_connection import DBConnection
@@ -14,7 +14,7 @@ db_connection = DBConnection()
 
 # 사용자 구독 정보와 관심사를 기반으로 코사인 유사도로 변호사 추천
 @lawyer_router.get("/recommended-lawyers-cosine")
-def get_recommended_lawyers_by_cosine_similarity(user: User = Depends(get_current_user)):
+def get_recommended_lawyers_by_cosine_similarity(request: Request, user: User = Depends(get_current_user)):
     """
     사용자의 구독 정보와 관심사를 기반으로 코사인 유사도를 계산하여 관련 변호사를 추천하는 API.
     유사도가 높은 변호사들을 포인트 순으로 정렬하여 상위 10명 반환.
