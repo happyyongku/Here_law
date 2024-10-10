@@ -3,7 +3,7 @@ import postingindeximg from "../../../assets/magazine/postingindeximg.png";
 
 function MyCard({ item, index }) {
   const navigate = useNavigate();
-  console.log(item);
+  // console.log(item);
   return (
     <div className="case-type-card-container">
       {index % 2 === 0 ? (
