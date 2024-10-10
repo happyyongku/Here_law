@@ -1,11 +1,11 @@
 .my-int-card-container {
-  width: 75px;
-  height: 100px;
-  background-color: azure;
-  display: flex;
+  /* width: 75px;
+  height: 100px; */
+  /* background-color: azure; */
+  /* display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: center; */
   margin-bottom: 15px;
 }
 
@@ -16,8 +16,12 @@
 }
 
 .my-int-card-text {
-  width: 100%;
+  /* width: 100%; */
+  border: 1px solid #ff5e00;
+  color: #ff5e00;
+  border-radius: 5px;
+  padding: 4px;
   font-size: 12px;
-  background-color: aquamarine;
+  /* background-color: aquamarine; */
   text-align: center;
 }
