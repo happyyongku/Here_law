@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import "./Header.css";
-import logo from "../../assets/common/logo.gif";
+import logo from "../../assets/common/logo_white.gif";
 
 function Header() {
   const navigate = useNavigate(); // useNavigate 훅 사용
