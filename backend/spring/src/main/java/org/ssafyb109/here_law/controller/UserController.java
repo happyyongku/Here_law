@@ -5,7 +5,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,12 +23,7 @@ import org.ssafyb109.here_law.repository.jpa.VerificationTokenRepository;
 import org.ssafyb109.here_law.service.EmailService;
 import org.ssafyb109.here_law.service.EmailVerificationService;
 import org.ssafyb109.here_law.service.UserService;
-import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -114,11 +108,23 @@ public class UserController {
 
         logger.info("회원 정보 유효성 검사 통과");
 
+        // 파일 업로드 처리
+        String imgStr = null;
+        if (profileImgFile != null && !profileImgFile.isEmpty()) {
+            try {
+                imgStr = userService.uploadProfile(profileImgFile);
+            } catch (Exception e) {
+                logger.error("파일 업로드 중 오류 발생: ", e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 오류가 발생했습니다.");
+            }
+        }
+
         // UserEntity 생성 및 저장
         UserEntity user = new UserEntity();
         user.setNickname(userDTO.getNickname());
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setProfileImg(imgStr);
         user.setUserType(userDTO.getUserType());
         user.setIsFirst(true);
         user.setCreatedDate(LocalDateTime.now());
@@ -129,16 +135,6 @@ public class UserController {
 
         userJpaRepository.save(user);  // 사용자 저장
         logger.info("사용자 정보 저장 완료: {}", user.getEmail());
-
-        // 파일 업로드 처리
-        if (profileImgFile != null && !profileImgFile.isEmpty()) {
-            try {
-                userService.uploadProfile(profileImgFile);
-            } catch (Exception e) {
-                logger.error("파일 업로드 중 오류 발생: ", e);
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 오류가 발생했습니다.");
-            }
-        }
 
         // 변호사일 경우 LawyerEntity 생성 및 저장
         if ("lawyer".equals(userDTO.getUserType()) && userDTO.getLawyerDTO() != null) {

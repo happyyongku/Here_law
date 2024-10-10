@@ -69,12 +69,10 @@ public class UserService {
         }
     }
 
-    public void uploadProfile(MultipartFile file) {
+    public String uploadProfile(MultipartFile file) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null || !authentication.isAuthenticated())
             throw new RuntimeException("유저 인증정보가 없거나 인증하지 못했습니다.");
-
-        UserEntity userEntity = userJpaRepository.findByEmail((String) authentication.getPrincipal());
 
         String originalFileName = file.getOriginalFilename();
         if (originalFileName == null || originalFileName.isEmpty()) {
@@ -104,11 +102,8 @@ public class UserService {
             // 파일 저장 (기존 파일이 있는 경우 덮어쓰기)
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            // 파일 경로를 절대 경로로 설정
-            userEntity.setProfileImg(filePath.toAbsolutePath().toString());
-            userJpaRepository.save(userEntity);
-
             logger.info("File uploaded successfully: {}", filePath.toString());
+            return filePath.toString();
         } catch (IOException e) {
             logger.info("File uploaded failed: {}", e.getMessage());
             throw new RuntimeException("Failed to upload file", e);
