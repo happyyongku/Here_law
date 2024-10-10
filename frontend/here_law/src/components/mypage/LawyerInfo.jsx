@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LawyerInfoModal from "./LawyerInfoModal";
 import lawyermark from "../../assets/mypage/lawyermark.png";
@@ -51,6 +51,33 @@ function LawyerInfo({
       console.log("로그아웃 실패", error);
     }
   };
+
+  // // 프로필 이미지 호출 axios
+  // const [userImg, setUserImg] = useState(null);
+  // const getUserImg = async () => {
+  //   const token = localStorage.getItem("token");
+  //   try {
+  //     const response = await axiosInstance.get("/spring_api/profileimg", {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+  //     console.log("회원 이미지 조회 성공", response.data);
+  //     // setUserImg(response.data);
+  //   } catch (error) {
+  //     if (error.response && error.response.status === 401) {
+  //       console.log("Token expired. Please log in again.");
+  //       localStorage.removeItem("token");
+  //     } else {
+  //       console.error("회원 이미지 조회 실패", error);
+  //     }
+  //   } finally {
+  //     // setLoading(false);
+  //     // 데이터 요청 후 로딩 상태 업데이트
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   getUserImg();
+  // }, []);
 
   return (
     <>

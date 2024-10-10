@@ -15,6 +15,15 @@ import prom1 from "../../../assets/magazine/prom1.png";
 import prom2 from "../../../assets/magazine/prom2.png";
 import fetchButton from "../../../assets/magazine/fetchButton.png";
 
+import mainimg from "../../../assets/magazine/mainimg.png";
+import dbtmxlxldk from "../../../assets/magazine/dbtmxlxldk.png";
+import usti from "../../../assets/magazine/usti.png";
+import file from "../../../assets/magazine/file.png";
+
+import fetchimg from "../../../assets/magazine/fetchimg.png";
+
+import Noteimg from "../../../assets/magazine/note1.png";
+
 function MagazineMain() {
   const navigate = useNavigate();
 
@@ -132,11 +141,13 @@ function MagazineMain() {
     <div className="magazine-main">
       <div className="magazine-main-header">
         <div className="magazine-main-header1">
-          <img className="magazine-main-header1-img1" src={prom1} alt="" />
-          <img className="magazine-main-header1-img2" src={prom2} alt="" />
-          <h3 className="magazine-main-header1-title">
-            TOP 추천 기사 관심 <br /> 분야 <br /> 추천수 기반
-          </h3>
+          {/* <img className="magazine-main-header1-img1" src={prom1} alt="" /> */}
+          <img className="magazine-main-header1-img2" src={file} alt="" />
+          <div className="magazine-main-title-background">
+            <h3 className="magazine-main-header1-title">
+              TOP 추천 기사 관심 <br /> 분야 <br /> 추천수 기반
+            </h3>
+          </div>
           <div className="magazine-main-header1-article-box">
             <div className="magazine-main-header1-article-content">
               {firstRecPosting.content}
@@ -151,7 +162,8 @@ function MagazineMain() {
         </div>
         <div className="magazine-main-header2">
           <MagazineMainHeaderCard
-            cardTitle={"법제처 긴급 hot fix"}
+            cardTitle={"법제처 hot fix"}
+            fetchimg={fetchimg}
             navigateButton={() => navigate("hotfix")}
           />
           <MagazineMainHeaderCard
@@ -164,7 +176,7 @@ function MagazineMain() {
         <div className="magazine-main-cate-title">분야 선택하기</div>
         <div className="magazine-main-cate-contents">
           {interests.map((item, index) => (
-            <MagazineMainCateCard key={index} item={item} />
+            <MagazineMainCateCard key={index} item={item} index={index} /> // index 전달
           ))}
         </div>
       </div>
@@ -175,11 +187,11 @@ function MagazineMain() {
         <div className="magazine-main-posting-fetch-body">
           <div className="magazine-main-posting-box">
             {viewPosting.slice(0, 4).map((posting, index) => (
-              <ViewCard key={index} posting={posting} />
+              <ViewCard key={index} posting={posting} index={index} />
             ))}
           </div>
           <div className="magazine-main-fetch-box">
-            <div>패치노트 바로 가기</div>
+            <div className="fetch-title">패치노트 바로 가기</div>
             <img
               src={fetchButton}
               alt="fetchbutton"
@@ -195,7 +207,7 @@ function MagazineMain() {
         </div>
         <div className="magazine-main-custom-posting-content">
           {myPosting.slice(0, 5).map((item, index) => (
-            <MagazineCustomCard key={index} item={item} />
+            <MagazineCustomCard key={index} item={item} index={index} />
           ))}
         </div>
       </div>

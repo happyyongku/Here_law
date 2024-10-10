@@ -10,8 +10,9 @@
 .img-alt {
   width: 120px;
   height: 120px;
-  background-color: beige;
+
   border-radius: 10px;
+  object-fit: cover; /* 이미지 비율을 유지하면서 크기에 맞춤 */
 }
 
 .view-card-content-box {
