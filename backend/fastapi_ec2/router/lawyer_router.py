@@ -44,7 +44,6 @@ def get_recommended_lawyers_by_cosine_similarity(token: str = Depends(get_curren
             subscriptions_query = """
             SELECT subscriptions FROM user_subscriptions WHERE user_id = %s
             """
-            cur.execute(subscriptions_query, (user['id'],))
             subscriptions = [row['subscriptions'] for row in cur.fetchall()]
 
             # 사용자 데이터 벡터화 준비
