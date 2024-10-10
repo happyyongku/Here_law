@@ -22,7 +22,11 @@ function ViewCard({ posting, index = 0 }) {
   return (
     <div
       className="view-card-container"
-      onClick={() => navigate(`/magazine/${posting.magazine_id}`)}
+      onClick={() =>
+        navigate(`/magazine/${posting.magazine_id}`, {
+          state: { image1: images[index] },
+        })
+      }
     >
       <img src={selectedImage} alt="" className="img-alt" />
       <div className="view-card-content-box">

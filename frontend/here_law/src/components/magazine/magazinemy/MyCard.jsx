@@ -14,7 +14,9 @@ function MyCard({ item, index }) {
           <div
             className="case-type-card-box"
             onClick={() => {
-              navigate(`/magazine/${item.magazine_id}`);
+              navigate(`/magazine/${item.magazine_id}`, {
+                state: { image1: array1[index] },
+              });
             }}
           >
             <div className="case-type-card-content-header">
@@ -36,7 +38,9 @@ function MyCard({ item, index }) {
           <div
             className="case-type-card-box"
             onClick={() => {
-              navigate(`/magazine/${item.magazine_id}`);
+              navigate(`/magazine/${item.magazine_id}`, {
+                state: { image1: array1[index] },
+              });
             }}
           >
             <div className="case-type-card-content-header">
