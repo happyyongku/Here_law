@@ -4,8 +4,6 @@ import "./MagazineHotfix.css";
 import { useEffect, useState } from "react";
 
 function MagazineHotfix() {
-  const something = ["", "", ""];
-
   // 변호사 추천 axios
   const [hotfixData, setHotfixData] = useState([]);
   const getLawyerRec = async () => {
