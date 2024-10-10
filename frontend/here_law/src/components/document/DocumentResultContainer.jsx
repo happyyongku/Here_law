@@ -6,6 +6,7 @@ import "./DocumentResultContainer.css";
 function DocumentResultContainer() {
   const location = useLocation();
   const { analysis } = location.state || {}; // 전달된 state의 analysis 추출
+  console.log(analysis);
 
   // 제목, 유리한 조항, 불리한 조항, 결론을 분리
   const [sectionTitle, setSectionTitle] = useState("");
@@ -15,39 +16,36 @@ function DocumentResultContainer() {
 
   useEffect(() => {
     if (analysis) {
-      const titleMatch = analysis.match(/\*\*(.*?)\*\*/);
-      const favorableMatch = analysis.match(
-        /1. 사용자에게 유리한 조항:[\s\S]*?(?=2. 사용자에게 불리한 조항:)/
-      );
+      // 제목 매칭
+      const titleMatch = analysis.match(/(?<=\*\*)(제[0-9]+조.*?)(?=\*\*)/);
+
+      // 불리한 조항 매칭
       const unfavorableMatch = analysis.match(
-        /2. 사용자에게 불리한 조항:[\s\S]*?(?=결론:)/
+        /(?<=\*\*불리한 조항:\*\*\s*)([\s\S]*?)(?=\*\*유리한 조항|\*\*결론|$)/
       );
-      const conclusionMatch = analysis.match(/결론:[\s\S]*/);
+      // 유리한 조항 매칭
+      const favorableMatch = analysis.match(
+        /(?<=\*\*유리한 조항:\*\*\s*)([\s\S]*?)(?=\*\*불리한 조항|\*\*결론|$)/
+      );
+      // 결론 매칭
+      const conclusionMatch = analysis.match(/(?<=\*\*결론\*\*\s*)([\s\S]*)/);
 
-      const cleanText = (text) =>
-        text
-          .replace(/\*\*/g, "")
-          .replace(/^-+\s*/gm, "")
-          .trim();
+      const cleanText = (text) => text.replace(/\*\*/g, "").trim();
 
-      setSectionTitle(titleMatch ? cleanText(titleMatch[1]) : "제목 없음");
+      setSectionTitle(titleMatch ? cleanText(titleMatch[0]) : "제목 없음");
       setFavorableClause(
         favorableMatch
-          ? cleanText(
-              favorableMatch[0].replace("1. 사용자에게 유리한 조항:", "")
-            )
+          ? cleanText(favorableMatch[0])
           : "분석된 유리한 조항이 없습니다."
       );
       setUnfavorableClause(
         unfavorableMatch
-          ? cleanText(
-              unfavorableMatch[0].replace("2. 사용자에게 불리한 조항:", "")
-            )
+          ? cleanText(unfavorableMatch[0])
           : "분석된 불리한 조항이 없습니다."
       );
       setConclusion(
         conclusionMatch
-          ? cleanText(conclusionMatch[0].replace("결론:", ""))
+          ? cleanText(conclusionMatch[0])
           : "분석된 결론이 없습니다."
       );
     }
