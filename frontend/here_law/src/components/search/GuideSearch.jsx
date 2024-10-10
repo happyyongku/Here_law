@@ -1,11 +1,14 @@
 import { useEffect } from "react";
 import "./GuideSearch.css";
+import KeyWordGif from "../../assets/search/keywordgif.gif";
+import Guide3 from "../../assets/search/guide3.png";
+import Guide4 from "../../assets/search/guide4.png";
 
 function GuideSearch() {
   useEffect(() => {
     const handleScroll = () => {
       const elements = document.querySelectorAll(
-        ".guide-title, .guide-subtitle, .guide-result, .guide-image, .guide-result-document, .guide-result-magazine"
+        ".guide-title, .guide-subtitle,.guide-result-document2, .guide-result, .guide-sojang-image, .guide-image, .guide-result-document, .guide-result-magazine,  .guide-result-magazine2"
       );
       const windowHeight = window.innerHeight;
 
@@ -27,19 +30,28 @@ function GuideSearch() {
   return (
     <div className="search-guide-box">
       <div className="guide-wrap">
-        <div className="guide-title">더 빠르고 정확한 검색</div>
+        <div className="guide-title">
+          더 빠르고{" "}
+          <span style={{ fontWeight: "bold", color: "#f55e00" }}>정확한</span>{" "}
+          검색
+        </div>
         <div className="guide-subtitle">
           여기로를 통해서 더 빠르고 정확하게 판례를 검색해 보세요.
         </div>
       </div>
 
-      <div className="guide-image">문장으로 검색하기 gif 또는 이미지</div>
-
-      <div className="guide-result-box">
-        <div className="guide-result">결과1</div>
-        <div className="guide-result">결과2</div>
-        <div className="guide-result">결과3</div>
+      <div className="guide-image">
+        <div>문장</div>
       </div>
+
+      {/* <div className="guide-result-box">
+        <div className="guide-result">
+          <img src={Guide3} alt="" className="guide-result" />
+        </div>
+        <div className="guide-result">
+          <img src={Guide4} alt="" className="guide-result" />
+        </div>
+      </div> */}
     </div>
   );
 }
