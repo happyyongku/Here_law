@@ -149,5 +149,38 @@ public class UserService {
         UserEntity userEntity = userJpaRepository.findByEmail(userEmail);
         return userEntity;
     }
+    
+    @Transactional
+    public void deleteProfileImage() {
+        UserEntity userEntity = getCurrentUserEntity();
+        String profileImgPath = userEntity.getProfileImg();
+
+        if (profileImgPath == null || profileImgPath.isEmpty()) {
+            // User has no profile image set, nothing to delete
+            return;
+        }
+
+        // Extract the filename from profileImgPath
+        String profileImgFileName = Paths.get(profileImgPath).getFileName().toString();
+
+        if (DEFAULT_PROFILE_IMG.equals(profileImgFileName)) {
+            // User's profile image is the default image, do not delete
+            return;
+        }
+
+        // Attempt to delete the file
+        try {
+            Path pathToDelete = Paths.get(profileImgPath);
+            Files.deleteIfExists(pathToDelete);
+            logger.info("Deleted profile image: {}", profileImgPath);
+        } catch (IOException e) {
+            logger.error("Failed to delete profile image: {}", e.getMessage());
+            throw new RuntimeException("Failed to delete profile image", e);
+        }
+
+        // Update the user's profileImg field to null
+        userEntity.setProfileImg(null);
+        userJpaRepository.save(userEntity);
+    }
 }
 

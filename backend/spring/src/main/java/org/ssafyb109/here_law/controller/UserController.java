@@ -244,6 +244,9 @@ public class UserController {
         verificationTokenRepository.deleteAll(tokens);
         logger.info("인증 토큰 삭제 완료: {}", user.getEmail());
 
+        // 프로파일 이미지 삭제
+        userService.deleteProfileImage();
+
         // UserEntity 삭제
         userJpaRepository.delete(user);
         logger.info("사용자 삭제 완료: {}", user.getEmail());
