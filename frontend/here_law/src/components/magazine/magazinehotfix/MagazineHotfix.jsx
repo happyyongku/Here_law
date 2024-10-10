@@ -11,7 +11,7 @@ function MagazineHotfix() {
   const getLawyerRec = async () => {
     const token = localStorage.getItem("token");
     const formData = {
-      date: "2024-10-",
+      date: "2024-10-10",
       span: 7,
     };
     try {
