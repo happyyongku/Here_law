@@ -15,6 +15,13 @@ import prom1 from "../../../assets/magazine/prom1.png";
 import prom2 from "../../../assets/magazine/prom2.png";
 import fetchButton from "../../../assets/magazine/fetchButton.png";
 
+import mainimg from "../../../assets/magazine/mainimg.png";
+import dbtmxlxldk from "../../../assets/magazine/dbtmxlxldk.png";
+import usti from "../../../assets/magazine/usti.png";
+import file from "../../../assets/magazine/file.png";
+
+import fetchimg from "../../../assets/magazine/fetchimg.png";
+
 function MagazineMain() {
   const navigate = useNavigate();
 
@@ -132,11 +139,13 @@ function MagazineMain() {
     <div className="magazine-main">
       <div className="magazine-main-header">
         <div className="magazine-main-header1">
-          <img className="magazine-main-header1-img1" src={prom1} alt="" />
-          <img className="magazine-main-header1-img2" src={prom2} alt="" />
-          <h3 className="magazine-main-header1-title">
-            TOP 추천 기사 관심 <br /> 분야 <br /> 추천수 기반
-          </h3>
+          {/* <img className="magazine-main-header1-img1" src={prom1} alt="" /> */}
+          <img className="magazine-main-header1-img2" src={file} alt="" />
+          <div className="magazine-main-title-background">
+            <h3 className="magazine-main-header1-title">
+              TOP 추천 기사 관심 <br /> 분야 <br /> 추천수 기반
+            </h3>
+          </div>
           <div className="magazine-main-header1-article-box">
             <div className="magazine-main-header1-article-content">
               {firstRecPosting.content}
@@ -151,7 +160,8 @@ function MagazineMain() {
         </div>
         <div className="magazine-main-header2">
           <MagazineMainHeaderCard
-            cardTitle={"법제처 긴급 hot fix"}
+            cardTitle={"법제처 hot fix"}
+            fetchimg={fetchimg}
             navigateButton={() => navigate("hotfix")}
           />
           <MagazineMainHeaderCard

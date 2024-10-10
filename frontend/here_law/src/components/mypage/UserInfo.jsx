@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BasicInfoModal from "./BasicInfoModal";
 import usersetting from "../../assets/mypage/usersetting.png";

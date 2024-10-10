@@ -1,10 +1,11 @@
+// import fetchimg from "../../../assets/magazine/fetchimg.png";
 import "./MagazineMainHeaderCard.css";
 
-function MagazineMainHeaderCard({ cardTitle, navigateButton }) {
+function MagazineMainHeaderCard({ cardTitle, navigateButton, fetchimg }) {
   return (
     <div className="main-header-card">
-      {/* main-header-card를 이미지로 채워야한다 */}
       <div className="main-header-card-title">{cardTitle}</div>
+      <img src={fetchimg} alt="" />
       <div className="main-header-card-button" onClick={navigateButton}>
         바로가기
       </div>
