@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import MyCard from "./MyCard";
 import MySubCard from "./MySubCard";
 import MyIntCard from "./MyIntCard";
+import CaseLawyerRec from "../magazinemain/CaseLawyerRec";
 import axiosInstance from "../../../utils/axiosInstance";
 import "./MagazineMy.css";
 
 function MagazineMy() {
   const [myPosting, setMyPosting] = useState([]);
+
   // 1. 여기서 axios로 유저 맞춤형 매거진 포스팅 정보 호출 (interest, subsciption)
   const getMagazineData = async () => {
     const token = localStorage.getItem("token");
@@ -58,9 +60,38 @@ function MagazineMy() {
     }
   };
 
+  // 변호사 추천 axios
+  const [recedLawyer, setRecedLawyer] = useState([]);
+  const getLawyerRec = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axiosInstance.get(
+        `/fastapi_ec2/lawyer/recommended-lawyers-cosine`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("변호사 추천 조회 성공", response.data);
+      setRecedLawyer(response.data);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        console.log("Token expired. Please log in again.");
+        localStorage.removeItem("token");
+      } else {
+        console.error("Error fetching user data, 변호사 추천 실패", error);
+      }
+    } finally {
+      // setLoading(false);
+      // 데이터 요청 후 로딩 상태 업데이트
+    }
+  };
+
   useEffect(() => {
     getMagazineData();
     getUserData();
+    getLawyerRec();
   }, []);
 
   return (
@@ -89,6 +120,16 @@ function MagazineMy() {
               {userSubscriptions.map((item, index) => (
                 <MySubCard key={index} item={item} />
               ))}
+            </div>
+          </div>
+          <div className="case-type-lawyer-rec">
+            <div className="case-type-lawyer-rec-title">변호사 추천</div>
+            <div>
+              {/* 여기에 반복이 들어가야 한다. */}
+              {recedLawyer.slice(0, 5).map((item, index) => (
+                <CaseLawyerRec key={index} item={item} />
+              ))}
+              <div></div>
             </div>
           </div>
         </div>

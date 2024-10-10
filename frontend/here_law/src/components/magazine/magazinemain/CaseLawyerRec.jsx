@@ -14,7 +14,7 @@ function CaseLawyerRec({ item }) {
         <div className="lawyer-rec-phone">{item.phone_number}</div>
       </div>
 
-      <LawyerDetail />
+      {/* <LawyerDetail /> */}
     </div>
   );
 }
