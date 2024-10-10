@@ -31,7 +31,7 @@ function MagazineMain() {
       const response = await axiosInstance.get("/fastapi_ec2/magazine", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("포스팅 조회 성공", response.data);
+      console.log("맞춤형 포스팅 조회 성공", response.data);
       setMyPosting(response.data);
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -204,7 +204,6 @@ function MagazineMain() {
         </div>
         <div className="magazine-main-posting-fetch-body">
           <div className="magazine-main-posting-box">
-            {/* 여기서 조회수 기반으로 반복문을 돌면 좋겠다. */}
             {viewPosting.slice(0, 4).map((posting, index) => (
               <ViewCard key={index} posting={posting} />
             ))}
@@ -225,7 +224,7 @@ function MagazineMain() {
           유저 맞춤형 TOP AI 포스팅
         </div>
         <div className="magazine-main-custom-posting-content">
-          {myPosting.map((item, index) => (
+          {myPosting.slice(0, 5).map((item, index) => (
             <MagazineCustomCard key={index} item={item} />
           ))}
         </div>

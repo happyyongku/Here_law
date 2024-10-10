@@ -1,0 +1,196 @@
+.document-result-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.document-result-top {
+  margin-top: 60px;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+.document-result-title {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+.document-result-sub {
+  font-size: 17px;
+  color: #4e4d4d;
+  font-weight: 600;
+}
+.document-result-analysis {
+  width: 820px;
+
+  margin-bottom: 80px;
+}
+
+.document-result-section {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.document-result-heading {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.document-result-content {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.document-result-section {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  margin-bottom: 100px;
+}
+
+.document-result-section.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 여기 */
+
+.olcards,
+.olcards * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.olcards {
+  list-style: none;
+  counter-reset: cardCount;
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  --cardsGap: 1rem;
+  gap: var(--cardsGap);
+  padding-bottom: var(--cardsGap);
+}
+.olcards li {
+  counter-increment: cardCount;
+  display: flex;
+  color: white;
+  --labelOffset: 1rem;
+  --arrowClipSize: 1.5rem;
+  margin-top: var(--labelOffset);
+}
+
+.olcards li::before {
+  content: counter(cardCount, decimal-leading-zero);
+  background: white;
+  color: var(--cardColor);
+  font-size: 2em;
+  font-weight: 700;
+  transform: translateY(calc(-1 * var(--labelOffset)));
+  margin-right: calc(-1 * var(--labelOffset));
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-inline: 0.5em;
+}
+
+.olcards li .content {
+  background-color: var(--cardColor);
+  --inlinePadding: 1em;
+  --boxPadding: 0.5em;
+  display: flex;
+  padding: var(--boxPadding) calc(var(--inlinePadding) + var(--arrowClipSize))
+    var(--boxPadding) calc(var(--inlinePadding) + var(--labelOffset));
+  grid-template-areas:
+    "icon title"
+    "icon text";
+  gap: 0.25em 1em;
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--arrowClipSize)) 0,
+    100% 50%,
+    calc(100% - var(--arrowClipSize)) 100%,
+    calc(100% - var(--arrowClipSize)) calc(100% + var(--cardsGap)),
+    0 calc(100% + var(--cardsGap))
+  );
+  position: relative;
+  width: 85%;
+}
+.olcards li .content::before {
+  content: "";
+  position: absolute;
+  width: var(--labelOffset);
+  height: var(--labelOffset);
+  background: var(--cardColor);
+  left: 0;
+  bottom: 0;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  filter: brightness(0.75);
+}
+.olcards li .content::after {
+  content: "";
+  position: absolute;
+  height: var(--cardsGap);
+  width: var(--cardsGap);
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.25), transparent 50%);
+  left: 0;
+  top: 100%;
+}
+.olcards li .icon {
+  grid-area: icon;
+
+  font-size: 30px;
+  padding-bottom: 3px;
+  margin-top: 0px;
+  width: 0px;
+}
+.olcards li .content .title {
+  grid-area: title;
+  font-size: 1.25em;
+  /* font-weight: 700; */
+}
+.olcards li .content .text {
+  grid-area: text;
+  font-size: 15px;
+}
+.step-title {
+  font-size: 19px;
+  font-weight: bold;
+  padding-top: 8px;
+  padding-left: 22px;
+}
+.step-text {
+  border: 1px solid #bad6ff;
+  width: 82%;
+  margin-left: 52px;
+  padding: 30px;
+
+  letter-spacing: 1px;
+  border-radius: 8px;
+  line-height: 1.5;
+  box-shadow: 7px 7px 1px 1px #cde1ff;
+  color: #4e4d4d;
+
+  margin-top: 32px;
+  margin-bottom: 50px;
+}
+/* 기본 애니메이션 설정 */
+.step-wrap {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* 뷰포트에 나타날 때 적용될 클래스 */
+.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}

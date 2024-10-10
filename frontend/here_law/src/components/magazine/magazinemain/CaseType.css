@@ -26,6 +26,7 @@
   width: 120px;
   height: 30px;
   margin-top: 20px;
+  margin-bottom: 30px;
 }
 
 .case-type-card-container {
@@ -49,4 +50,10 @@
 
 .case-type-card-content {
   font-size: 12px;
+}
+
+.case-type-lawyer-rec-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
