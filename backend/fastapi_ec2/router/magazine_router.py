@@ -3,26 +3,21 @@ from shutil import ExecError
 from turtle import st
 from fastapi import APIRouter, HTTPException, Depends, Request
 from utils.security import get_current_user
-import numpy as np
 import logging
 from contextlib import contextmanager
 from psycopg.rows import dict_row
 from utils.user_service import get_user_by_email, get_user_interests
-from utils.magazine_service import (
-    get_magazine_by_id,
-    get_magazines_by_law_ids,
-    get_magazines_by_category,
-    get_magazines_by_user_liked,
-    )
+from utils.magazine_service import get_magazine_by_id, get_magazines_by_category, get_recent_magazines
 from utils.db_connection import DBConnection
-from utils.magazine_vector_database import MagazineVectorDatabase
 
 magazine_router = APIRouter()
 
 @magazine_router.get("")
 def magazine_mount(request: Request, token: str = Depends(get_current_user)):
     """
-    사용자의 관심사에 따라 magazine 목록을 추천해 제공. 사용자가 like 한 Magazine과 관심분야의 최신 Magazine 들을 고려하여 AI 기반으로 추천함.
+    사용자의 관심사에 따라 magazine 목록을 제공하는 API 엔드포인트입니다.
+    만약 사용자의 관심사에 해당하는 magazine가 없을 경우 최신 magazine를 제공합니다.
+    
     Parameters:
     request (Request): FastAPI Request 객체
     token (str): 인증된 사용자의 토큰 (get_current_user를 통해 의존성 주입)
@@ -47,20 +42,9 @@ def magazine_mount(request: Request, token: str = Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="관심사를 찾을 수 없습니다.")
     
     # 관심사를 기반으로 magazine 조회
-    candi_magazines = get_magazines_by_user_liked(user['id'], 10)
-    if len(candi_magazines) == 0:
-        candi_magazines = get_magazines_by_category(interest_categories, 10)
-    else:
-        candi_magazines += get_magazines_by_category(interest_categories, len(candi_magazines))
-    if len(candi_magazines) == 0:
-        raise HTTPException(status_code=500, detail="관련된 Document를 찾을 수 없음!")
-    
-    vector_store = MagazineVectorDatabase().vector_store
-    embedder = vector_store.embeddings
-    embedded = embedder.embed_documents([doc["content"] for doc in candi_magazines])
-    query_vec = np.average(embedded, axis= 0)
-    result_docs = vector_store.similarity_search_by_vector(query_vec, k = 30)
-    return get_magazines_by_law_ids([document.metadata["id"] for document in result_docs])
+    magazines = get_magazines_by_category(interest_categories, 5)
+
+    return magazines
 
 
 @magazine_router.post("/{magazine_id}/like")
@@ -94,7 +78,7 @@ def toggle_like(request: Request, magazine_id: int, token: str = Depends(get_cur
                 # 이미 좋아요를 눌렀다면 좋아요 취소 (기록 삭제)
                 delete_like_query = "DELETE FROM user_magazine_likes WHERE id = %s"
                 cur.execute(delete_like_query, (existing_like['id'],))
-                action = "좋아요를 취소했습니다."
+                action = "좋아요를 취소했습니다."   
             else:
                 # 좋아요를 누르지 않았다면 좋아요 추가 (기록 삽입)
                 insert_like_query = "INSERT INTO user_magazine_likes (user_id, magazine_id) VALUES (%s, %s)"
