@@ -118,7 +118,7 @@ function CaseType() {
               subscriptionRequest();
             }}
           >
-            SUBSCRIBE
+            구독하기
           </button>
         ) : (
           <button
@@ -127,7 +127,7 @@ function CaseType() {
               subscriptionRequest();
             }}
           >
-            SUBSCRIBE x
+            구독중
           </button>
         )}
       </div>
