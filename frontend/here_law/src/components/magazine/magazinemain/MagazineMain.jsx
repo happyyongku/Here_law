@@ -21,7 +21,8 @@ import usti from "../../../assets/magazine/usti.png";
 import file from "../../../assets/magazine/file.png";
 
 import fetchimg from "../../../assets/magazine/fetchimg.png";
-import fetchimg2 from "../../../assets/magazine/usermag.png";
+// import fetchimg2 from "../../../assets/magazine/usermag.png";
+import fetchimg2 from "../../../assets/magazine/다운로드.jfif";
 
 import Noteimg from "../../../assets/magazine/note1.png";
 
