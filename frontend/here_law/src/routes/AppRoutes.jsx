@@ -33,14 +33,40 @@ const PrivateRoute = ({ children }) => {
   return token ? children : <Navigate to="/login" />;
 };
 
+const PublicRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+  return !token ? children : <Navigate to="/search" />; // 로그인 상태일 경우 홈으로 리다이렉트
+};
+
 function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Singup />} />
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <PublicRoute>
+            <Singup />
+          </PublicRoute>
+        }
+      />
       <Route path="/signout" element={<Signout />} />
-      <Route path="/signuplawyer" element={<SingupLawyer />} />
+      <Route
+        path="/signuplawyer"
+        element={
+          <PublicRoute>
+            <SingupLawyer />
+          </PublicRoute>
+        }
+      />
       <Route
         path="/mypage"
         element={
@@ -49,25 +75,87 @@ function AppRoutes() {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/search"
+        element={
+          <PrivateRoute>
+            <Search />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/search/case"
+        element={
+          <PrivateRoute>
+            <CaseList />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/search/case/:caseInfoId"
+        element={
+          <PrivateRoute>
+            <CaseDetail />
+          </PrivateRoute>
+        }
+      />
 
-      <Route path="/search" element={<Search />} />
-      <Route path="/search/case" element={<CaseList />} />
-      <Route path="/search/case/:caseInfoId" element={<CaseDetail />} />
+      <Route
+        path="/document/upload"
+        element={
+          <PrivateRoute>
+            <DocumentUpload />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/document/result"
+        element={
+          <PrivateRoute>
+            <DocumentResult />
+          </PrivateRoute>
+        }
+      />
 
-      <Route path="/document/upload" element={<DocumentUpload />} />
-      <Route path="/document/result" element={<DocumentResult />} />
+      <Route
+        path="/sojang/input"
+        element={
+          <PrivateRoute>
+            <SojangInput />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/sojang/result"
+        element={
+          <PrivateRoute>
+            <SojangResult />
+          </PrivateRoute>
+        }
+      />
 
-      <Route path="/sojang/input" element={<SojangInput />} />
-      <Route path="/sojang/result" element={<SojangResult />} />
-
-      <Route path="/magazine" element={<Magazine />}>
+      <Route
+        path="/magazine"
+        element={
+          <PrivateRoute>
+            <Magazine />
+          </PrivateRoute>
+        }
+      >
         <Route path="" element={<MagazineMain />}></Route>
         <Route path="hotfix" element={<MagazineHotfix />}></Route>
         <Route path="hotpost" element={<MagazineHotpost />}></Route>
         <Route path="case/:type" element={<CaseType />}></Route>
         <Route path="my" element={<MagazineMy />}></Route>
       </Route>
-      <Route path="/magazine/:id" element={<MagazineDetail />}></Route>
+      <Route
+        path="/magazine/:id"
+        element={
+          <PrivateRoute>
+            <MagazineDetail />
+          </PrivateRoute>
+        }
+      ></Route>
     </Routes>
   );
 }
