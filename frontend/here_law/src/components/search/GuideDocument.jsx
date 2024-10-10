@@ -1,5 +1,5 @@
 import "./GuideDocument.css";
-import Docuguide from "../../assets/search/Docuguide.png";
+import Docuguide from "../../assets/search/docuguide.png";
 
 function GuideDocument() {
   return (
