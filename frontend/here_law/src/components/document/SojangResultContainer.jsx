@@ -6,8 +6,6 @@ import "./SojangStep2.css";
 
 import PDFIcon from "../../assets/document/pdficon.png";
 
-import SojangIcon from "../../assets/document/sojang.png";
-
 function SojangResultContainer() {
   const location = useLocation();
   const { pdfUrl, previewPdfUrl, docxUrl } = location.state || {};
@@ -21,10 +19,10 @@ function SojangResultContainer() {
       </div>
 
       <div className="sojang-result-page">
-        <div class="progressbar-wrapper">
-          <div class="progressbar">
+        <div className="progressbar-wrapper">
+          <div className="progressbar">
             <div>Step 1</div>
-            <div class="active">Step 2</div>
+            <div className="active">Step 2</div>
           </div>
         </div>
 

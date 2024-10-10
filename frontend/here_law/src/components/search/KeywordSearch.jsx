@@ -7,31 +7,38 @@ import AiSearch from "./AiSearch";
 
 import "./KeywordSearch.css";
 
-function KeywordSearch({ isAiMode, onToggle }) {
+function KeywordSearch() {
   const [query, setQuery] = useState("");
+  const [isAiMode, setIsAiMode] = useState(false);
   const navigate = useNavigate();
 
   const handleSearch = () => {
     if (query.trim()) {
-      // query 검색어가 있으면 검색 결과 페이지로 이동함
       navigate(`/search/case?query=${encodeURIComponent(query)}&page=1`);
     }
   };
 
+  const handleToggle = (checked) => {
+    setIsAiMode(checked);
+  };
+
   return (
-    <div className="keyword-search-page">
+    <div className={`keyword-search-page ${isAiMode ? "ai-mode" : ""}`}>
       <div className="search-title">
         키워드 또는 Ai 검색으로 <br /> 판례를 검색하세요
         <span style={{ color: "#ff5e00" }}>.</span>
       </div>
 
       <div className="toggle-wrap">
-        <Switch onToggle={onToggle} isChecked={isAiMode} />
+        <Switch
+          onToggle={handleToggle}
+          isChecked={isAiMode}
+          onclickButton={() => setIsAiMode(!isAiMode)}
+        />
       </div>
 
-      {/* isAiMode 상태에 따라 다른 컴포넌트를 렌더링 */}
       {isAiMode ? (
-        <AiSearch />
+        <AiSearch isAiMode={isAiMode} />
       ) : (
         <div className="search-input-box">
           <img src={SearchIcon} alt="search icon" className="search-icon" />
@@ -41,7 +48,7 @@ function KeywordSearch({ isAiMode, onToggle }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") handleSearch(); // Enter 키를 누르면 검색 실행
+              if (e.key === "Enter") handleSearch();
             }}
           />
         </div>

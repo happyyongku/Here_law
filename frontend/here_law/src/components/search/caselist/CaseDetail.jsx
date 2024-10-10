@@ -1,22 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../../../utils/axiosInstance";
 import "./CaseDetail.css";
 import Save from "./Save";
 import Light from "../../../assets/search/light.gif";
-import axiosInstance from "../../../utils/axiosInstance";
+import DetailpagePen from "../../../assets/search/detailpagepen.gif";
+import TopIcon from "../../../assets/search/detailtop.png";
+import Question from "../../../assets/search/question.png";
 
 const CaseDetail = ({ caseInfoId: propsCaseInfoId }) => {
   const { caseInfoId: paramsCaseInfoId } = useParams();
   const caseInfoId = propsCaseInfoId || paramsCaseInfoId;
   const [caseItem, setCaseItem] = useState(null);
-  const [isLoading, setIsLoading] = useState(true); // 로딩 상태
+  const [isLoading, setIsLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showTip, setShowTip] = useState(false); // tip 표시 상태
+  const [showTip2, setShowTip2] = useState(false); // tip 표시 상태
+  const [showQuestionIcon, setShowQuestionIcon] = useState(false); // Question 아이콘 표시 상태
+  const [showQuestionIcon2, setShowQuestionIcon2] = useState(false); // Question 아이콘 표시 상태
+
+  // 각 섹션에 대한 참조 생성
+  const judgmentSummaryRef = useRef(null);
+  const judgmentResultRef = useRef(null);
+  const mainIssuesRef = useRef(null);
+  const fullTextRef = useRef(null);
+  const referenceClauseRef = useRef(null);
+  const lawyerRecommendationRef = useRef(null);
 
   // 상세 조회 axios 요청
   const CaseDetailRequest = async () => {
     const token = localStorage.getItem("token");
-    // console.log("아이디", caseInfoId);
     try {
       const response = await axiosInstance.get(
         `/spring_api/cases/${caseInfoId}`,
@@ -24,7 +37,6 @@ const CaseDetail = ({ caseInfoId: propsCaseInfoId }) => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log("판례 상세 조회 성공", response.data);
       setCaseItem(response.data);
       setIsLoading(false);
     } catch (error) {
@@ -34,7 +46,6 @@ const CaseDetail = ({ caseInfoId: propsCaseInfoId }) => {
   };
 
   useEffect(() => {
-    console.log("Received caseInfoId in CaseDetail: ", caseInfoId); // caseInfoId 확인
     CaseDetailRequest();
   }, [caseInfoId]);
 
@@ -43,18 +54,39 @@ const CaseDetail = ({ caseInfoId: propsCaseInfoId }) => {
     setIsExpanded(!isExpanded);
   };
 
+  // 텍스트를 제한된 길이로 자르는 함수
   const truncateText = (text, limit) => {
     if (text.length > limit) {
       return text.substring(0, limit) + "...";
     }
     return text;
   };
-  // 로딩 중일 때 로딩 메시지 표시
+
+  // 클릭 시 해당 섹션으로 스크롤
+  const scrollToSection = (ref) => {
+    if (ref.current) {
+      ref.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  // 페이지 맨 위로 스크롤하는 함수
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // tip 표시/숨기기 토글 함수
+  const toggleTip = () => {
+    setShowTip(!showTip);
+  };
+  // tip 표시/숨기기 토글 함수
+  const toggleTip2 = () => {
+    setShowTip2(!showTip2);
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  // caseItem이 없을 경우 처리
   if (!caseItem) {
     return <div>No case details found</div>;
   }
@@ -62,7 +94,6 @@ const CaseDetail = ({ caseInfoId: propsCaseInfoId }) => {
   return (
     <div>
       <div className="case-detail-page">
-        {/* 사건명 */}
         <div className="case-detail-title">{caseItem.caseName}</div>
         <div className="case-detail-bar">
           <div className="bar-sort">
@@ -74,70 +105,124 @@ const CaseDetail = ({ caseInfoId: propsCaseInfoId }) => {
               {caseItem.judgment}
             </div>
           </div>
-
           <div className="bar-save">
             <Save />
           </div>
         </div>
         <div className="case-detail-tab">
-          <div style={{ color: "black", fontWeight: "bold" }}>요약</div>
-          <div>전문</div>
-          <div>주문</div>
-          <div>조문</div>
+          <div onClick={() => scrollToSection(judgmentSummaryRef)}>
+            판결 요약
+          </div>
+          <div onClick={() => scrollToSection(judgmentResultRef)}>
+            판결 결과
+          </div>
+          <div onClick={() => scrollToSection(mainIssuesRef)}>주요 쟁점</div>
+          <div onClick={() => scrollToSection(fullTextRef)}>전문</div>
+          <div onClick={() => scrollToSection(referenceClauseRef)}>조문</div>
+          <div onClick={() => scrollToSection(lawyerRecommendationRef)}>
+            변호사 추천
+          </div>
         </div>
+
         <div className="case-detail-guide">
-          <img src={Light} alt="Light Icon" className="light-icon" />
+          <img src={DetailpagePen} alt="Light Icon" className="light-icon" />
           <div className="guide-box">요점보기</div>
           <div>
             AI가 추출한 핵심 문장으로 판결문 요점을 빠르게 파악해 보세요.
           </div>
         </div>
-        <div className="detail-title">판결 요약</div>
 
-        {/* 판결 요약을 클릭하면 아래 내용이 나오도록 해줘 */}
-
-        <div className="case-detail-guide">
-          <img src={Light} alt="Light Icon" className="light-icon" />
-          <div className="guide-box">판결</div>
-          <div>판결을 요약해서 보여드립니다.</div>
+        <div
+          className="detail-title"
+          ref={judgmentSummaryRef}
+          onMouseEnter={() => setShowQuestionIcon(true)}
+          onMouseLeave={() => setShowQuestionIcon(false)}
+          onClick={toggleTip}
+        >
+          판결 요약
+          {showQuestionIcon && (
+            <img
+              src={Question}
+              alt="question-icon"
+              className="detail-question-icon"
+            />
+          )}
         </div>
+
+        {/* tip 판결 요약 */}
+        {showTip && (
+          <div className="case-detail-guide2">
+            <img src={Light} alt="Light Icon" className="light-icon" />
+            <div className="guide-box2">판결 요약</div>
+            <div>판결을 요약해서 보여드립니다.</div>
+          </div>
+        )}
 
         <div className="detail-text">{caseItem.judgmentSummary}</div>
 
-        <div className="detail-title">판결 결과</div>
+        <div
+          className="detail-title"
+          ref={judgmentResultRef}
+          onMouseEnter={() => setShowQuestionIcon2(true)}
+          onMouseLeave={() => setShowQuestionIcon2(false)}
+          onClick={toggleTip2}
+        >
+          판결 결과
+          {showQuestionIcon2 && (
+            <img
+              src={Question}
+              alt="question-icon"
+              className="detail-question-icon"
+            />
+          )}
+        </div>
+        {/* tip 판결 요약 */}
+        {showTip2 && (
+          <div className="case-detail-guide2">
+            <img src={Light} alt="Light Icon" className="light-icon" />
+            <div className="guide-box2">판결 결과</div>
+            <div>판결의 결과입니다.</div>
+          </div>
+        )}
         <div className="detail-text" style={{ textAlign: "center" }}>
           “{caseItem.judgment}”
         </div>
 
-        <div className="detail-title">주요 쟁점</div>
+        <div className="detail-title" ref={mainIssuesRef}>
+          주요 쟁점
+        </div>
         <div className="detail-text" style={{ textAlign: "center" }}>
           {caseItem.issues}
         </div>
 
-        <div>
+        <div ref={fullTextRef}>
           <div className="detail-title">전문</div>
           <div
             className={`detail-text ${isExpanded ? "expanded" : "collapsed"}`}
           >
             <div style={{ fontWeight: "bold" }}>사건의 경위</div>
             {isExpanded
-              ? caseItem.fullText // API에서 전문 부분이 있으면 불러오기
+              ? caseItem.fullText
               : truncateText(caseItem.fullText, 100)}
           </div>
-
           <div style={{ marginTop: "10px" }}>
             <div className="detail-see-more" onClick={toggleText}>
               {isExpanded ? "접기" : "더보기"}
             </div>
           </div>
         </div>
-        <div className="detail-title">조문</div>
+
+        <div className="detail-title" ref={referenceClauseRef}>
+          조문
+        </div>
         <div className="detail-text">
           <span style={{ fontWeight: "bold" }}>참조조문</span> :{" "}
           {caseItem.referenceClause}
         </div>
-        <div className="detail-title">변호사 추천</div>
-        {/* 변호사 추천 데이터 */}
+
+        <div className="detail-title" ref={lawyerRecommendationRef}>
+          변호사 추천
+        </div>
         <div className="detail-lawyer-list">
           <div className="lawyer-text">
             <div className="lawyer-name">강경민 변호사</div>
@@ -157,6 +242,14 @@ const CaseDetail = ({ caseInfoId: propsCaseInfoId }) => {
           <div className="lawyer-image"></div>
         </div>
       </div>
+
+      {/* Top Icon */}
+      <img
+        src={TopIcon}
+        alt="Top Icon"
+        className="top-icon"
+        onClick={scrollToTop}
+      />
     </div>
   );
 };
