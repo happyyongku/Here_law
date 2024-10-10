@@ -4,11 +4,10 @@ import SendIcon from "../../assets/search/searchsend.png";
 import axiosInstance from "../../utils/axiosInstance";
 import CaseModal from "./CaseModal";
 import "./AiSearch.css";
-
+import Loader from "../search/caselist/Loader"; // 로딩 컴포넌트
 import Lighticon from "../../assets/search/light.gif";
 
 function AiSearch({ isAiMode, onToggle }) {
-  console.log("isAiMode 상태:", isAiMode);
   const [sessionId, setSessionId] = useState(null);
   const [messages, setMessages] = useState([
     { type: "ai", content: "안녕하세요, 무엇을 도와드릴까요?" },
@@ -17,10 +16,12 @@ function AiSearch({ isAiMode, onToggle }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCaseId, setSelectedCaseId] = useState(null);
   const [judgmentSummary, setJudgmentSummary] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
   const chatBoxRef = useRef(null);
 
   useEffect(() => {
     const fetchSessionId = async () => {
+      // setIsLoading(true); // 로딩 시작
       const token = localStorage.getItem("token");
       try {
         const response = await axiosInstance.get(
@@ -67,6 +68,7 @@ function AiSearch({ isAiMode, onToggle }) {
     ]);
 
     setInputValue("");
+    setIsLoading(true); // 로딩 시작
 
     try {
       const token = localStorage.getItem("token");
@@ -121,11 +123,14 @@ function AiSearch({ isAiMode, onToggle }) {
       addAiResponsesSequentially(aiMessages);
     } catch (error) {
       console.error("GPT 응답 실패", error);
+    } finally {
+      setIsLoading(false); // 로딩 종료
     }
   };
 
   const openModal = async (caseId) => {
     setSelectedCaseId(caseId);
+    setIsLoading(true); // 로딩 시작
     try {
       const token = localStorage.getItem("token");
       const response = await axiosInstance.get(`/spring_api/cases/${caseId}`, {
@@ -135,6 +140,8 @@ function AiSearch({ isAiMode, onToggle }) {
       setIsModalOpen(true);
     } catch (error) {
       console.error("판례 상세 조회 실패", error);
+    } finally {
+      setIsLoading(false); // 로딩 종료
     }
   };
 
@@ -145,6 +152,11 @@ function AiSearch({ isAiMode, onToggle }) {
 
   return (
     <div className="ai-search-page">
+      {isLoading && (
+        <div className="loader-overlay">
+          <Loader /> {/* 로딩 중일 때 로딩 화면 표시 */}
+        </div>
+      )}
       {isAiMode && (
         <>
           <div className="ai-chat-box" ref={chatBoxRef}>
