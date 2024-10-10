@@ -67,26 +67,12 @@ function SojangInputContainer2() {
       alert("원고를 입력해주세요.");
       return;
     }
-    if (!address) {
-      alert("원고 주소를 입력해주세요.");
-      return;
-    }
-    if (!plaintiffPhone) {
-      alert("원고 전화번호를 입력해주세요.");
-      return;
-    }
+
     if (!defendant) {
       alert("피고를 입력해주세요.");
       return;
     }
-    if (!address2) {
-      alert("피고 주소를 입력해주세요.");
-      return;
-    }
-    if (!defendantPhone) {
-      alert("피고 전화번호를 입력해주세요.");
-      return;
-    }
+
     if (!courtName) {
       alert("법원명을 입력해주세요.");
       return;
@@ -157,9 +143,9 @@ function SojangInputContainer2() {
       </div>
 
       <div className="sojang-page2">
-        <div class="progressbar-wrapper">
-          <div class="progressbar">
-            <div class="active">Step 1</div>
+        <div className="progressbar-wrapper">
+          <div className="progressbar">
+            <div className="active">Step 1</div>
             <div>Step 2</div>
           </div>
         </div>

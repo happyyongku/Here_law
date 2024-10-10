@@ -50,7 +50,7 @@
 
 .magazine-my-interest-card-box {
   display: flex;
-  justify-content: space-evenly;
+  /* justify-content: space-evenly; */
   flex-wrap: wrap;
   gap: 8px;
 }

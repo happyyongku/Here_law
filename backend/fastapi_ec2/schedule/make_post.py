@@ -1,23 +1,13 @@
 import os
 import PyPDF2
-import psycopg2
 import json
+import logging
 from openai import OpenAI
+from utils.db_connection import DBConnection
 
 # OpenAI API 설정
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = os.environ["API_KEY"]
 openai_client = OpenAI(api_key=OPENAI_API_KEY)
-
-# PostgreSQL 연결 설정
-def connect_db():
-    conn = psycopg2.connect(
-        dbname="here_law",
-        user="here_law_admin",
-        password="1234",
-        host="3.36.85.129",
-        port="5434"
-    )
-    return conn
 
 # 데이터베이스에 데이터를 삽입하는 함수
 def insert_bill_data(cur, bill_info, content, reason, analysis):
@@ -28,7 +18,6 @@ def insert_bill_data(cur, bill_info, content, reason, analysis):
             content, reason, analysis
         ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
-    
     cur.execute(insert_query, (
         bill_info['의안 ID'], bill_info['의안 번호'], bill_info['법률안 명'], 
         bill_info['소관 위원회'], bill_info['제안일'], bill_info['처리 결과'], 
@@ -50,11 +39,11 @@ def extract_text_from_pdf(pdf_path):
 
 # GPT-4로 분석하는 함수
 def analyze_clause(pdf_text, example_format):
-    print(f"Analyzing text with GPT-4, text length: {len(pdf_text)}")
+    print(f"Analyzing text with GPT-4o, text length: {len(pdf_text)}")
     prompt = f"""
+
       다음 법률 정보가 바뀌는 내용, 바뀌는 이유, 분석 근거를 요약해 주세요. 
       반드시 아래 형식에 따라 답변을 작성해 주세요. 모든 답변은 일관된 문장 구조와 존댓말을 사용해 작성해 주세요:
-      
       {example_format}
 
       요약할 내용:
@@ -76,7 +65,7 @@ def analyze_clause(pdf_text, example_format):
         print(result)
         return result
     except Exception as e:
-        print(f"GPT-4 분석 중 오류 발생: {e}")
+        print(f"GPT-4o 분석 중 오류 발생: {e}")
         return "분석 중 오류가 발생했습니다."
 
 # 분석된 텍스트를 각각 content, reason, analysis로 분리하는 함수
@@ -99,42 +88,40 @@ def load_bill_data(json_file_path):
         return json.load(f)
 
 # PDF 파일을 처리하고 분석한 후 DB에 적재하는 함수
-def process_pdfs_and_analyze(pdf_directory, example_format, conn, bill_data):
-    cur = conn.cursor()
+def process_pdfs_and_analyze(pdf_directory, example_format, bill_data):
+    with DBConnection().get_connection() as conn:
+        with conn.cursor() as cur:
+            for bill_info in bill_data:
+                bill_name = bill_info['법률안 명']  # 법률안 명으로 변경
+                # PDF 파일 이름에 법률안 명이 포함된 파일을 찾기
+                pdf_found = False
+                for file_name in os.listdir(pdf_directory):
+                    if bill_name in file_name:  # 파일 이름에 법률안 명이 포함된 경우
+                        pdf_found = True
+                        pdf_file_name = file_name
+                        pdf_path = os.path.join(pdf_directory, pdf_file_name)
+                        logging.trace(f"Processing {pdf_path}...")
 
-    for bill_info in bill_data:
-        bill_name = bill_info['법률안 명']  # 법률안 명으로 변경
-        # PDF 파일 이름에 법률안 명이 포함된 파일을 찾기
-        pdf_found = False
-        for file_name in os.listdir(pdf_directory):
-            if bill_name in file_name:  # 파일 이름에 법률안 명이 포함된 경우
-                pdf_found = True
-                pdf_file_name = file_name
-                pdf_path = os.path.join(pdf_directory, pdf_file_name)
-                print(f"Processing {pdf_path}...")
+                        try:
+                            # PDF에서 텍스트 추출
+                            pdf_text = extract_text_from_pdf(pdf_path)
+                            
+                            # GPT-4o로 법안 분석
+                            analysis_text = analyze_clause(pdf_text, example_format)
+                            
+                            # 분석된 텍스트에서 각각 content, reason, analysis 추출
+                            content, reason, analysis = split_analysis(analysis_text)
 
-                try:
-                    # PDF에서 텍스트 추출
-                    pdf_text = extract_text_from_pdf(pdf_path)
-                    
-                    # GPT-4로 법안 분석
-                    analysis_text = analyze_clause(pdf_text, example_format)
-                    
-                    # 분석된 텍스트에서 각각 content, reason, analysis 추출
-                    content, reason, analysis = split_analysis(analysis_text)
+                            # DB에 데이터 적재
+                            insert_bill_data(cur, bill_info, content, reason, analysis)
+                            print(f"Successfully inserted data for {pdf_file_name}")
+                        except Exception as e:
+                            print(f"파일 처리 중 오류 발생 {pdf_file_name}: {e}")
+                        break  # 해당 법률안에 맞는 PDF 파일을 찾으면 처리하고 종료
 
-                    # DB에 데이터 적재
-                    insert_bill_data(cur, bill_info, content, reason, analysis)
-                    print(f"Successfully inserted data for {pdf_file_name}")
-                except Exception as e:
-                    print(f"파일 처리 중 오류 발생 {pdf_file_name}: {e}")
-                break  # 해당 법률안에 맞는 PDF 파일을 찾으면 처리하고 종료
-
-        if not pdf_found:
-            print(f"PDF 파일을 찾을 수 없습니다: {bill_name}")
-
-    conn.commit()
-    cur.close()
+                if not pdf_found:
+                    print(f"PDF 파일을 찾을 수 없습니다: {bill_name}")
+        conn.commit()
 
 # JSON 파일 경로 및 PDF 디렉토리 경로 설정
 json_file_path = "/home/ubuntu/kbg_workspace/S11P21B109/datas/bills_data.json"
@@ -148,12 +135,6 @@ example_format = """
 
 # 실행부
 if __name__ == "__main__":
-    conn = connect_db()
-    try:
-        # 법률안 정보 불러오기
-        bill_data = load_bill_data(json_file_path)
-        
-        # PDF 파일 처리 및 분석 후 DB에 적재
-        process_pdfs_and_analyze(pdf_directory, example_format, conn, bill_data)
-    finally:
-        conn.close()
+    bill_data = load_bill_data(json_file_path)
+    # PDF 파일 처리 및 분석 후 DB에 적재
+    process_pdfs_and_analyze(pdf_directory, example_format, bill_data)

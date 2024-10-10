@@ -174,7 +174,7 @@ function MagazineMain() {
         <div className="magazine-main-cate-title">분야 선택하기</div>
         <div className="magazine-main-cate-contents">
           {interests.map((item, index) => (
-            <MagazineMainCateCard key={index} item={item} />
+            <MagazineMainCateCard key={index} item={item} index={index} /> // index 전달
           ))}
         </div>
       </div>
