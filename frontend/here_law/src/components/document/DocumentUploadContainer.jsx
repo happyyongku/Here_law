@@ -79,7 +79,7 @@ function DocumentUploadContainer() {
         <div className="document-guide-top">
           <div className="document-guide-title">계약서 업로드</div>
           <div className="document-guide-subtitle">
-            JPG 파일을 업로드해 주세요.
+            JPG 또는 PDF 파일을 업로드해 주세요.
           </div>
           <div className="document-input-wrap">
             {/* 선택된 파일이 있을 때만 파일명과 닫기 버튼 표시 */}

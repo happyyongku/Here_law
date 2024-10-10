@@ -6,17 +6,18 @@ import NaviCard from "./NaviCard";
 import GuideDocument from "./GuideDocument";
 import GuideMagazine from "./GuideMagazine";
 import GuideLawyer from "./GuideLawyer";
+import "./SearchPageContainer.css"; // 스타일 파일 추가
 
 function SearchPageContainer() {
   const [isAiMode, setIsAiMode] = useState(false);
 
-  const handleToggle = (checked) => {
-    setIsAiMode(checked);
+  const handleToggle = () => {
+    setIsAiMode(!isAiMode);
   };
+  console.log("11111isAiMode 상태:", isAiMode);
 
   return (
-    <div>
-      {/* isAiMode 상태에 따라 AiSearch 또는 KeywordSearch 렌더링 */}
+    <div className="search-page-container">
       {isAiMode ? (
         <AiSearch isAiMode={isAiMode} onToggle={handleToggle} />
       ) : (
@@ -24,7 +25,6 @@ function SearchPageContainer() {
       )}
 
       <NaviCard />
-
       <GuideSearch />
       <GuideDocument />
       <GuideLawyer />

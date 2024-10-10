@@ -1,11 +1,12 @@
 .ai-search-page {
+  margin-top: 13px;
   width: 100%;
   height: 755pxx;
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  background-image: url("../../assets/search/searchbackimg.png");
+  /* background-image: url("../../assets/search/searchbackimg.png"); */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -20,7 +21,7 @@
 .ai-chat-box {
   margin-top: 26px;
   width: 892px;
-  height: 440px;
+  height: 340px;
   border-radius: 15px;
   border: 1px solid #828282;
   overflow-x: hidden;

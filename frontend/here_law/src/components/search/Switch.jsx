@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Switch.css";
 
-const Switch = ({ onToggle }) => {
+const Switch = ({ onToggle, onclickButton }) => {
   const [isChecked, setIsChecked] = useState(false);
 
   const handleChange = (e) => {
@@ -11,7 +11,7 @@ const Switch = ({ onToggle }) => {
 
   return (
     <div className="btn-container">
-      <label className="switch btn-color-mode-switch">
+      <label className="switch btn-color-mode-switch" onClick={onclickButton}>
         <input
           value="1"
           id="color_mode"

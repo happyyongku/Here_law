@@ -31,6 +31,7 @@
   top: 7px;
   right: 30px;
   color: #ffffff;
+  cursor: pointer;
 }
 
 .btn-color-mode-switch > label.btn-color-mode-switch-inner:after {
