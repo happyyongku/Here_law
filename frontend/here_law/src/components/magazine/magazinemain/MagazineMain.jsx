@@ -21,6 +21,7 @@ import usti from "../../../assets/magazine/usti.png";
 import file from "../../../assets/magazine/file.png";
 
 import fetchimg from "../../../assets/magazine/fetchimg.png";
+import fetchimg2 from "../../../assets/magazine/usermag.png";
 
 import Noteimg from "../../../assets/magazine/note1.png";
 
@@ -168,6 +169,7 @@ function MagazineMain() {
           />
           <MagazineMainHeaderCard
             cardTitle={"유저 기반 추천"}
+            fetchimg={fetchimg2}
             navigateButton={() => navigate("my")}
           />
         </div>
