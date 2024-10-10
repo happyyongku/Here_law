@@ -41,7 +41,7 @@ def get_recommended_lawyers_by_cosine_similarity(request: Request, user: User = 
             subscriptions = [row['subscriptions'] for row in cur.fetchall()] or []
 
             # 사용자 프로필 생성
-            user_profile = " ".join(interests + subscriptions)
+            user_profile = interests + subscriptions
 
             if not user_profile:
                 raise HTTPException(status_code=400, detail="사용자의 관심사와 구독 정보가 없습니다.")
@@ -59,11 +59,12 @@ def get_recommended_lawyers_by_cosine_similarity(request: Request, user: User = 
                 raise HTTPException(status_code=404, detail="변호사를 찾을 수 없습니다.")
 
     # 변호사 프로필 벡터화
-    lawyer_profiles = [lawyer['expertise_main'] for lawyer in lawyers]
+    lawyer_profiles = [lawyer['expertise_main'] for lawyer in lawyers if lawyer['expertise_main'] is not None]
     lawyer_ids = [lawyer['lawyer_id'] for lawyer in lawyers]
 
+    query_list = list(set(user_profile + lawyer_profiles))
     vectorizer = TfidfVectorizer()
-    vectors = vectorizer.fit_transform([user_profile] + lawyer_profiles)
+    vectors = vectorizer.fit_transform(query_list)
     cosine_similarities = cosine_similarity(vectors[0:1], vectors[1:]).flatten()
     print(f"User profile: {user_profile}")
     print(f"Lawyer profiles: {lawyer_profiles}")
