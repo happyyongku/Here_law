@@ -28,7 +28,7 @@
 .view-card-title {
   font-size: 14px;
   font-weight: bold;
-  margin-bottom: 8px;
+  margin-bottom: 1px;
 }
 
 .view-card-content {
@@ -49,8 +49,16 @@
 
 .view-card-likes {
   font-size: 12px;
+  opacity: 60%;
+  margin-right: 7px;
 }
 
 .view-card-view {
   font-size: 12px;
+  opacity: 60%;
+}
+
+.hotposting-icon {
+  width: 13px;
+  margin-right: 2px;
 }

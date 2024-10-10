@@ -17,10 +17,12 @@ from utils.magazine_service import (
 from utils.db_connection import DBConnection
 from utils.magazine_vector_database import MagazineVectorDatabase
 
+from dto.user_model import User
+
 magazine_router = APIRouter()
 
 @magazine_router.get("")
-def magazine_mount(request: Request, token: str = Depends(get_current_user)):
+def magazine_mount(request: Request, user: User = Depends(get_current_user)):
     """
     사용자의 관심사에 따라 magazine 목록을 추천해 제공. 사용자가 like 한 Magazine과 관심분야의 최신 Magazine 들을 고려하여 AI 기반으로 추천함.
     Parameters:
@@ -31,7 +33,7 @@ def magazine_mount(request: Request, token: str = Depends(get_current_user)):
     list: magazine 목록
     """
     # 토큰에서 이메일 추출
-    user_email = str(token).split("'")[1]
+    user_email = user.email
 
     # 사용자 정보 조회
     user = get_user_by_email(user_email)
@@ -64,13 +66,13 @@ def magazine_mount(request: Request, token: str = Depends(get_current_user)):
 
 
 @magazine_router.post("/{magazine_id}/like")
-def toggle_like(request: Request, magazine_id: int, token: str = Depends(get_current_user)):
+def toggle_like(request: Request, magazine_id: int, user: User = Depends(get_current_user)):
     """
     좋아요 기능 API: 특정 magazine_id에 대해 사용자가 좋아요를 누르면 기록을 추가,
     이미 좋아요를 누른 상태면 기록을 삭제하고, user_magazine_likes의 레코드 수로 likes를 계산.
     """
     # 현재 로그인한 사용자 정보를 가져오기
-    user_email = str(token).split("'")[1]
+    user_email = user.email
     # 사용자 정보 조회
     user = get_user_by_email(user_email)
     if not user:
@@ -119,7 +121,7 @@ def toggle_like(request: Request, magazine_id: int, token: str = Depends(get_cur
     return {"message": action, "updated_likes": like_count}
 
 @magazine_router.get("/top-liked")
-def get_top_liked_magazines(request: Request, token: str = Depends(get_current_user)):
+def get_top_liked_magazines(request: Request, user: User = Depends(get_current_user)):
     """
     좋아요 순으로 정렬된 magazine 목록을 30개까지 반환하는 API 엔드포인트입니다.
     """
@@ -140,7 +142,7 @@ def get_top_liked_magazines(request: Request, token: str = Depends(get_current_u
     return top_liked_magazines  # 결과를 명시적으로 반환
 
 @magazine_router.get("/top-viewed")
-def get_top_viewed_magazines(request: Request, token: str = Depends(get_current_user)):
+def get_top_viewed_magazines(request: Request, user: User = Depends(get_current_user)):
     """
     조회수 순으로 정렬된 magazine 목록을 30개까지 반환하는 API 엔드포인트입니다.
     """
@@ -158,7 +160,7 @@ def get_top_viewed_magazines(request: Request, token: str = Depends(get_current_
     return top_viewed_magazines
 
 @magazine_router.get("/{magazine_id}")
-def get_magazine(request: Request, magazine_id: int, token: str = Depends(get_current_user)):
+def get_magazine(request: Request, magazine_id: int, user: User = Depends(get_current_user)):
     with DBConnection().get_connection() as conn:
         # magazine을 조회
         magazine = get_magazine_by_id(magazine_id)
@@ -178,7 +180,7 @@ def get_magazine(request: Request, magazine_id: int, token: str = Depends(get_cu
 
 
 @magazine_router.get("/category/{category}")
-def get_magazines_by_category_endpoint(category: str, request: Request, token: str = Depends(get_current_user)):
+def get_magazines_by_category_endpoint(category: str, request: Request, user: User = Depends(get_current_user)):
     """
     카테고리별로 magazine 목록을 반환하는 API 엔드포인트입니다.
     """
@@ -199,12 +201,12 @@ def get_magazines_by_category_endpoint(category: str, request: Request, token: s
     return magazines  # 카테고리별 magazine 목록 반환
 
 @magazine_router.get("/like-status/{magazine_id}")
-def check_like_status(magazine_id: int, token: str = Depends(get_current_user)):
+def check_like_status(magazine_id: int, user: User = Depends(get_current_user)):
     """
     사용자가 해당 magazine에 좋아요를 눌렀는지 여부를 확인하는 API
     """
     # 현재 로그인한 사용자 정보 가져오기
-    user_email = str(token).split("'")[1]
+    user_email = user.email
     # 사용자 정보 조회
     user = get_user_by_email(user_email)
     if not user:
@@ -222,12 +224,12 @@ def check_like_status(magazine_id: int, token: str = Depends(get_current_user)):
     return {"liked": bool(existing_like)}  # 좋아요 여부 반환
 
 @magazine_router.post("/subscribe/{category}")
-def toggle_subscribe_category(category: str, token: str = Depends(get_current_user)):
+def toggle_subscribe_category(category: str, user: User = Depends(get_current_user)):
     """
     사용자가 구독 버튼을 눌렀을 때 구독하거나 구독을 해제하는 API
     """
     # 사용자 확인
-    user_email = str(token).split("'")[1]
+    user_email = user.email
     user = get_user_by_email(user_email)
     if not user:
         raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
@@ -260,8 +262,8 @@ def toggle_subscribe_category(category: str, token: str = Depends(get_current_us
     return {"response": action}
 
 @magazine_router.get("/subscribe_check/{category}")
-def subscribe_category_check(category: str, token: str = Depends(get_current_user)):
-    user_email = str(token).split("'")[1]
+def subscribe_category_check(category: str, user: User = Depends(get_current_user)):
+    user_email = user.email
     user = get_user_by_email(user_email)
     if not user:
         raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")

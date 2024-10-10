@@ -1,13 +1,17 @@
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import axiosInstance from "../../../utils/axiosInstance";
 import "./MagazineDetail.css";
 
 // 임시 사진
-import image from "../../../assets/magazine/prom3.png";
+// import image from "../../../assets/magazine/prom3.png";
 import { useEffect, useState } from "react";
 
 function MagazineDetail() {
   const params = useParams();
+
+  const location = useLocation();
+  const { image1 } = location.state || {};
+  console.log(image1);
 
   // 포스팅 디테일 axios 요청
   const [postingDetail, setPostingDetail] = useState([]);
@@ -106,7 +110,7 @@ function MagazineDetail() {
           {postingDetail.created_at}
         </div>
       </div>
-      <img src={image} alt="" className="magazine-detail-img" />
+      <img src={image1} alt="" className="magazine-detail-img" />
       <div className="magazine-detail-content">{postingDetail.content}</div>
 
       {!isRec ? (
@@ -116,7 +120,7 @@ function MagazineDetail() {
             recRequest();
           }}
         >
-          개추 button
+          🖤 좋아요
         </button>
       ) : (
         <button
@@ -125,7 +129,7 @@ function MagazineDetail() {
             recRequest();
           }}
         >
-          취소 button
+          ❤️ 좋아요
         </button>
       )}
     </div>

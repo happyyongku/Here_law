@@ -5,7 +5,7 @@ from utils.db_connection import DBConnection
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
-
+from dto.user_model import User
 # FastAPI Router 생성
 lawyer_router = APIRouter()
 
@@ -14,13 +14,13 @@ db_connection = DBConnection()
 
 # 사용자 구독 정보와 관심사를 기반으로 코사인 유사도로 변호사 추천
 @lawyer_router.get("/recommended-lawyers-cosine")
-def get_recommended_lawyers_by_cosine_similarity(token: str = Depends(get_current_user)):
+def get_recommended_lawyers_by_cosine_similarity(user: User = Depends(get_current_user)):
     """
     사용자의 구독 정보와 관심사를 기반으로 코사인 유사도를 계산하여 관련 변호사를 추천하는 API.
     유사도가 높은 변호사들을 포인트 순으로 정렬하여 상위 10명 반환.
     """
     # 현재 로그인한 사용자 정보 가져오기
-    user_email = str(token).split("'")[1]
+    user_email = User.email
     
     with db_connection.get_connection() as conn:
         # 사용자 정보 조회
