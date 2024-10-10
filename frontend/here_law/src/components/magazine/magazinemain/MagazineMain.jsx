@@ -22,6 +22,8 @@ import file from "../../../assets/magazine/file.png";
 
 import fetchimg from "../../../assets/magazine/fetchimg.png";
 
+import Noteimg from "../../../assets/magazine/note1.png";
+
 function MagazineMain() {
   const navigate = useNavigate();
 
@@ -189,7 +191,7 @@ function MagazineMain() {
             ))}
           </div>
           <div className="magazine-main-fetch-box">
-            <div>패치노트 바로 가기</div>
+            <div className="fetch-title">패치노트 바로 가기</div>
             <img
               src={fetchButton}
               alt="fetchbutton"
