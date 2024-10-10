@@ -194,3 +194,7 @@
   opacity: 1;
   transform: translateY(0);
 }
+.light-icon-docu-result {
+  width: 30px;
+  margin-right: 10px;
+}

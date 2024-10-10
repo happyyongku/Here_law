@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import RentHeader from "./RentHeader";
 import { useLocation } from "react-router-dom";
 import "./DocumentResultContainer.css";
+import LightIcon from "../../assets/search/light.gif";
 
 function DocumentResultContainer() {
   const location = useLocation();
@@ -12,7 +13,7 @@ function DocumentResultContainer() {
   const [sectionTitle, setSectionTitle] = useState("");
   const [targetClause, setTargetClause] = useState(""); // 분석대상조항 추가
   const [favorableClause, setFavorableClause] = useState("");
-  const [unfavorableClause, setUnfavorableClause] = useState("");
+  const [unfavorableClause, setUnfavorableClause] = useState([]);
   const [conclusion, setConclusion] = useState("");
 
   useEffect(() => {
@@ -23,7 +24,7 @@ function DocumentResultContainer() {
           sectionTitle: "",
           targetClause: "", // 분석대상조항 추가
           favorable: "",
-          unfavorable: "",
+          unfavorable: [],
           conclusion: "",
         };
 
@@ -33,9 +34,8 @@ function DocumentResultContainer() {
         if (match) {
           result.sectionTitle = match[0].trim();
         }
-
         // 1. "불리한 조항" 안의 "- ... :" 형식 파싱
-        pattern = /-\s*(.*?):/g;
+        pattern = /-\s*(.*?)(?=:)/g; // ":" 직전까지 추출하도록 수정
         let targetMatches = [...analysisResult.matchAll(pattern)];
         if (targetMatches.length > 0) {
           result.targetClause = targetMatches
@@ -50,18 +50,22 @@ function DocumentResultContainer() {
           result.favorable = match[1].trim();
         }
 
-        // 3. "1. 불리한 조항:" 이후의 모든 내용 파싱
-        pattern = /1\.\s*불리한 조항:(.*)/s;
+        // 3. "1. 불리한 조항:" 이후 "2. 결론:" 전까지의 모든 내용 파싱
+        pattern = /1\.\s*불리한 조항:(.*?)(?=\n2\. 결론:|$)/s;
         match = analysisResult.match(pattern);
         if (match) {
-          // 불리한 조항을 줄 바꿈 문자 또는 "-" 기호로 분리하여 문자열로 저장
+          // 불리한 조항을 파싱하여 강조할 부분과 나머지 내용을 분리
           result.unfavorable = match[1]
             .split(/(?:\n|-) +/)
-            .map((item) => item.trim())
-            .filter((item) => item.length > 0)
-            .join("<br />");
+            .map((item) => {
+              const parts = item.split(":");
+              return {
+                highlight: parts[0].trim(), // -와 : 사이의 강조할 부분
+                content: parts.slice(1).join(":").trim(), // 그 이후의 내용
+              };
+            })
+            .filter((item) => item.highlight.length > 0);
         }
-
         // 4. 결론 파싱
         pattern = /결론:(.*)/s;
         match = analysisResult.match(pattern);
@@ -75,7 +79,9 @@ function DocumentResultContainer() {
           result.targetClause || "분석된 대상 조항이 없습니다.";
         result.favorable = result.favorable || "분석된 유리한 조항이 없습니다.";
         result.unfavorable =
-          result.unfavorable || "분석된 불리한 조항이 없습니다.";
+          result.unfavorable.length > 0
+            ? result.unfavorable
+            : [{ highlight: "", content: "분석된 불리한 조항이 없습니다." }];
         result.conclusion = result.conclusion || "분석된 결론이 없습니다.";
 
         return result;
@@ -143,9 +149,22 @@ function DocumentResultContainer() {
               </li>
               <div
                 className="step-text"
-                style={{ fontWeight: "bold", textAlign: "center" }}
+                style={{
+                  fontWeight: "bold",
+                  textAlign: "start",
+
+                  alignItems: "center",
+                }}
               >
-                {targetClause}
+                <span style={{ listStyleType: "disc" }}>
+                  {" "}
+                  <img
+                    src={LightIcon}
+                    alt="light-icon"
+                    className="light-icon-docu-result"
+                  />
+                </span>
+                <span>{targetClause}</span>
               </div>
             </div>
 
@@ -168,10 +187,38 @@ function DocumentResultContainer() {
                   <div className="text"></div>
                 </div>
               </li>
-              <div
-                className="step-text"
-                dangerouslySetInnerHTML={{ __html: unfavorableClause }}
-              ></div>
+              <div className="step-text">
+                {unfavorableClause.map((clause, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+
+                      gap: "20px",
+                      alignItems: "center",
+                      textAlign: "center",
+                    }}
+                  >
+                    <span style={{ listStyleType: "disc" }}></span>
+                    <div>
+                      <div
+                        style={{
+                          color: "#FF9900",
+                          fontWeight: "bold",
+                          marginBottom: "10px",
+                        }}
+                      >
+                        {clause.highlight}:
+                      </div>
+                      <hr />
+                      <br />
+                      <div style={{ marginBottom: "30px" }}>
+                        {clause.content}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="step-wrap" ref={(el) => (stepRefs.current[3] = el)}>
