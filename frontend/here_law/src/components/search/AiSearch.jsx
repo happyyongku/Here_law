@@ -104,8 +104,9 @@ function AiSearch({ isAiMode, onToggle }) {
                   className="case-modal-light-icon"
                 />
                 판례 {artifactId}{" "}
-                <span style={{ color: "#5D5D5D", fontSize: "11px" }}>
-                  상세 보기→
+                <span style={{ color: "#5D5D5D", fontSize: "13px" }}>
+                  {" "}
+                  Go! →
                 </span>
               </button>
             ))}

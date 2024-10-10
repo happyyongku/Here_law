@@ -62,15 +62,23 @@ async def generate_legal_document(user_info: UserInfo):
 # OpenAI를 사용해 문서 생성
 def generate_content(user_info: Dict[str, str]) -> Dict[str, str]:
     prompt = f"""
+
     다음 정보를 바탕으로 한국어 소장에 필요한 청구 취지, 청구 원인, 첨부 서류를 작성해주세요.
 
-    사건명: {user_info['case_title']}
-    원고: {user_info['plaintiff']} (주소: {user_info['plaintiff_address']}, 전화번호: {user_info['plaintiff_phone']})
-    피고: {user_info['defendant']} (주소: {user_info['defendant_address']}, 전화번호: {user_info['defendant_phone']})
-    사건 내용: {user_info['case_details']}
+    사건명:
+    {user_info['case_title']}
+    원고:
+    {user_info['plaintiff']} (주소: {user_info['plaintiff_address']}, 전화번호: {user_info['plaintiff_phone']})
+    피고:
+    {user_info['defendant']} (주소: {user_info['defendant_address']}, 전화번호: {user_info['defendant_phone']})
+    사건 내용:
+    {user_info['case_details']}
+
     소장은 정식 법률 문서 형식으로 작성되어야 하며, 필요한 모든 법적 요소를 포함해야 합니다.
-    [청구 취지], [청구 원인], [첨부 서류] 이런식으로 작성해 주세요.
-    [청구 취지]의 마지막 세줄은 다음의 형식을 무조건 따라야합니다.
+    작성 형식:
+    [청구 취지], [청구 원인], [첨부 서류]
+
+    또한 [청구 취지]의 마지막 세줄은 다음의 형식을 무조건 따라야 합니다:
     1. ...
     
     2. 소송비용은 피고가 부담한다.
@@ -79,9 +87,7 @@ def generate_content(user_info: Dict[str, str]) -> Dict[str, str]:
 
     라는 판결을 구합니다.
     
-    청구취지는 '라는 판결을 구합니다.'항목 이외에는 존댓말을 쓰면 안됩니다. 나머지 청구 원인에는 무조건 존댓말을 써주세요
-
-    """
+    청구취지는 '라는 판결을 구합니다.'항목 이외에는 존댓말을 쓰면 안됩니다. 나머지 청구 원인에는 무조건 존댓말을 써주세요."""
 
     response = client.chat.completions.create(
         model="gpt-4",

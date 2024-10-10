@@ -57,12 +57,20 @@ def wrap_text(text, max_len=50):
 
 # OpenAI API로 계약서 조항 분석 함수
 def analyze_clause(ocr_text, example_format):
-    prompt = f""""다음 정보를 바탕으로 약관 조항이 사용자에게 유리한 조항인지 불리한 조항인지 근거를 들어서 분석해 주세요\n{ocr_text}\n이 형식을 참고해 주세요\n{example_format}"""
+    prompt = f"""
+    
+    다음 약관 조항에 사용자에게 불리한 조항이 포함되어 있는지 근거를 들어서 분석해. 예시 내용과 Query 를 혼동하는 등의 환각에 주의할 것.
+    
+    약관:
+    {ocr_text}
+
+    대답 형식 예시:
+    {example_format}"""
     
     completion = client.chat.completions.create(
         model="gpt-4o",
         messages=[
-            {"role": "system", "content": "당신은 한국의 법률 문서 작성 전문가입니다."},
+            {"role": "system", "content": "당신은 한국의 법률 문서 분석 및 작성의 전문가입니다."},
             {"role": "user", "content": prompt}
         ]
     )
@@ -92,9 +100,6 @@ async def analyze_contract_clause(file: UploadFile = File(...)):
     이 조항은 계약의 기본 틀을 설명하며, e스포츠 발전을 도모하겠다는 목적이 명시되어 있습니다. 여기에서는 특별히 사용자(선수)에게 유리하거나 불리한 요소가 드러나지 않습니다. 이는 표준적으로 양측의 관계와 의무를 규정하는 조항입니다.
     
     **2. 제2조 (신의성실)**
-    
-    **유리한 조항:**
-    - "회사"가 "선수"에게 합의된 후원금 등을 지급할 의무가 있다는 점이 명시되어 있습니다. 이는 "회사"가 후원금 지급을 책임져야 한다는 내용을 포함하여, 선수에게 경제적인 안정성을 보장할 수 있습니다.
     
     **불리한 조항:**
     - "선수"는 "회사"를 위하여 그의 능력과 기능을 최대한 발휘하여 활동을 수행할 의무가 있습니다. 이 문구는 선수에게 상당히 높은 성과 요구를 명시하며, 선수가 자신의 능력을 최대한 발휘하지 못할 시 계약 위반이 될 여지가 있습니다.

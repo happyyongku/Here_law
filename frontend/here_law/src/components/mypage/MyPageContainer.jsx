@@ -110,7 +110,7 @@ function MyPageContainer() {
         interests={userData.interests || []}
       />
 
-      <Subscribe subscribe={userData.subscribe || []} />
+      <Subscribe subscribe={userData.subscriptions || []} />
     </div>
   );
 }
