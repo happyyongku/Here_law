@@ -49,6 +49,7 @@ def generate_diff(old_text: str, new_text: str) -> Optional[str]:
     return diff_text
 
 def parse_diff(diff_text) -> List[ClauseDifferencePair]:
+    SPLIT_DELIMITER = ": "
     # Split the diff text into blocks based on the @@...@@ markers
     diff_blocks = re.split(r'@@.*@@', diff_text)
 
@@ -62,7 +63,6 @@ def parse_diff(diff_text) -> List[ClauseDifferencePair]:
         
         # Split the block into lines
         lines = block.strip().splitlines()
-
         for line in lines:
             # Removed lines (old version, marked by '-')
             if line.startswith('-'):
@@ -72,10 +72,14 @@ def parse_diff(diff_text) -> List[ClauseDifferencePair]:
 
             # Remove the '-' and split into index and content
             try:
-                index, content = line[1:].split(':', 1)
+                index, content = line[1:].split(SPLIT_DELIMITER, 1)
             except ValueError: # index로 삼을 만한 게 없음
-                index = ""
-                content = line[1:]
+                if len(target_list) == 0:
+                    index = ""
+                    content = line[1:]
+                else:
+                    target_list[-1].content += "\n" + line[1:]
+                    continue # to next line
             target_list.append(ClauseDifferenceElement.model_construct(**{'index': index.strip(), 'content': content.strip()}))
 
         # Add a pair of old and new dictionaries to differences
