@@ -29,9 +29,8 @@ services:
       MAIL_PORT: ${MAIL_PORT}
       MAIL_USERNAME: ${MAIL_USERNAME}
       MAIL_PASSWORD: ${MAIL_PASSWORD}
-    # depends_on:
-    #   - postgres
-    #   - elasticsearch
+    volumes:
+      - ~/here_law_profile_img:/app/here_law_profile_img
   
   fastapi:
     image: happyyongku/j11b109:fastapi

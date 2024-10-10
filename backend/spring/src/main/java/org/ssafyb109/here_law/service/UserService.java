@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-    private static final String UPLOAD_DIR = "here_law_profile_img";
+    private static final String UPLOAD_DIR = "/app/here_law_profile_img/";
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private final JavaMailSender mailSender;
