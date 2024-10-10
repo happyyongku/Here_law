@@ -1,8 +1,8 @@
 package org.ssafyb109.here_law.controller;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,7 @@ import org.ssafyb109.here_law.repository.jpa.VerificationTokenRepository;
 import org.ssafyb109.here_law.service.EmailService;
 import org.ssafyb109.here_law.service.EmailVerificationService;
 import org.ssafyb109.here_law.service.UserService;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,34 +35,25 @@ import java.util.*;
 
 @Tag(name = "회원관리")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/spring_api")
 public class UserController {
 
-    @Autowired
-    private UserJpaRepository userJpaRepository;
+    private final UserJpaRepository userJpaRepository;
 
-    @Autowired
-    private LawyerRepository lawyerRepository;
+    private final LawyerRepository lawyerRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
 
-    @Autowired
-    private VerificationTokenRepository verificationTokenRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private EmailVerificationService emailVerificationService;
+    private final EmailVerificationService emailVerificationService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-
-    // 이미지 저장 디렉토리 경로
-    private static final String UPLOAD_DIR = "C:/uploads/images/";
 
     @Operation(
             summary = "회원가입",
@@ -122,34 +114,11 @@ public class UserController {
 
         logger.info("회원 정보 유효성 검사 통과");
 
-        // 파일 업로드 처리
-        String profileImgPath = null;
-        if (profileImgFile != null && !profileImgFile.isEmpty()) {
-            try {
-                String fileName = UUID.randomUUID() + "_" + profileImgFile.getOriginalFilename();
-                Path dirPath = Paths.get(UPLOAD_DIR);
-                if (!Files.exists(dirPath)) {
-                    Files.createDirectories(dirPath); // 디렉토리가 없으면 생성
-                }
-                Path filePath = dirPath.resolve(fileName);
-                Files.write(filePath, profileImgFile.getBytes());
-
-                String serverUrl = "https://j11b109.p.ssafy.io";
-                profileImgPath = serverUrl + "/images/" + fileName;  // 절대 경로
-
-                logger.info("프로필 이미지 저장 완료: {}", profileImgPath);
-            } catch (Exception e) {
-                logger.error("파일 업로드 중 오류 발생: ", e);
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 오류가 발생했습니다.");
-            }
-        }
-
         // UserEntity 생성 및 저장
         UserEntity user = new UserEntity();
         user.setNickname(userDTO.getNickname());
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setProfileImg(profileImgPath);
         user.setUserType(userDTO.getUserType());
         user.setIsFirst(true);
         user.setCreatedDate(LocalDateTime.now());
@@ -160,6 +129,16 @@ public class UserController {
 
         userJpaRepository.save(user);  // 사용자 저장
         logger.info("사용자 정보 저장 완료: {}", user.getEmail());
+
+        // 파일 업로드 처리
+        if (profileImgFile != null && !profileImgFile.isEmpty()) {
+            try {
+                userService.uploadProfile(profileImgFile);
+            } catch (Exception e) {
+                logger.error("파일 업로드 중 오류 발생: ", e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 오류가 발생했습니다.");
+            }
+        }
 
         // 변호사일 경우 LawyerEntity 생성 및 저장
         if ("lawyer".equals(userDTO.getUserType()) && userDTO.getLawyerDTO() != null) {
@@ -207,7 +186,6 @@ public class UserController {
     @DeleteMapping("/user/profile") //회원 탈퇴
     public ResponseEntity<String> deleteUser(Authentication authentication, @RequestBody UserDeleteDTO userDeleteDTO) {
         logger.info("회원 탈퇴 요청 수신");
-
         UserEntity user = userJpaRepository.findByEmail(authentication.getName());
         logger.debug("현재 사용자: {}", user.getEmail());
 
