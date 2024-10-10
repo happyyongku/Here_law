@@ -198,7 +198,7 @@ def get_magazines_by_category_endpoint(category: str, request: Request, token: s
 
     return magazines  # 카테고리별 magazine 목록 반환
 
-@magazine_router.get("/{magazine_id}/like-status")
+@magazine_router.get("/like-status/{magazine_id}")
 def check_like_status(magazine_id: int, token: str = Depends(get_current_user)):
     """
     사용자가 해당 magazine에 좋아요를 눌렀는지 여부를 확인하는 API
@@ -258,3 +258,26 @@ def toggle_subscribe_category(category: str, token: str = Depends(get_current_us
             conn.commit()
             
     return {"response": action}
+
+@magazine_router.get("/subscribe_check/{category}")
+def subscribe_category_check(category: str, token: str = Depends(get_current_user)):
+    user_email = str(token).split("'")[1]
+    user = get_user_by_email(user_email)
+    if not user:
+        raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+    print(f"User : {user}")
+    check_subscibe_query = """
+    SELECT * FROM user_subscriptions WHERE user_id = %s AND subscriptions = %s
+    """
+    with DBConnection().get_connection() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            try:
+                cur.execute(check_subscibe_query, (user['id'], category))
+                existing_subscribe = cur.fetchone()
+                print(f"Exist : {existing_subscribe}")
+                if existing_subscribe:
+                    return {"subscribe":True}
+                else:
+                    return {"subscribe":False}
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"Error occured in existing_subscribe: {str(e)}")
