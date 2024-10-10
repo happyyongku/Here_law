@@ -16,41 +16,84 @@ function DocumentResultContainer() {
 
   useEffect(() => {
     if (analysis) {
-      // 제목 매칭
-      const titleMatch = analysis.match(/(?<=\*\*)(제[0-9]+조.*?)(?=\*\*)/);
+      // 분석 결과 파싱 함수
+      const parseAnalysis = (analysisResult) => {
+        const result = {
+          sectionTitle: "",
+          favorable: "",
+          unfavorable: "",
+          conclusion: "",
+        };
 
-      // 불리한 조항 매칭
-      const unfavorableMatch = analysis.match(
-        /(?<=\*\*불리한 조항:\*\*\s*)([\s\S]*?)(?=\*\*유리한 조항|\*\*결론|$)/
-      );
-      // 유리한 조항 매칭
-      const favorableMatch = analysis.match(
-        /(?<=\*\*유리한 조항:\*\*\s*)([\s\S]*?)(?=\*\*불리한 조항|\*\*결론|$)/
-      );
-      // 결론 매칭
-      const conclusionMatch = analysis.match(/(?<=\*\*결론\*\*\s*)([\s\S]*)/);
+        // 0. "제"로 시작하는 제목 파싱
+        let pattern = /(?<=\*\*)제[0-9]+조.*?(?=\*\*)/;
+        let match = analysisResult.match(pattern);
+        if (match) {
+          result.sectionTitle = match[0].trim();
+        }
 
-      const cleanText = (text) => text.replace(/\*\*/g, "").trim();
+        // 1. "1. 유리한 조항"과 "2. 불리한 조항" 형식 파싱
+        pattern = /1\.\s*유리한 조항:(.*?)(?=\n2\. 불리한 조항:|$)/s;
+        match = analysisResult.match(pattern);
+        if (match) {
+          result.favorable = match[1].trim();
+        }
 
-      setSectionTitle(titleMatch ? cleanText(titleMatch[0]) : "제목 없음");
-      setFavorableClause(
-        favorableMatch
-          ? cleanText(favorableMatch[0])
-          : "분석된 유리한 조항이 없습니다."
-      );
-      setUnfavorableClause(
-        unfavorableMatch
-          ? cleanText(unfavorableMatch[0])
-          : "분석된 불리한 조항이 없습니다."
-      );
-      setConclusion(
-        conclusionMatch
-          ? cleanText(conclusionMatch[0])
-          : "분석된 결론이 없습니다."
-      );
+        pattern = /2\.\s*불리한 조항:(.*?)(?=\n결론:|$)/s;
+        match = analysisResult.match(pattern);
+        if (match) {
+          result.unfavorable = match[1].trim();
+        }
+
+        pattern = /결론:(.*)/s;
+        match = analysisResult.match(pattern);
+        if (match) {
+          result.conclusion = match[1].trim();
+        }
+
+        // 2. "유리한 조항", "불리한 조항" 텍스트만 있는 형식 파싱
+        if (!result.favorable) {
+          pattern = /유리한 조항[:\s]*(.*?)(?=\n불리한 조항|$)/s;
+          match = analysisResult.match(pattern);
+          if (match) {
+            result.favorable = match[1].trim();
+          }
+        }
+
+        if (!result.unfavorable) {
+          pattern = /불리한 조항[:\s]*(.*?)(?=\n결론|$)/s;
+          match = analysisResult.match(pattern);
+          if (match) {
+            result.unfavorable = match[1].trim();
+          }
+        }
+
+        if (!result.conclusion) {
+          pattern = /결론[:\s]*(.*)/s;
+          match = analysisResult.match(pattern);
+          if (match) {
+            result.conclusion = match[1].trim();
+          }
+        }
+
+        // 만약 유리한 조항, 불리한 조항, 결론이 비어 있으면 기본값 설정
+        result.sectionTitle = result.sectionTitle || "제목 없음";
+        result.favorable = result.favorable || "분석된 유리한 조항이 없습니다.";
+        result.unfavorable =
+          result.unfavorable || "분석된 불리한 조항이 없습니다.";
+        result.conclusion = result.conclusion || "분석된 결론이 없습니다.";
+
+        return result;
+      };
+
+      // 분석 결과 파싱 및 상태 업데이트
+      const parsed = parseAnalysis(analysis);
+      setSectionTitle(parsed.sectionTitle);
+      setFavorableClause(parsed.favorable);
+      setUnfavorableClause(parsed.unfavorable);
+      setConclusion(parsed.conclusion);
     }
   }, [analysis]);
-
   const stepRefs = useRef([]);
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Switch from "./Switch";
 import SendIcon from "../../assets/search/searchsend.png";
 import fastaxiosInstance from "../../utils/fastaxiosInstance";
@@ -15,6 +15,7 @@ function AiSearch({ isAiMode, onToggle }) {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
   const [selectedCaseId, setSelectedCaseId] = useState(null); // 선택된 caseInfoId 저장
   const [judgmentSummary, setJudgmentSummary] = useState(""); // 판결 요약 데이터 저장
+  const chatBoxRef = useRef(null); // 채팅 창 참조를 위한 useRef
 
   // 세션 ID 가져오기 (컴포넌트 마운트 시)
   useEffect(() => {
@@ -38,6 +39,25 @@ function AiSearch({ isAiMode, onToggle }) {
 
     fetchSessionId();
   }, []);
+
+  // 메시지가 업데이트될 때마다 자동으로 스크롤
+  useEffect(() => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  // AI 응답을 순차적으로 추가하는 함수
+  const addAiResponsesSequentially = (aiResponses) => {
+    aiResponses.forEach((response, index) => {
+      setTimeout(() => {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { type: "ai", content: response },
+        ]);
+      }, index * 1000); // 각 응답을 1초 간격으로 추가
+    });
+  };
 
   // 메시지를 입력하고 전송하는 함수
   const sendMessage = async () => {
@@ -71,54 +91,40 @@ function AiSearch({ isAiMode, onToggle }) {
       );
 
       const aiResponse = response.data;
+      const aiMessages = [];
 
       // GPT 응답 추가 (순서대로 나옴)
-      setMessages((prevMessages) => {
-        const newMessages = [...prevMessages];
+      if (aiResponse.tool_message) {
+        aiMessages.push(
+          <div>
+            유사한 판례는 다음과 같습니다!:
+            {aiResponse.tool_message.artifact.map((artifactId) => (
+              <button
+                key={artifactId}
+                onClick={() => openModal(artifactId)}
+                style={{
+                  display: "block",
+                  color: "blue",
+                  textDecoration: "underline",
+                }}
+              >
+                판례 {artifactId} 상세 보기
+              </button>
+            ))}
+          </div>
+        );
 
-        if (aiResponse.tool_message) {
-          newMessages.push({
-            type: "ai",
-            content: (
-              <div>
-                유사한 판례는 다음과 같습니다!:
-                {aiResponse.tool_message.artifact.map((artifactId) => (
-                  <button
-                    key={artifactId}
-                    onClick={() => openModal(artifactId)}
-                    style={{
-                      display: "block",
-                      color: "blue",
-                      textDecoration: "underline",
-                    }}
-                  >
-                    판례 {artifactId} 상세 보기
-                  </button>
-                ))}
-              </div>
-            ),
-          });
+        // tool_message.content를 메시지로 추가
+        aiMessages.push(aiResponse.tool_message.content);
 
-          // tool_message.content를 메시지로 추가
-          newMessages.push({
-            type: "ai",
-            content: aiResponse.tool_message.content,
-          });
+        // ai_message.content를 메시지로 추가
+        aiMessages.push(aiResponse.ai_message.content);
+      } else if (aiResponse.ai_message) {
+        aiMessages.push(aiResponse.ai_message.content);
+      }
 
-          // ai_message.content를 메시지로 추가
-          newMessages.push({
-            type: "ai",
-            content: aiResponse.ai_message.content,
-          });
-        } else if (aiResponse.ai_message) {
-          newMessages.push({
-            type: "ai",
-            content: aiResponse.ai_message.content,
-          });
-        }
-
-        return newMessages;
-      });
+      // AI 응답을 순차적으로 추가
+      addAiResponsesSequentially(aiMessages);
     } catch (error) {
       console.error("GPT 응답 실패", error);
     }
@@ -157,7 +163,7 @@ function AiSearch({ isAiMode, onToggle }) {
         <Switch onToggle={onToggle} isChecked={isAiMode} />
       </div>
 
-      <div className="ai-chat-box">
+      <div className="ai-chat-box" ref={chatBoxRef}>
         <div className="chat-message">
           {messages.map((message, index) => (
             <div
