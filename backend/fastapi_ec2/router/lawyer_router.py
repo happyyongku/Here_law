@@ -20,7 +20,7 @@ def get_recommended_lawyers_by_cosine_similarity(request: Request, user: User = 
     유사도가 높은 변호사들을 포인트 순으로 정렬하여 상위 10명 반환.
     """
     # 현재 로그인한 사용자 정보 가져오기
-    user_email = User.email
+    user_email = user.email
     
     with db_connection.get_connection() as conn:
         # 사용자 정보 조회
