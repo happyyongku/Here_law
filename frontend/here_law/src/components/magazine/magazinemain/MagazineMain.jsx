@@ -108,38 +108,10 @@ function MagazineMain() {
     }
   };
 
-  // 4. 패치 노트
-  // const getMagazineLFetchData = async () => {
-  //   const token = localStorage.getItem("token");
-  //   try {
-  //     const response = await axiosInstance.get(
-  //       "/fastapi_ec2/revision/law-revision/2024-09-26",
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-  //     console.log("패치노트 조회 성공", response.data);
-  //     setFetchData(response.data);
-  //   } catch (error) {
-  //     if (error.response && error.response.status === 401) {
-  //       console.log("Token expired. Please log in again.");
-  //       localStorage.removeItem("token");
-  //     } else {
-  //       console.error("Error fetching user data, 패치노트 조회 실패", error);
-  //     }
-  //   } finally {
-  //     // setLoading(false);
-  //     // 데이터 요청 후 로딩 상태 업데이트
-  //   }
-  // };
-
   useEffect(() => {
     getMagazineData();
     getMagazineViewData();
     getMagazineLikeData();
-    // getMagazineLFetchData();
   }, []);
 
   const interests = [
@@ -155,8 +127,6 @@ function MagazineMain() {
     "의료 및 보험법",
     "행정 및 공공법",
   ];
-
-  // console.log(myPosting[0].content);
 
   return (
     <div className="magazine-main">

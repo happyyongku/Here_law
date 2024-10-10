@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import CaseTypeCard from "./CaseTypeCard";
-import CaseLawyerRec from "./CaseLawyerRec";
-import LawyerDetail from "./LawyerDetail";
+// import CaseLawyerRec from "./CaseLawyerRec";
 import axiosInstance from "../../../utils/axiosInstance";
 import "./CaseType.css";
 
@@ -67,36 +66,36 @@ function CaseType() {
   };
 
   // 변호사 추천 axios
-  const [recedLawyer, setRecedLawyer] = useState([]);
-  const getLawyerRec = async () => {
-    const token = localStorage.getItem("token");
-    try {
-      const response = await axiosInstance.get(
-        `/fastapi_ec2/lawyer/recommended-lawyers-cosine`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("변호사 추천 조회 성공", response.data);
-      setRecedLawyer(response.data);
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        console.log("Token expired. Please log in again.");
-        localStorage.removeItem("token");
-      } else {
-        console.error("Error fetching user data, 변호사 추천 실패", error);
-      }
-    } finally {
-      // setLoading(false);
-      // 데이터 요청 후 로딩 상태 업데이트
-    }
-  };
+  // const [recedLawyer, setRecedLawyer] = useState([]);
+  // const getLawyerRec = async () => {
+  //   const token = localStorage.getItem("token");
+  //   try {
+  //     const response = await axiosInstance.get(
+  //       `/fastapi_ec2/lawyer/recommended-lawyers-cosine`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     console.log("변호사 추천 조회 성공", response.data);
+  //     setRecedLawyer(response.data);
+  //   } catch (error) {
+  //     if (error.response && error.response.status === 401) {
+  //       console.log("Token expired. Please log in again.");
+  //       localStorage.removeItem("token");
+  //     } else {
+  //       console.error("Error fetching user data, 변호사 추천 실패", error);
+  //     }
+  //   } finally {
+  //     // setLoading(false);
+  //     // 데이터 요청 후 로딩 상태 업데이트
+  //   }
+  // };
 
   useEffect(() => {
     getMagazineLCateData();
-    getLawyerRec();
+    // getLawyerRec();
   }, []);
 
   return (
@@ -117,24 +116,21 @@ function CaseType() {
           SUBSCRIBE
         </button>
 
-        <div className="case-type-lawyer-rec">
+        {/* <div className="case-type-lawyer-rec">
           <div className="case-type-lawyer-rec-title">변호사 추천</div>
           <div>
-            {/* 여기에 반복이 들어가야 한다. */}
             {recedLawyer.slice(0, 5).map((item, index) => (
               <CaseLawyerRec key={index} item={item} />
             ))}
             <div></div>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="case-type-content-box">
         {categoryData.map((item, index) => (
           <CaseTypeCard key={index} item={item} />
         ))}
       </div>
-
-      <LawyerDetail />
     </div>
   );
 }

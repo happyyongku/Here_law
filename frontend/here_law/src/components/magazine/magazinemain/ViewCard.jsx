@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import defaultimg from "../../../assets/mypage/defaultimg.png";
 import "./ViewCard.css";
 
 function ViewCard({ posting }) {
@@ -9,7 +10,8 @@ function ViewCard({ posting }) {
       onClick={() => navigate(`/magazine/${posting.magazine_id}`)}
     >
       {/* 사진 대신 임시로 쓰는 div 태그  */}
-      <div className="img-alt"></div>
+      {/* <div className="img-alt"></div> */}
+      <img src={defaultimg} alt="" className="img-alt" />
       {/* <img src="" alt="" className="view-card-img" /> */}
       <div className="view-card-content-box">
         <div className="view-card-date">{posting.created_at}</div>

@@ -3,7 +3,7 @@
   height: 380px;
   display: flex;
   flex-direction: column;
-  background-color: darkgreen;
+  background-color: #ebeef3;
 }
 
 .magazine-custom-card-img {

@@ -26,7 +26,11 @@ function LawyerDetail() {
       // 데이터 요청 후 로딩 상태 업데이트
     }
   };
-  return <div>{/* <div>변호사 상세</div> */}</div>;
+  return (
+    <div>
+      <div>변호사 상세</div>
+    </div>
+  );
 }
 
 export default LawyerDetail;

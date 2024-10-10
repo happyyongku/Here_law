@@ -38,11 +38,9 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
-
       <Route path="/signup" element={<Singup />} />
       <Route path="/signout" element={<Signout />} />
       <Route path="/signuplawyer" element={<SingupLawyer />} />
-
       <Route
         path="/mypage"
         element={
@@ -53,7 +51,6 @@ function AppRoutes() {
       />
 
       <Route path="/search" element={<Search />} />
-
       <Route path="/search/case" element={<CaseList />} />
       <Route path="/search/case/:caseInfoId" element={<CaseDetail />} />
 
