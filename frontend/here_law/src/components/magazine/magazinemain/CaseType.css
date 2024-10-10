@@ -12,6 +12,7 @@
 .case-type-title {
   font-size: 34px;
   font-weight: bold;
+  margin-bottom: 5px;
 }
 
 .case-type-content {
@@ -23,10 +24,14 @@
 }
 
 .case-subscribe-button {
-  width: 120px;
-  height: 30px;
+  width: 125px;
+  height: 35px;
   margin-top: 20px;
   margin-bottom: 30px;
+  border: none;
+  background-color: rgba(255, 94, 0, 0.4);
+  font-weight: bold;
+  border-radius: 6px;
 }
 
 .case-type-lawyer-rec-title {
