@@ -8,8 +8,9 @@ function DocumentResultContainer() {
   const { analysis } = location.state || {}; // 전달된 state의 analysis 추출
   console.log(analysis);
 
-  // 제목, 유리한 조항, 불리한 조항, 결론을 분리
+  // 분석대상조항, 유리한 조항, 불리한 조항, 결론을 분리
   const [sectionTitle, setSectionTitle] = useState("");
+  const [targetClause, setTargetClause] = useState(""); // 분석대상조항 추가
   const [favorableClause, setFavorableClause] = useState("");
   const [unfavorableClause, setUnfavorableClause] = useState("");
   const [conclusion, setConclusion] = useState("");
@@ -20,6 +21,7 @@ function DocumentResultContainer() {
       const parseAnalysis = (analysisResult) => {
         const result = {
           sectionTitle: "",
+          targetClause: "", // 분석대상조항 추가
           favorable: "",
           unfavorable: "",
           conclusion: "",
@@ -32,52 +34,45 @@ function DocumentResultContainer() {
           result.sectionTitle = match[0].trim();
         }
 
-        // 1. "1. 유리한 조항"과 "2. 불리한 조항" 형식 파싱
+        // 1. "불리한 조항" 안의 "- ... :" 형식 파싱
+        pattern = /-\s*(.*?):/g;
+        let targetMatches = [...analysisResult.matchAll(pattern)];
+        if (targetMatches.length > 0) {
+          result.targetClause = targetMatches
+            .map((match) => match[1].trim())
+            .join(", ");
+        }
+
+        // 2. "유리한 조항"과 "불리한 조항" 형식 파싱
         pattern = /1\.\s*유리한 조항:(.*?)(?=\n2\. 불리한 조항:|$)/s;
         match = analysisResult.match(pattern);
         if (match) {
           result.favorable = match[1].trim();
         }
 
-        pattern = /2\.\s*불리한 조항:(.*?)(?=\n결론:|$)/s;
+        // 3. "1. 불리한 조항:" 이후의 모든 내용 파싱
+        pattern = /1\.\s*불리한 조항:(.*)/s;
         match = analysisResult.match(pattern);
         if (match) {
-          result.unfavorable = match[1].trim();
+          // 불리한 조항을 줄 바꿈 문자 또는 "-" 기호로 분리하여 문자열로 저장
+          result.unfavorable = match[1]
+            .split(/(?:\n|-) +/)
+            .map((item) => item.trim())
+            .filter((item) => item.length > 0)
+            .join("<br />");
         }
 
+        // 4. 결론 파싱
         pattern = /결론:(.*)/s;
         match = analysisResult.match(pattern);
         if (match) {
           result.conclusion = match[1].trim();
         }
 
-        // 2. "유리한 조항", "불리한 조항" 텍스트만 있는 형식 파싱
-        if (!result.favorable) {
-          pattern = /유리한 조항[:\s]*(.*?)(?=\n불리한 조항|$)/s;
-          match = analysisResult.match(pattern);
-          if (match) {
-            result.favorable = match[1].trim();
-          }
-        }
-
-        if (!result.unfavorable) {
-          pattern = /불리한 조항[:\s]*(.*?)(?=\n결론|$)/s;
-          match = analysisResult.match(pattern);
-          if (match) {
-            result.unfavorable = match[1].trim();
-          }
-        }
-
-        if (!result.conclusion) {
-          pattern = /결론[:\s]*(.*)/s;
-          match = analysisResult.match(pattern);
-          if (match) {
-            result.conclusion = match[1].trim();
-          }
-        }
-
-        // 만약 유리한 조항, 불리한 조항, 결론이 비어 있으면 기본값 설정
+        // 기본값 설정
         result.sectionTitle = result.sectionTitle || "제목 없음";
+        result.targetClause =
+          result.targetClause || "분석된 대상 조항이 없습니다.";
         result.favorable = result.favorable || "분석된 유리한 조항이 없습니다.";
         result.unfavorable =
           result.unfavorable || "분석된 불리한 조항이 없습니다.";
@@ -89,11 +84,13 @@ function DocumentResultContainer() {
       // 분석 결과 파싱 및 상태 업데이트
       const parsed = parseAnalysis(analysis);
       setSectionTitle(parsed.sectionTitle);
+      setTargetClause(parsed.targetClause); // 분석대상조항 설정
       setFavorableClause(parsed.favorable);
       setUnfavorableClause(parsed.unfavorable);
       setConclusion(parsed.conclusion);
     }
   }, [analysis]);
+
   const stepRefs = useRef([]);
 
   useEffect(() => {
@@ -148,11 +145,11 @@ function DocumentResultContainer() {
                 className="step-text"
                 style={{ fontWeight: "bold", textAlign: "center" }}
               >
-                {sectionTitle}
+                {targetClause}
               </div>
             </div>
 
-            <div className="step-wrap" ref={(el) => (stepRefs.current[1] = el)}>
+            {/* <div className="step-wrap" ref={(el) => (stepRefs.current[1] = el)}>
               <li style={{ "--cardColor": "#9AC3FF" }}>
                 <div className="content">
                   <div className="icon">✓</div>
@@ -161,7 +158,7 @@ function DocumentResultContainer() {
                 </div>
               </li>
               <div className="step-text">{favorableClause}</div>
-            </div>
+            </div> */}
 
             <div className="step-wrap" ref={(el) => (stepRefs.current[2] = el)}>
               <li style={{ "--cardColor": "#9AC3FF" }}>
@@ -171,7 +168,10 @@ function DocumentResultContainer() {
                   <div className="text"></div>
                 </div>
               </li>
-              <div className="step-text">{unfavorableClause}</div>
+              <div
+                className="step-text"
+                dangerouslySetInnerHTML={{ __html: unfavorableClause }}
+              ></div>
             </div>
 
             <div className="step-wrap" ref={(el) => (stepRefs.current[3] = el)}>
