@@ -133,7 +133,7 @@ function CaseType() {
       </div>
       <div className="case-type-content-box">
         {categoryData.map((item, index) => (
-          <CaseTypeCard key={index} item={item} />
+          <CaseTypeCard key={index} item={item} index={index} />
         ))}
       </div>
     </div>

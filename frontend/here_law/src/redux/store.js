@@ -4,9 +4,11 @@
 
 import { configureStore } from "@reduxjs/toolkit";
 import caseReducer from "./reducers/caseReducer"; // 리듀서를 임포트
+import arrayReducer from "./reducers/arrayReducer"; // 리듀서를 임포트
 const store = configureStore({
   reducer: {
     cases: caseReducer, // 리듀서를 스토어에 전달하여 상태를 관리합니다.
+    array: arrayReducer,
   },
 });
 
