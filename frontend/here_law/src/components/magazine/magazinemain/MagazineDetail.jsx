@@ -41,7 +41,7 @@ function MagazineDetail() {
     const token = localStorage.getItem("token");
     try {
       const response = await axiosInstance.get(
-        `/fastapi_ec2/magazine/${params.id}/like-status`,
+        `/fastapi_ec2/magazine/like-status/${params.id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -62,6 +62,7 @@ function MagazineDetail() {
   };
 
   // 포스팅 추천하기 axios 요청
+  const [forRand, setForRand] = useState(true);
   const recRequest = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -76,6 +77,7 @@ function MagazineDetail() {
         }
       );
       console.log("추천하기 성공", response.data);
+      setForRand(!forRand);
     } catch (error) {
       if (error.response && error.response.status === 401) {
         console.log("Token expired. Please log in again.");
@@ -92,7 +94,7 @@ function MagazineDetail() {
   useEffect(() => {
     getMagazineDetailData();
     checkRecRequest();
-  }, []);
+  }, [forRand]);
 
   return (
     <div className="magazine-detail-container">
