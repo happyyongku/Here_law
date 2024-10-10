@@ -175,7 +175,7 @@ function MagazineMain() {
         <div className="magazine-main-posting-fetch-body">
           <div className="magazine-main-posting-box">
             {viewPosting.slice(0, 4).map((posting, index) => (
-              <ViewCard key={index} posting={posting} />
+              <ViewCard key={index} posting={posting} index={index} />
             ))}
           </div>
           <div className="magazine-main-fetch-box">
