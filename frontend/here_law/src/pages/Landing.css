@@ -301,7 +301,7 @@
   position: absolute;
   width: 400px;
   top: 80px;
-  left: 180px;
+  left: 140px;
   border: 1px solid lightgray;
 
   height: auto;
@@ -310,12 +310,11 @@
   position: absolute;
   width: 400px;
   height: auto;
-  right: 200px;
   border: 1px solid lightgray;
 }
 .magazinepage3 {
   position: absolute;
-  right: 400px;
+  right: 90px;
   bottom: 80px;
   width: 400px;
   height: auto;
@@ -355,7 +354,7 @@
   width: 400px;
   height: auto;
   left: 100px;
-  bottom: 35px;
+  bottom: 70px;
   border: 1px solid lightgray;
 }
 
@@ -363,22 +362,12 @@
   width: 400px;
   height: auto;
   position: absolute;
-  left: 300px;
-  top: -70px;
+  left: 270px;
+  top: -120px;
   /* bottom: 0px; */
   border: 1px solid lightgray;
 }
 
-.lasttitle {
-  color: #ff5e00;
-  font-size: 44px;
-}
-
 .lastdesc {
-  font-size: 20px;
-  margin-bottom: 100px;
-}
-
-.section-content-center {
-  margin-top: -100px;
+  margin-bottom: 30px;
 }
