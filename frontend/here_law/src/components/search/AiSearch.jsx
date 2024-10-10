@@ -6,6 +6,8 @@ import axiosInstance from "../../utils/axiosInstance";
 import CaseModal from "./CaseModal"; // CaseModal 컴포넌트 가져오기
 import "./AiSearch.css";
 
+import Lighticon from "../../assets/search/light.gif";
+
 function AiSearch({ isAiMode, onToggle }) {
   const [sessionId, setSessionId] = useState(null); // session ID 상태
   const [messages, setMessages] = useState([
@@ -102,18 +104,21 @@ function AiSearch({ isAiMode, onToggle }) {
               <button
                 key={artifactId}
                 onClick={() => openModal(artifactId)}
-                style={{
-                  display: "block",
-                  color: "blue",
-                  textDecoration: "underline",
-                }}
+                className="case-show-button"
               >
-                판례 {artifactId} 상세 보기
+                <img
+                  src={Lighticon}
+                  alt="light-icon"
+                  className="case-modal-light-icon"
+                />
+                판례 {artifactId}{" "}
+                <span style={{ color: "#5D5D5D", fontSize: "11px" }}>
+                  상세 보기→
+                </span>
               </button>
             ))}
           </div>
         );
-
         // tool_message.content를 메시지로 추가
         aiMessages.push(aiResponse.tool_message.content);
 
