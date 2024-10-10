@@ -15,9 +15,11 @@ const CaseDetail = ({ caseInfoId: propsCaseInfoId }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showTip, setShowTip] = useState(false); // tip 표시 상태
-  const [showTip2, setShowTip2] = useState(false); // tip 표시 상태
+  const [showTip2, setShowTip2] = useState(false);
+  const [showTip3, setShowTip3] = useState(false);
   const [showQuestionIcon, setShowQuestionIcon] = useState(false); // Question 아이콘 표시 상태
   const [showQuestionIcon2, setShowQuestionIcon2] = useState(false); // Question 아이콘 표시 상태
+  const [showQuestionIcon3, setShowQuestionIcon3] = useState(false); // Question 아이콘 표시 상태
 
   // 각 섹션에 대한 참조 생성
   const judgmentSummaryRef = useRef(null);
@@ -78,9 +80,13 @@ const CaseDetail = ({ caseInfoId: propsCaseInfoId }) => {
   const toggleTip = () => {
     setShowTip(!showTip);
   };
-  // tip 표시/숨기기 토글 함수
+
   const toggleTip2 = () => {
     setShowTip2(!showTip2);
+  };
+
+  const toggleTip3 = () => {
+    setShowTip3(!showTip3);
   };
 
   if (isLoading) {
@@ -90,6 +96,11 @@ const CaseDetail = ({ caseInfoId: propsCaseInfoId }) => {
   if (!caseItem) {
     return <div>No case details found</div>;
   }
+
+  // 전문 텍스트를 줄바꿈 처리하는 함수
+  const formatFullText = (text) => {
+    return text.replace(/(【[^】]+】)/g, "<br/>$1<br/>"); // 괄호 앞뒤에 줄바꿈 추가
+  };
 
   return (
     <div>
@@ -188,22 +199,49 @@ const CaseDetail = ({ caseInfoId: propsCaseInfoId }) => {
           “{caseItem.judgment}”
         </div>
 
-        <div className="detail-title" ref={mainIssuesRef}>
+        <div
+          className="detail-title"
+          ref={mainIssuesRef}
+          onMouseEnter={() => setShowQuestionIcon3(true)}
+          onMouseLeave={() => setShowQuestionIcon3(false)}
+          onClick={toggleTip3}
+        >
           주요 쟁점
+          {showQuestionIcon3 && (
+            <img
+              src={Question}
+              alt="question-icon"
+              className="detail-question-icon"
+            />
+          )}
         </div>
+
+        {/* tip 판결 요약 */}
+        {showTip3 && (
+          <div className="case-detail-guide2">
+            <img src={Light} alt="Light Icon" className="light-icon" />
+            <div className="guide-box2">주요 쟁점</div>
+            <div>법적 문제나 사건에서 핵심적으로 다뤄야 할 중요한 논점</div>
+          </div>
+        )}
+
         <div className="detail-text" style={{ textAlign: "center" }}>
           {caseItem.issues}
         </div>
 
         <div ref={fullTextRef}>
-          <div className="detail-title">전문</div>
+          <div className="detail-title2">전문</div>
           <div
             className={`detail-text ${isExpanded ? "expanded" : "collapsed"}`}
           >
             <div style={{ fontWeight: "bold" }}>사건의 경위</div>
-            {isExpanded
-              ? caseItem.fullText
-              : truncateText(caseItem.fullText, 100)}
+            <div
+              dangerouslySetInnerHTML={{
+                __html: isExpanded
+                  ? formatFullText(caseItem.fullText) // 줄바꿈된 텍스트를 표시
+                  : formatFullText(truncateText(caseItem.fullText, 100)),
+              }}
+            />
           </div>
           <div style={{ marginTop: "10px" }}>
             <div className="detail-see-more" onClick={toggleText}>
@@ -212,18 +250,18 @@ const CaseDetail = ({ caseInfoId: propsCaseInfoId }) => {
           </div>
         </div>
 
-        <div className="detail-title" ref={referenceClauseRef}>
+        <div className="detail-title2" ref={referenceClauseRef}>
           조문
         </div>
-        <div className="detail-text">
+        <div className="detail-text2">
           <span style={{ fontWeight: "bold" }}>참조조문</span> :{" "}
           {caseItem.referenceClause}
         </div>
 
-        <div className="detail-title" ref={lawyerRecommendationRef}>
+        {/* <div className="detail-title" ref={lawyerRecommendationRef}>
           변호사 추천
-        </div>
-        <div className="detail-lawyer-list">
+        </div> */}
+        {/* <div className="detail-lawyer-list">
           <div className="lawyer-text">
             <div className="lawyer-name">강경민 변호사</div>
             <div className="lawyer-detail">
@@ -240,7 +278,7 @@ const CaseDetail = ({ caseInfoId: propsCaseInfoId }) => {
             </div>
           </div>
           <div className="lawyer-image"></div>
-        </div>
+        </div> */}
       </div>
 
       {/* Top Icon */}
