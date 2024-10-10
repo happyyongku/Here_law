@@ -1,6 +1,6 @@
 import "./GuideDocument.css";
 import Docuguide from "../../assets/search/docuguide.png";
-
+// 대소문자 주의
 function GuideDocument() {
   return (
     <div className="document-guide-box">
