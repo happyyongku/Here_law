@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import defaultimg from "../../../assets//mypage/defaultimg.png";
 import "./MagazineMainCateCard.css";
 
 function MagazineMainCateCard({ item, index }) {
@@ -7,7 +8,8 @@ function MagazineMainCateCard({ item, index }) {
 
   return (
     <div className="magazine-main-cate-card">
-      <div className="cate-card-img"></div>
+      {/* <div className="cate-card-img"></div> */}
+      <img src={defaultimg} alt="" className="cate-card-img" />
       <button
         className="cate-card-title"
         onClick={() => {
