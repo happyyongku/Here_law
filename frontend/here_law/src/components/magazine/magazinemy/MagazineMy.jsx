@@ -139,6 +139,7 @@ function MagazineMy() {
                   item={item}
                   onClick={openModal}
                   setLawyerId={setLawyerId}
+                  index={index}
                 />
               ))}
               <div></div>

@@ -95,3 +95,31 @@ def get_recommended_lawyers_by_cosine_similarity(request: Request, user: User = 
         raise HTTPException(status_code=404, detail="추천할 변호사를 찾을 수 없습니다.")
 
     return recommended_lawyers
+
+
+@lawyer_router.get("/lawyer/{lawyer_id}")
+def get_lawyer_details(lawyer_id: int, request: Request, _: User = Depends(get_current_user)):
+    """
+    특정 변호사의 상세 정보를 조회하는 API.
+    lawyer_entity와 user_entity의 정보를 모두 반환합니다.
+    """
+    with db_connection.get_connection() as conn:
+        # 변호사와 관련된 정보 조회
+        query = """
+        SELECT l.lawyer_id, l.description, l.expertise_main, l.office_location, 
+               l.qualification, l.phone_number AS lawyer_phone, l.point, 
+               u.id AS user_id, u.created_date, u.email, u.is_email_verified, 
+               u.nickname, u.profile_img, u.update_date, u.user_type, u.phone_number AS user_phone
+        FROM lawyer_entity l
+        JOIN user_entity u ON l.user_id = u.id
+        WHERE l.lawyer_id = %s
+        """
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute(query, (lawyer_id,))
+            lawyer_details = cur.fetchone()
+
+    if not lawyer_details:
+        raise HTTPException(status_code=404, detail="해당 변호사의 정보를 찾을 수 없습니다.")
+
+    return lawyer_details
+  
