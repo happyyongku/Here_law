@@ -10,12 +10,13 @@ function CaseTypeCard({ item }) {
       <div
         className="case-type-card-box"
         onClick={() => {
-          // 뒤에 포스팅 id를 넣어야 한다.
           navigate(`/magazine/${item.magazine_id}`);
         }}
       >
         <div className="case-type-card-content-header">
-          <div className="case-type-card-content-index">● VOL.</div>
+          <div className="case-type-card-content-index">
+            ● VOL. {item.magazine_id}
+          </div>
           <img
             className="case-type-card-content-img"
             src={postingindeximg}

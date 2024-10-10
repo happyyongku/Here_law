@@ -15,7 +15,6 @@ function DocumentUploadContainer() {
   const [isUploading, setIsUploading] = useState(false); // 업로드 상태 관리
   const navigate = useNavigate();
 
-  // 파일 선택 시 처리 함수
   const handleFileChange = (event) => {
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
@@ -23,17 +22,14 @@ function DocumentUploadContainer() {
     }
   };
 
-  // 파일 삭제 함수
   const handleRemoveFile = () => {
     setSelectedFile(null);
   };
 
-  // 업로드 버튼 클릭 시 파일 탐색기 열기
   const handleUploadClick = () => {
     document.getElementById("file-upload").click();
   };
 
-  // 위험도 분석 버튼 클릭 시 파일 업로드 및 요청 전송
   const handleAnalyze = async () => {
     if (!selectedFile) {
       alert("파일을 먼저 업로드해 주세요.");
@@ -44,11 +40,10 @@ function DocumentUploadContainer() {
     formData.append("file", selectedFile);
 
     try {
-      setIsUploading(true); // 업로드 시작 (로딩 표시)
+      setIsUploading(true);
 
-      // axiosInstance를 사용하여 POST 요청
       const response = await axiosInstance.post(
-        "/fastapi_ec2/clause/analyze-clause", // API 엔드포인트
+        "/fastapi_ec2/clause/analyze-clause",
         formData,
         {
           headers: {
@@ -58,15 +53,17 @@ function DocumentUploadContainer() {
         }
       );
 
-      setIsUploading(false); // 업로드 완료 (로딩 숨김)
-      const analysisResult = response.data.analysis; // 분석 결과 추출
+      setIsUploading(false);
+      const analysisResult = response.data.analysis;
 
-      // 분석이 완료되면 알림을 표시하고 확인을 누르면 페이지 이동
+      console.log(response);
+      console.log(analysisResult);
+
       if (window.confirm("분석이 완료되었습니다. 결과를 확인하시겠습니까?")) {
         navigate("/document/result", { state: { analysis: analysisResult } });
       }
     } catch (error) {
-      setIsUploading(false); // 업로드 실패 시 로딩 숨김
+      setIsUploading(false);
       console.error("업로드 실패:", error);
       alert("파일 업로드에 실패했습니다.");
     }
@@ -76,7 +73,6 @@ function DocumentUploadContainer() {
     <div>
       <RentHeader />
 
-      {/* 파일 업로드 상태가 true일 때 Loader 표시 */}
       {isUploading && <Loader />}
 
       <div className="document-guide-page">
@@ -99,7 +95,7 @@ function DocumentUploadContainer() {
                   />
                 </>
               ) : (
-                <span>파일이 없습니다.</span> /* 파일 없을 때 기본 메시지 */
+                <span>파일이 없습니다.</span>
               )}
             </div>
 
@@ -117,7 +113,7 @@ function DocumentUploadContainer() {
             <input
               id="file-upload"
               type="file"
-              style={{ display: "none" }} // input 숨기기
+              style={{ display: "none" }}
               onChange={handleFileChange}
             />
           </div>

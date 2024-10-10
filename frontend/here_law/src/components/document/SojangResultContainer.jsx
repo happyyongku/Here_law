@@ -1,6 +1,11 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
+
 import "./SojangResultContainer.css";
+import "./SojangStep2.css";
+
+import PDFIcon from "../../assets/document/pdficon.png";
+
 import SojangIcon from "../../assets/document/sojang.png";
 
 function SojangResultContainer() {
@@ -11,14 +16,23 @@ function SojangResultContainer() {
   return (
     <div className="sojang-result-container">
       <div className="sojang-header">
-        <div>결과</div>
+        <div className="tip-box-result">결과</div>
         <div>생성된 소장 정보를 확인하세요.</div>
       </div>
 
-      <div className="sojang-result-content">
+      <div className="sojang-result-page">
+        <div class="progressbar-wrapper">
+          <div class="progressbar">
+            <div>Step 1</div>
+            <div class="active">Step 2</div>
+          </div>
+        </div>
+
         <div className="sojang-result-title">
-          <img src={SojangIcon} alt="sojang-icon" className="sojang-icon" />
-          <div>소장 생성 결과</div>
+          <div className="sojang-result-title-title">
+            소장 작성 완료{" "}
+            <img src={PDFIcon} alt="pdf-icon" className="sojang-pdf-icon" />{" "}
+          </div>
         </div>
 
         {previewPdfUrl ? (
@@ -36,18 +50,11 @@ function SojangResultContainer() {
           </div>
         )}
 
-        <div className="sojang-links">
+        <div className="sojang-down-wrap">
           {pdfUrl && (
             <div>
               <a href={pdfUrl} download="소장.pdf">
-                PDF 다운로드
-              </a>
-            </div>
-          )}
-          {docxUrl && (
-            <div>
-              <a href={docxUrl} target="_blank" rel="noopener noreferrer">
-                DOCX 다운로드
+                <div className="sojang-down-button">PDF 다운로드</div>
               </a>
             </div>
           )}
