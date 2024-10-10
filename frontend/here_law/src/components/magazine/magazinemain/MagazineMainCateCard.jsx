@@ -20,13 +20,13 @@ function MagazineMainCateCard({ item, index }) {
   const images = [
     Family,
     Criminal,
-    Key,
+    Divorce,
     Real,
     Compensation,
     Labor,
     Cash,
-    Divorce,
     Car,
+    Key,
     Doctor,
     Administrative,
   ];
