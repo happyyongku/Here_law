@@ -2,16 +2,13 @@
 import os
 from typing import Optional
 import logging
-
 import jwt
 from jwt import PyJWTError
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from dto.user_model import User
-# from dotenv import load_dotenv
 
-# load_dotenv()
 
 # JWT 토큰을 인코딩하고 디코딩하기 위한 비밀 키
 # JWT settings
