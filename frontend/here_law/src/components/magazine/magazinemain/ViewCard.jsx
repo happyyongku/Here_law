@@ -28,8 +28,14 @@ function ViewCard({ posting, index = 0 }) {
         })
       }
     >
-      <img src={selectedImage} alt="" className="img-alt" />
-      <div className="view-card-content-box">
+      <img
+        src={selectedImage}
+        alt=""
+        className="img-alt"
+        style={{ cursor: "pointer" }}
+        s
+      />
+      <div className="view-card-content-box" style={{ cursor: "pointer" }}>
         <div className="view-card-title">{posting.title}</div>
         <div className="view-card-date">{posting.created_at}</div>
         <div className="view-card-content">{posting.content}</div>

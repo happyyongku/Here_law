@@ -145,6 +145,7 @@ function MagazineMain() {
             <button
               className="magazine-main-detail-button"
               onClick={() => navigate(`${firstRecPosting.magazine_id}`)}
+              style={{ cursor: "pointer" }}
             >
               자세히 보기
             </button>
@@ -181,7 +182,10 @@ function MagazineMain() {
               <ViewCard key={index} posting={posting} index={index} />
             ))}
           </div>
-          <div className="magazine-main-fetch-box">
+          <div
+            className="magazine-main-fetch-box"
+            style={{ cursor: "pointer" }}
+          >
             <div className="fetch-title">패치노트 바로 가기</div>
             <img
               src={fetchButton}
