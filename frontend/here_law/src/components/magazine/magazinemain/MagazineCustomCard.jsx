@@ -20,6 +20,7 @@ function MagazineCustomCard({ item, index }) {
         src={imgArray[index]}
         alt="my-rec-img"
         className="magazine-custom-card-img"
+        style={{ cursor: "pointer" }}
       />
       <div
         onClick={() =>
@@ -28,7 +29,12 @@ function MagazineCustomCard({ item, index }) {
           })
         }
       >
-        <div className="magazine-custom-card-title">{item.title}</div>
+        <div
+          className="magazine-custom-card-title"
+          style={{ cursor: "pointer" }}
+        >
+          {item.title}
+        </div>
         <div className="magazine-custom-card-etc-info">
           <div className="magazine-custom-date">{item.created_at}</div>
           <div className="magazine-custom-view-rec">
@@ -38,7 +44,12 @@ function MagazineCustomCard({ item, index }) {
             <div className="magazine-custom-rec">{item.likes}</div>
           </div>
         </div>
-        <div className="magazine-custom-card-content">{item.content}</div>
+        <div
+          className="magazine-custom-card-content"
+          style={{ cursor: "pointer" }}
+        >
+          {item.content}
+        </div>
       </div>
     </div>
   );

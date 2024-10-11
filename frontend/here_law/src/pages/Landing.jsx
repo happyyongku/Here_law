@@ -195,7 +195,12 @@ function Landing() {
       <div className="section" ref={refSection6}>
         <div className="section-content-center">
           <h2 className="sectionTitle lasttitle">Here, Law</h2>
-          <div className="lastdesc">지금 이용해보세요</div>
+          <div
+            className="sectionTitle lasttitle"
+            style={{ fontSize: "16px", fontWeight: "500" }}
+          >
+            지금 이용해보세요
+          </div>
           <button
             className="startBtn section6-btn"
             onClick={() => navigate("/login")}

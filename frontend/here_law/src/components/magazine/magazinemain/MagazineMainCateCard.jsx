@@ -41,12 +41,21 @@ function MagazineMainCateCard({ item, index }) {
   return (
     <div className="magazine-main-cate-card">
       {/* <div className="cate-card-img"></div> */}
-      <img src={selectedImage} alt="" className="cate-card-img" />
+      <img
+        src={selectedImage}
+        alt=""
+        className="cate-card-img"
+        onClick={() => {
+          navigate(`case/${item}`);
+        }}
+        style={{ cursor: "pointer" }}
+      />
       <button
         className="cate-card-title"
         onClick={() => {
           navigate(`case/${item}`);
         }}
+        style={{ cursor: "pointer" }}
       >
         {item}
       </button>

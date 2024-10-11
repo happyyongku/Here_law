@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import checkGif from "../../assets/signup/check11.gif";
 
-function SignupSuccess() {
+function SignupSuccess({ nickname }) {
   const navigate = useNavigate();
 
   // const GotoSearch = () => {
@@ -27,9 +27,11 @@ function SignupSuccess() {
         style={{
           fontSize: "16px",
           textAlign: "center",
+          marginTop: "20px",
         }}
       >
-        <span style={{ fontWeight: "700" }}>&apos;이름&apos;</span> 님 <br />
+        <span style={{ fontWeight: "700" }}>&apos;{nickname}&apos;</span> 님{" "}
+        <br />
         여기로 서비스 가입을 축하드립니다.
       </p>
 
