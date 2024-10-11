@@ -181,7 +181,7 @@ function AiSearch({ isAiMode, onToggle }) {
                 >
                   {message.type === "ai" && typeof message.content === "string" ? (
                     <ReactMarkdown>
-                      {message.content.split("[doc_separater]").join("\n\n<>\n\n")}
+                      {message.content.split("[doc_separater]").join("\n\n◆\n\n")}
                     </ReactMarkdown>
                   ) : (
                     message.content
