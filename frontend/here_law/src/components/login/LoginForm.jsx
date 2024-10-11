@@ -51,6 +51,13 @@ function LoginForm() {
     }
   };
 
+  // 엔터 키 눌렀을 때 로그인 요청
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !notAllow) {
+      loginRequestButton();
+    }
+  };
+
   return (
     <div className="login-page">
       <div className="contents-box">
@@ -91,6 +98,7 @@ function LoginForm() {
                 placeholder="비밀번호를 입력해주세요"
                 value={password}
                 onChange={handlePw}
+                onKeyPress={handleKeyPress}
               />
             </div>
             <div className="error-message-wrap">
