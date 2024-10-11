@@ -235,7 +235,7 @@ def toggle_subscribe_category(category: str, user: User = Depends(get_current_us
         raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
     
     check_subscibe_query = """
-    SELECT * FROM user_subscriptions WHERE user_id = %s AND subscriptions = %s
+    SELECT * FROM user_entity_interests WHERE user_id = %s AND subscriptions = %s
     """
     with DBConnection().get_connection() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
@@ -248,12 +248,12 @@ def toggle_subscribe_category(category: str, user: User = Depends(get_current_us
             
             # 구독하였을 경우 구독 해제
             if existing_subscribe:
-                delete_subscribe_query = "DELETE FROM user_subscriptions WHERE user_id = %s And subscriptions = %s"
+                delete_subscribe_query = "DELETE FROM user_entity_interests WHERE user_id = %s And subscriptions = %s"
                 cur.execute(delete_subscribe_query, (existing_subscribe['user_id'], existing_subscribe['subscriptions']))
                 action = True
             # 구독하지 않았을 경우 구독
             else:
-                insert_subscribe_query = "INSERT INTO user_subscriptions (user_id, subscriptions) VALUES (%s, %s)"
+                insert_subscribe_query = "INSERT INTO user_entity_interests (user_id, subscriptions) VALUES (%s, %s)"
                 cur.execute(insert_subscribe_query, (user['id'], category))
                 action = False
                 
@@ -269,7 +269,7 @@ def subscribe_category_check(category: str, user: User = Depends(get_current_use
         raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
     print(f"User : {user}")
     check_subscibe_query = """
-    SELECT * FROM user_subscriptions WHERE user_id = %s AND subscriptions = %s
+    SELECT * FROM user_entity_interests WHERE user_id = %s AND subscriptions = %s
     """
     with DBConnection().get_connection() as conn:
         with conn.cursor(row_factory=dict_row) as cur:

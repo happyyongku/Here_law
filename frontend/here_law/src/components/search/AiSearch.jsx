@@ -4,7 +4,7 @@ import SendIcon from "../../assets/search/searchsend.png";
 import axiosInstance from "../../utils/axiosInstance";
 import CaseModal from "./CaseModal";
 import "./AiSearch.css";
-import Loader from "../search/Loader2"; // 로딩 컴포넌트
+import Loader from "../search/Loader2"; // Loading component
 import Lighticon from "../../assets/search/light.gif";
 
 function AiSearch({ isAiMode, onToggle }) {
@@ -16,12 +16,11 @@ function AiSearch({ isAiMode, onToggle }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCaseId, setSelectedCaseId] = useState(null);
   const [judgmentSummary, setJudgmentSummary] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
+  const [isLoading, setIsLoading] = useState(false); // Loading state
   const chatBoxRef = useRef(null);
 
   useEffect(() => {
     const fetchSessionId = async () => {
-      // setIsLoading(true); // 로딩 시작
       const token = localStorage.getItem("token");
       try {
         const response = await axiosInstance.get(
@@ -68,7 +67,7 @@ function AiSearch({ isAiMode, onToggle }) {
     ]);
 
     setInputValue("");
-    setIsLoading(true); // 로딩 시작
+    setIsLoading(true); // Start loading
 
     try {
       const token = localStorage.getItem("token");
@@ -92,7 +91,7 @@ function AiSearch({ isAiMode, onToggle }) {
 
       if (aiResponse.tool_message) {
         aiMessages.push(
-          <div>
+          <div key="tool-message">
             유사한 판례는 다음과 같습니다!:
             {aiResponse.tool_message.artifact.map((artifactId) => (
               <button
@@ -124,13 +123,13 @@ function AiSearch({ isAiMode, onToggle }) {
     } catch (error) {
       console.error("GPT 응답 실패", error);
     } finally {
-      setIsLoading(false); // 로딩 종료
+      setIsLoading(false); // End loading
     }
   };
 
   const openModal = async (caseId) => {
     setSelectedCaseId(caseId);
-    setIsLoading(true); // 로딩 시작
+    setIsLoading(true); // Start loading
     try {
       const token = localStorage.getItem("token");
       const response = await axiosInstance.get(`/spring_api/cases/${caseId}`, {
@@ -141,7 +140,7 @@ function AiSearch({ isAiMode, onToggle }) {
     } catch (error) {
       console.error("판례 상세 조회 실패", error);
     } finally {
-      setIsLoading(false); // 로딩 종료
+      setIsLoading(false); // End loading
     }
   };
 
@@ -163,7 +162,22 @@ function AiSearch({ isAiMode, onToggle }) {
                     message.type === "ai" ? "ai-message" : "user-message"
                   }
                 >
-                  {message.content.split("[doc_separater]")}
+                  {typeof message.content === "string" ? (
+                    message.content.split("[doc_separater]").map((part, i) => (
+                      <React.Fragment key={i}>
+                        {i > 0 && (
+                          <>
+                            <br />
+                            <br />
+                            {"◆"}
+                          </>
+                        )}
+                        {part}
+                      </React.Fragment>
+                    ))
+                  ) : (
+                    message.content
+                  )}
                 </div>
               ))}
             </div>
@@ -180,7 +194,7 @@ function AiSearch({ isAiMode, onToggle }) {
           <div className="search-input-box">
             {isLoading && (
               <div className="loader-overlay">
-                <Loader /> {/* 로딩 중일 때 로딩 화면 표시 */}
+                <Loader /> {/* Display loader during loading */}
               </div>
             )}
             <input

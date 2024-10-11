@@ -18,7 +18,7 @@ function SojangResultContainer() {
   console.log(doc_filename);
 
   // 파일명을 인코딩하여 URL 생성
-  const encodedDownloadUrl = `http://3.36.85.129:8000/fastapi_ec2/sojang/download/${encodeURIComponent(
+  const encodedDownloadUrl = `https://j11b109.p.ssafy.io/fastapi_ec2/sojang/download/${encodeURIComponent(
     doc_filename
   )}`;
   console.log(encodedDownloadUrl);
