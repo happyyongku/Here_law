@@ -238,7 +238,7 @@ def convert_word_to_pdf(doc_filepath: str, pdf_filename: str):
 # PDF 미리보기를 제공하는 라우트
 @sojang_router.get("/preview/{pdf_filename}")
 async def preview_pdf(pdf_filename: str):
-    pdf_filepath = os.path.join(BASE_DIR, "docs", pdf_filename)
+    pdf_filepath = os.path.abspath(os.path.join(BASE_DIR, "docs", pdf_filename))
     if not os.path.exists(pdf_filepath):
         raise HTTPException(status_code=404, detail="PDF 파일을 찾을 수 없습니다.")
     return FileResponse(pdf_filepath, media_type='application/pdf')
@@ -246,7 +246,7 @@ async def preview_pdf(pdf_filename: str):
 # Word 파일 다운로드를 제공하는 라우트
 @sojang_router.get("/download/{doc_filename}")
 async def download_word_file(doc_filename: str):
-    doc_filepath = os.path.join(BASE_DIR, "docs", doc_filename)
+    doc_filepath = os.path.abspath(os.path.join(BASE_DIR, "docs", doc_filename))
     if not os.path.exists(doc_filepath):
         raise HTTPException(status_code=404, detail="Word 파일을 찾을 수 없습니다.")
     return FileResponse(doc_filepath, media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document', filename=doc_filename)
