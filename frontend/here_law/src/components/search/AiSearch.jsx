@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import ReactMarkdown from 'react-markdown'; // Import react-markdown
 import Switch from "./Switch";
 import SendIcon from "../../assets/search/searchsend.png";
 import axiosInstance from "../../utils/axiosInstance";
@@ -49,11 +48,11 @@ function AiSearch({ isAiMode, onToggle }) {
   }, [messages]);
 
   const addAiResponsesSequentially = (aiResponses) => {
-    aiResponses.forEach((message, index) => {
+    aiResponses.forEach((response, index) => {
       setTimeout(() => {
         setMessages((prevMessages) => [
           ...prevMessages,
-          { type: message.type, content: message.content },
+          { type: "ai", content: response },
         ]);
       }, index * 1000);
     });
@@ -91,45 +90,33 @@ function AiSearch({ isAiMode, onToggle }) {
       const aiMessages = [];
 
       if (aiResponse.tool_message) {
-        aiMessages.push({
-          type: 'tool',
-          content: (
-            <div key="tool-message">
-              유사한 판례는 다음과 같습니다!:
-              {aiResponse.tool_message.artifact.map((artifactId) => (
-                <button
-                  key={artifactId}
-                  onClick={() => openModal(artifactId)}
-                  className="case-show-button"
-                >
-                  <img
-                    src={Lighticon}
-                    alt="light-icon"
-                    className="case-modal-light-icon"
-                  />
-                  판례 {artifactId}{" "}
-                  <span style={{ color: "#5D5D5D", fontSize: "13px" }}>
-                    {" "}
-                    Go! →
-                  </span>
-                </button>
-              ))}
-            </div>
-          ),
-        });
-        aiMessages.push({
-          type: 'tool',
-          content: aiResponse.tool_message.content,
-        });
-        aiMessages.push({
-          type: 'ai',
-          content: aiResponse.ai_message.content,
-        });
+        aiMessages.push(
+          <div key="tool-message">
+            유사한 판례는 다음과 같습니다!:
+            {aiResponse.tool_message.artifact.map((artifactId) => (
+              <button
+                key={artifactId}
+                onClick={() => openModal(artifactId)}
+                className="case-show-button"
+              >
+                <img
+                  src={Lighticon}
+                  alt="light-icon"
+                  className="case-modal-light-icon"
+                />
+                판례 {artifactId}{" "}
+                <span style={{ color: "#5D5D5D", fontSize: "13px" }}>
+                  {" "}
+                  Go! →
+                </span>
+              </button>
+            ))}
+          </div>
+        );
+        aiMessages.push(aiResponse.tool_message.content);
+        aiMessages.push(aiResponse.ai_message.content);
       } else if (aiResponse.ai_message) {
-        aiMessages.push({
-          type: 'ai',
-          content: aiResponse.ai_message.content,
-        });
+        aiMessages.push(aiResponse.ai_message.content);
       }
 
       addAiResponsesSequentially(aiMessages);
@@ -172,17 +159,22 @@ function AiSearch({ isAiMode, onToggle }) {
                 <div
                   key={index}
                   className={
-                    message.type === "ai"
-                      ? "ai-message"
-                      : message.type === "tool"
-                      ? "tool-message"
-                      : "user-message"
+                    message.type === "ai" ? "ai-message" : "user-message"
                   }
                 >
-                  {message.type === "ai" && typeof message.content === "string" ? (
-                    <ReactMarkdown>
-                      {message.content.split("[doc_separater]").join("\n\n◆\n\n")}
-                    </ReactMarkdown>
+                  {typeof message.content === "string" ? (
+                    message.content.split("[doc_separater]").map((part, i) => (
+                      <React.Fragment key={i}>
+                        {i > 0 && (
+                          <>
+                            <br />
+                            <br />
+                            {"◆"}
+                          </>
+                        )}
+                        {part}
+                      </React.Fragment>
+                    ))
                   ) : (
                     message.content
                   )}
