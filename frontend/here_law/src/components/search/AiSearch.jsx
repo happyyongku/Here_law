@@ -4,7 +4,7 @@ import SendIcon from "../../assets/search/searchsend.png";
 import axiosInstance from "../../utils/axiosInstance";
 import CaseModal from "./CaseModal";
 import "./AiSearch.css";
-import Loader from "../search/caselist/Loader"; // 로딩 컴포넌트
+import Loader from "../search/Loader2"; // 로딩 컴포넌트
 import Lighticon from "../../assets/search/light.gif";
 
 function AiSearch({ isAiMode, onToggle }) {
@@ -152,11 +152,6 @@ function AiSearch({ isAiMode, onToggle }) {
 
   return (
     <div className="ai-search-page">
-      {isLoading && (
-        <div className="loader-overlay">
-          <Loader /> {/* 로딩 중일 때 로딩 화면 표시 */}
-        </div>
-      )}
       {isAiMode && (
         <>
           <div className="ai-chat-box" ref={chatBoxRef}>
@@ -168,7 +163,7 @@ function AiSearch({ isAiMode, onToggle }) {
                     message.type === "ai" ? "ai-message" : "user-message"
                   }
                 >
-                  {message.content}
+                  {message.content.split("[doc_separater]")}
                 </div>
               ))}
             </div>
@@ -183,6 +178,11 @@ function AiSearch({ isAiMode, onToggle }) {
           )}
 
           <div className="search-input-box">
+            {isLoading && (
+              <div className="loader-overlay">
+                <Loader /> {/* 로딩 중일 때 로딩 화면 표시 */}
+              </div>
+            )}
             <input
               type="text"
               style={{ marginLeft: "20px" }}

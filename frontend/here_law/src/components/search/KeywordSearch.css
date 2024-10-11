@@ -34,7 +34,7 @@
   font-size: 32px;
   font-weight: bold;
   color: white;
-  margin-top: 56px;
+  margin-top: 36px;
   text-align: center;
 }
 
@@ -71,4 +71,15 @@
 .search-input-box input::placeholder {
   font-size: 16px;
   color: #b0b0b0;
+}
+
+.ai-search {
+  opacity: 0; /* 초기 상태는 투명 */
+  transition: opacity 0.2s ease-in; /* 서서히 나타나는 효과 */
+  visibility: hidden; /* 기본적으로 숨김 */
+}
+
+.ai-search.active {
+  opacity: 1; /* active 클래스가 추가되면 불투명 */
+  visibility: visible; /* 보이도록 설정 */
 }

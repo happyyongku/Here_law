@@ -98,7 +98,7 @@ function LawyerDetail({ isOpen, onClose, lawyerId }) {
         <button className="modal-close2" onClick={onClose}>
           닫기
         </button>
-        <div>이미지 대용zz</div>
+        <div>이미지 대용</div>
         <div>
           <div>변호사명</div>
           <div>{lawyerDetail.nickname}</div>
