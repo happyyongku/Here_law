@@ -10,6 +10,7 @@ import "./KeywordSearch.css";
 function KeywordSearch() {
   const [query, setQuery] = useState("");
   const [isAiMode, setIsAiMode] = useState(false);
+  const [showAiSearch, setShowAiSearch] = useState(false); // AI 검색 표시 상태
   const navigate = useNavigate();
 
   const handleSearch = () => {
@@ -20,6 +21,10 @@ function KeywordSearch() {
 
   const handleToggle = (checked) => {
     setIsAiMode(checked);
+    setShowAiSearch(false); // 처음에 AI 검색을 숨김
+    setTimeout(() => {
+      setShowAiSearch(true); // 0.5초 후에 AI 검색 표시
+    }, 500);
   };
 
   return (
@@ -37,9 +42,13 @@ function KeywordSearch() {
         />
       </div>
 
-      {isAiMode ? (
-        <AiSearch isAiMode={isAiMode} />
-      ) : (
+      {isAiMode && (
+        <div className={`ai-search ${showAiSearch ? "active" : ""}`}>
+          <AiSearch isAiMode={isAiMode} />
+        </div>
+      )}
+
+      {!isAiMode && (
         <div className="search-input-box">
           <img src={SearchIcon} alt="search icon" className="search-icon" />
           <input
