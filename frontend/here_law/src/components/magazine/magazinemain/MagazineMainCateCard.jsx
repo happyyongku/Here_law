@@ -45,6 +45,9 @@ function MagazineMainCateCard({ item, index }) {
         src={selectedImage}
         alt=""
         className="cate-card-img"
+        onClick={() => {
+          navigate(`case/${item}`);
+        }}
         style={{ cursor: "pointer" }}
       />
       <button
