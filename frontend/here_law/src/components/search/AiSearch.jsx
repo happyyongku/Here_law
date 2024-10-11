@@ -163,7 +163,7 @@ function AiSearch({ isAiMode, onToggle }) {
                     message.type === "ai" ? "ai-message" : "user-message"
                   }
                 >
-                  {message.content.split("[doc_separater]")}
+                  {message.content}
                 </div>
               ))}
             </div>
