@@ -95,7 +95,7 @@ function Signup() {
           />
         );
       case 4:
-        return <SignupSuccess />;
+        return <SignupSuccess nickname={nickname} />;
       default:
         return null;
     }

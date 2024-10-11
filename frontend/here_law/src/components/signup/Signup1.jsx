@@ -63,7 +63,7 @@ function Signup1({ email, password, handleEmail, handlePassword, onNext }) {
       );
       console.log(response.data);
     } catch (error) {
-      console.error(`Error : ${error}`)
+      console.error(`Error : ${error}`);
       if (error.response) {
         console.error("응답 오류 ", error.response.data);
         console.error("응답 상태 코드", error.response.status);
