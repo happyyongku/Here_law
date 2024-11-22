@@ -1,0 +1,72 @@
+.magazine-hotfix-card-container {
+  margin-bottom: 100px;
+}
+
+.magazine-hotfix-card-head-box {
+  position: relative;
+}
+
+.magazine-hotfix-card-title {
+  font-size: 30px;
+  margin-left: 20px;
+  margin-bottom: 15px;
+}
+
+.design-box {
+  width: 50px;
+  height: 50px;
+  background-color: #002a6a;
+  opacity: 20%;
+  position: absolute;
+  left: 200px;
+  bottom: 15px;
+}
+
+.magazine-hotfix-content-box {
+  margin-left: 80px;
+  margin-bottom: 20px;
+  margin-top: 15px;
+}
+
+.magazine-hotfix-content-box-title {
+  font-weight: 500;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.magazine-hotfix-content-box-content {
+  font-size: 12px;
+}
+
+.rowjdwjs {
+  color: red;
+  font-size: 18px;
+}
+
+.rowjdgn {
+  color: green;
+  font-size: 18px;
+}
+
+.mini-box {
+  margin-left: 50px;
+  margin-bottom: 2cqw;
+  /* border: 1px solid black; */
+}
+
+/* .just-mini-box {
+  margin-bottom: 30px;
+} */
+
+.mini-mini-box {
+  margin-left: 30px;
+  /* margin-bottom: 30px; */
+}
+
+.just-text-title {
+  font-size: 15px;
+}
+
+.law-name {
+  margin-bottom: 10px;
+}

@@ -1,0 +1,21 @@
+FROM amazoncorretto:17
+
+WORKDIR /app
+
+COPY gradlew* ./
+COPY gradle/ gradle/
+
+COPY build.gradle settings.gradle ./
+
+RUN chmod +x ./gradlew
+
+COPY src/ src/
+
+# 지금 -x test로 테스트 건너뛰게 되있는데, 나중에 수정해야함
+RUN ./gradlew clean build -Pspring.profiles.active=test --no-daemon -x test
+# RUN ./gradlew clean build -Pspring.profiles.active=test --no-daemon
+# RUN ls build/libs/here-law.jar || (echo "JAR file not found!!" && exit 1)
+
+CMD ["java", "-jar", "build/libs/here-law-0.0.1-SNAPSHOT.jar"]
+
+EXPOSE 8080

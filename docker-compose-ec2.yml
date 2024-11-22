@@ -1,0 +1,93 @@
+version: '3.8'
+services:
+  react:
+    image: happyyongku/j11b109:react
+    ports:
+      - "3000:80"
+    networks:
+      - app-network
+    volumes:
+      - ./dist:/app/dist
+
+  spring:
+    image: happyyongku/j11b109:spring
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    environment:
+      DB_DOMAIN: ${DB_DOMAIN}
+      DB_PORT: ${DB_PORT_SPRING}
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      ELA_URI: http://elasticsearch:9200
+      ELA_PASSWORD: ${ELA_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+    volumes:
+      - ~/here_law_profile_img:/app/here_law_profile_img
+  
+  fastapi:
+    image: happyyongku/j11b109:fastapi
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+    environment:
+      DB_DOMAIN: ${DB_DOMAIN}
+      DB_PORT_FASTAPI: ${DB_PORT_FASTAPI}
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      JWT_ALGORITHM: ${JWT_ALGORITHM}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      EMBEDDER_URL: ${EMBEDDER_URL}
+      SESSION_TIMEOUT: ${SESSION_TIMEOUT}
+      MAX_SESSIONS_PER_USER: ${MAX_SESSIONS_PER_USER}
+      SESSIONS_CLEANUP_INTERVAL: ${SESSIONS_CLEANUP_INTERVAL}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES}
+      FASTAPI_SERVER_PORT: ${FASTAPI_SERVER_PORT}
+      API_KEY: ${API_KEY}
+      CLOVA_URL: ${CLOVA_URL}
+      CLOVA_KEY: ${CLOVA_KEY}
+    # depends_on:
+    #   - postgres
+
+  nginx:
+    image: happyyongku/j11b109:nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      # - certs:/etc/letsencrypt/live/j11b109.p.ssafy.io
+      - ./certs/live/j11b109.p.ssafy.io:/etc/letsencrypt/live/j11b109.p.ssafy.io
+
+    command: nginx -g 'daemon off;'
+    depends_on:
+      - fastapi
+      - react
+      - spring
+    networks:
+      - app-network
+
+volumes:
+  certs:
+    driver: local
+  database:
+    driver: local
+  elasticsearch-data:
+    driver: local
+networks:
+  app-network:
+    driver: bridge

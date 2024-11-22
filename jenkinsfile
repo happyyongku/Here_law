@@ -1,0 +1,147 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_CREDENTIALS_ID = '64e58d47-1cfb-49a0-86e4-4916cb594a22'
+        GITLAB_CREDENTIALS_ID = '2f379a74-002d-471d-a051-6bd615828532'
+        SSH_KEY='f7745d84-3b92-4a34-9da8-ab8b48c2f6bf' 
+    }
+
+    options {
+        skipDefaultCheckout()
+    }
+    
+    stages {
+        stage('Checkout or Update Code'){
+            steps {
+                git url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21B109.git', branch: 'master', credentialsId: env.GITLAB_CREDENTIALS_ID
+            }
+        }
+        stage('Copy docker-compose File to EC2') {
+            steps {
+                script {
+                    sshagent (credentials: [env.SSH_KEY]) {
+                        sh 'scp -o StrictHostKeyChecking=no docker-compose-ec2.yml ubuntu@j11b109.p.ssafy.io:/home/ubuntu/j11b109/docker-compose-ec2.yml'
+                        sh 'scp -o StrictHostKeyChecking=no nginx/nginx.conf ubuntu@j11b109.p.ssafy.io:/home/ubuntu/j11b109/nginx/nginx.conf'
+                        sh 'scp -o StrictHostKeyChecking=no DB/init.sql ubuntu@j11b109.p.ssafy.io:/home/ubuntu/j11b109/init.sql'
+                    }
+                }
+            }
+        }
+        stage('Docker login') {
+            steps {
+                script {
+                    try {
+                        docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                            echo 'Logged in Dockerhub'
+                        }
+                    } catch (Exception e) {
+                        echo "DOCKER_CREDENTIALS_ID: ${DOCKER_CREDENTIALS_ID}"
+                        error "Docker login failed: ${e.getMessage()}"
+                    }
+                }
+            }
+        }
+        stage('Create .env') {
+            steps {
+                script{
+                    sshagent (credentials: [env.SSH_KEY]) {
+                        sh '''
+                            ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 &&
+                            echo DB_DOMAIN=$DB_DOMAIN > .env &&
+                            echo DB_PORT=$DB_PORT >> .env &&
+                            echo DB_PORT_SPRING=$DB_PORT_SPRING >> .env &&
+                            echo DB_PORT_FASTAPI=$DB_PORT_FASTAPI >> .env &&
+                            echo DB_NAME=$DB_NAME >> .env &&
+                            echo DB_USERNAME=$DB_USERNAME >> .env &&
+                            echo DB_PASSWORD=$DB_PASSWORD >> .env &&
+                            echo ELA_PASSWORD=$ELA_PASSWORD >> .env &&
+                            echo JWT_SECRET=$JWT_SECRET >> .env &&
+                            echo JWT_EXPIRATION=$JWT_EXPIRATION >> .env &&
+                            echo JWT_ALGORITHM=$JWT_ALGORITHM >> .env &&
+                            echo MAIL_HOST=$MAIL_HOST >> .env &&
+                            echo MAIL_PORT=$MAIL_PORT >> .env &&
+                            echo MAIL_USERNAME=$MAIL_USERNAME >> .env &&
+                            echo MAIL_PASSWORD=$MAIL_PASSWORD >> .env &&
+                            echo EMBEDDER_URL=$EMBEDDER_URL >> .env &&
+                            echo SESSION_TIMEOUT=$SESSION_TIMEOUT >> .env &&
+                            echo MAX_SESSIONS_PER_USER=$MAX_SESSIONS_PER_USER >> .env &&
+                            echo SESSIONS_CLEANUP_INTERVAL=$SESSIONS_CLEANUP_INTERVAL >> .env &&
+                            echo ACCESS_TOKEN_EXPIRE_MINUTES=$ACCESS_TOKEN_EXPIRE_MINUTES >> .env &&
+                            echo FASTAPI_SERVER_PORT=$FASTAPI_SERVER_PORT >> .env &&
+                            echo API_KEY=$API_KEY >> .env &&
+                            echo CLOVA_URL=$CLOVA_URL >> .env &&
+                            echo CLOVA_KEY=$CLOVA_KEY >> .env
+                            "
+                        '''
+                    }
+                }
+            }
+        }
+        stage ('Build and Push Docker Images') {
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', env.DOCKER_CREDENTIALS_ID) {
+                    // withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]){
+                    // Build spring image
+                    dir('backend/spring') {
+                        sh 'chmod +x gradlew'
+                        sh 'docker build -t happyyongku/j11b109:spring .'
+                        sh 'docker push happyyongku/j11b109:spring'
+                    }
+                    // Build FastAPI image
+                    dir('backend/fastapi_ec2') {
+                        sh 'docker build -t happyyongku/j11b109:fastapi .'
+                        sh 'docker push happyyongku/j11b109:fastapi'
+                    }
+                    // Build React image
+                    dir('frontend/here_law') {
+                        sh 'docker build -t happyyongku/j11b109:react .'
+                        sh 'docker push happyyongku/j11b109:react'
+                    }
+                    // Build Nginx image
+                    dir('nginx') {
+                        sh 'docker build -t happyyongku/j11b109:nginx .'
+                        sh 'docker push happyyongku/j11b109:nginx'
+                    }
+                    // Build postgreSQL image
+                    dir('DB') {
+                        sh 'docker build -t happyyongku/j11b109:postgres .'
+                        sh 'docker push happyyongku/j11b109:postgres'
+                    }
+                    }
+                }
+            }
+        }
+        
+        stage('Deploy EC2 and NGINX') {
+            steps {
+                script {
+                    echo 'Deploying EC2 and NGINX ...'
+                    sshagent (credentials: [env.SSH_KEY]) {
+                        sh '''
+                            ssh -o StrictHostKeyChecking=no ubuntu@j11b109.p.ssafy.io "cd /home/ubuntu/j11b109 &&
+                            echo "shutting down old containers" &&
+                            docker-compose -f docker-compose-ec2.yml down &&
+                            echo "start pull" &&
+                            docker-compose -f docker-compose-ec2.yml pull &&
+                            echo "start up" &&
+                            docker-compose --env-file .env -f docker-compose-ec2.yml up -d" &&
+                            echo "print env" &&
+                            env | grep DB_
+                        '''
+                    }
+                }
+            }
+        }
+
+    }
+    post {
+        success {
+            echo 'Successful Built and Deployed'
+            sh 'echo "successed yongku"'
+        }
+        failure {
+            echo 'Build or Deployment failed'
+        }
+    }
+}

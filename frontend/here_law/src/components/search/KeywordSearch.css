@@ -1,0 +1,85 @@
+/* .keyword-search-page {
+  width: 100%;
+  height: 330px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background-image: url("../../assets/search/searchbackimg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+} */
+
+/* KeywordSearch.css */
+.keyword-search-page {
+  width: 100%;
+  height: 330px; /* 기본 높이 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-image: url("../../assets/search/searchbackimg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: height 0.5s ease-in-out; /* 높이 변경 애니메이션 */
+}
+
+/* Ai 모드일 때의 클래스 */
+.keyword-search-page.ai-mode {
+  height: 665px; /* 확장된 높이 */
+}
+
+.search-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: white;
+  margin-top: 36px;
+  text-align: center;
+}
+
+.toggle-wrap {
+  margin-top: 23px;
+}
+
+.search-input-box {
+  margin-top: 23px;
+  width: 744px;
+  height: 56px;
+  border-radius: 20px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.search-icon {
+  width: 20px;
+  height: 20px;
+  margin-left: 26px;
+}
+
+.search-input-box input {
+  margin-left: 16px;
+  font-size: 16px;
+  width: 100%;
+  margin-right: 23px;
+  border: none;
+  outline: none;
+}
+
+.search-input-box input::placeholder {
+  font-size: 16px;
+  color: #b0b0b0;
+}
+
+.ai-search {
+  opacity: 0; /* 초기 상태는 투명 */
+  transition: opacity 0.2s ease-in; /* 서서히 나타나는 효과 */
+  visibility: hidden; /* 기본적으로 숨김 */
+}
+
+.ai-search.active {
+  opacity: 1; /* active 클래스가 추가되면 불투명 */
+  visibility: visible; /* 보이도록 설정 */
+}

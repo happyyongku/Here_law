@@ -1,0 +1,5 @@
+
+from llama_cpp.llama_types import CreateChatCompletionStreamResponse
+from pydantic import RootModel
+
+CreateChatCompletionStreamResponseModel = RootModel[CreateChatCompletionStreamResponse]

@@ -1,0 +1,59 @@
+/* GuideMagazine.css */
+.magazine-guide-box {
+  width: 100%;
+  height: 100%;
+  background-color: #f8f8f8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+}
+
+.guide-wrap {
+  width: 100%;
+  height: 125px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.guide-title {
+  margin-top: 40px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.guide-subtitle {
+  font-size: 16px;
+  margin-top: 14px;
+  color: #262626;
+}
+
+.guide-result-box {
+  width: 100%;
+  height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 70px;
+}
+
+.guide-result-magazine {
+  width: 435px;
+  height: 250px;
+  border-radius: 15px;
+  background-color: white;
+  background-image: url("../../assets/search/magazine1.gif");
+  background-size: cover;
+  background-position: center;
+}
+
+.guide-result-magazine2 {
+  width: 435px;
+  height: 250px;
+  border-radius: 15px;
+  background-color: white;
+  background-image: url("../../assets/search/magazine2.png");
+  background-size: cover;
+  background-position: center;
+}

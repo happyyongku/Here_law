@@ -1,0 +1,190 @@
+.login-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 100px;
+}
+
+.contents-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.login-input-container {
+  margin-top: 35px;
+  margin-bottom: 12px;
+}
+
+.login-header {
+  font-size: 34px;
+  font-weight: bold;
+  color: black;
+  width: 440px;
+  margin-bottom: 15px;
+}
+
+.login-subtitle {
+  width: 440px;
+  font-size: 15px;
+  color: #555555;
+}
+
+.login-input-title {
+  font-size: 14px;
+  margin-bottom: 11px;
+  margin-top: 13px;
+}
+
+.login-input-box {
+  display: flex;
+  border-radius: 5px;
+  padding: 14px;
+  background-color: white;
+  border: 1px solid #d7dedd;
+  margin-bottom: 8px;
+}
+
+.login-input-box:focus-within {
+  border: 1px solid #ff5e00;
+}
+
+.input-tag {
+  padding: 0px;
+  width: 100%;
+  outline: none;
+  border: none;
+  height: 17px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.input-tag::placeholder {
+  color: #d7dedd;
+}
+
+.login-button-activate {
+  width: 440px;
+  height: 48px;
+  border: none;
+  font-size: 15px;
+  font-weight: bold;
+  background-color: #ff5e00;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  margin-top: 30px;
+  /* margin-bottom: 20px; */
+}
+
+.login-button-deactivate {
+  width: 440px;
+  height: 48px;
+  background-color: #d9d9d9;
+  border: none;
+  font-size: 15px;
+  font-weight: bold;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  margin-top: 30px;
+  /* margin-bottom: 20px; */
+}
+
+.login-checkbox {
+  width: 440px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 34px;
+  font-size: 14px;
+}
+
+.check-ele {
+  font-size: 14px;
+}
+
+.login-buttons {
+  display: flex;
+  flex-direction: column;
+  margin-top: 34px;
+}
+
+.lawyer-signup-button {
+  width: 440px;
+  height: 44px;
+  border-radius: 5px;
+  border: 1px solid #d7dedd;
+  background-color: white;
+  color: #ff5e00;
+  font-weight: bold;
+  margin-bottom: 21px;
+  cursor: pointer;
+}
+
+.common-signup-button {
+  width: 440px;
+  height: 44px;
+  border-radius: 5px;
+  border: 1px solid #d7dedd;
+  background-color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.error-message-wrap {
+  color: #ff5e00;
+  font-size: 13px;
+  /* margin-bottom: 13px; */
+}
+
+/* 체크박스 컨테이너 */
+.checkbox-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 실제 체크박스 숨기기 */
+.checkbox-container input[type="checkbox"] {
+  display: none;
+}
+
+/* 새로운 체크박스 스타일 */
+.checkbox-container .checkmark {
+  position: relative;
+  height: 17px;
+  width: 17px;
+  background-color: #eee; /* 기본 배경색 */
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s; /* 배경색 변경 애니메이션 */
+}
+
+/* 체크박스가 체크되었을 때의 스타일 */
+.checkbox-container input[type="checkbox"]:checked + .checkmark {
+  background-color: #ff5e00; /* 체크박스 색상 오렌지로 변경 */
+}
+
+/* 체크 표시 스타일 */
+.checkbox-container .checkmark:after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  opacity: 0;
+  transition: opacity 0.3s; /* 체크 표시 애니메이션 */
+}
+
+/* 체크박스 체크 시 체크 표시 보이기 */
+.checkbox-container input[type="checkbox"]:checked + .checkmark:after {
+  opacity: 1; /* 체크 표시가 부드럽게 나타나게 함 */
+}

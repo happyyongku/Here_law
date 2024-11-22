@@ -1,0 +1,76 @@
+.user-info-container {
+  width: 550px;
+  background-color: white;
+  border-radius: 10px;
+  margin-top: 20px;
+  padding: 15px 30px;
+}
+
+.user-info-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.user-basic-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.normal-user-img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background-color: beige;
+  margin-bottom: 16px;
+}
+
+.normal-user-name {
+  font-size: 17px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.normal-user-setting {
+  width: 30px;
+  height: 30px;
+}
+
+.name-and-update {
+  display: flex;
+  align-items: center;
+}
+
+.normal-user-email {
+  font-size: 13px;
+  color: #bab8b8;
+  margin-bottom: 15px;
+}
+
+.user-info-bottom {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.normal-user-name-change {
+  width: 21px;
+  height: 21px;
+  opacity: 60%;
+}
+
+.user-info-number-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.normal-user-number {
+  font-size: 16px;
+}
+
+.normal-user-number-text {
+  font-size: 13px;
+}

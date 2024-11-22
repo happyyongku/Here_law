@@ -1,0 +1,16 @@
+@font-face {
+  font-family: "NotoSans";
+  font-weight: normal;
+  src: url("./fonts/NotoSansKR-VariableFont_wght.ttf");
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  font-family: "NotoSans";
+  margin: 0;
+  /* padding: 0 0 60px 0; */
+}

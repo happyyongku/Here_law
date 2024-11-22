@@ -1,0 +1,373 @@
+.landing-container {
+  width: 100%;
+  height: calc(100vh - 75px);
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+}
+
+.section {
+  min-height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.section-content {
+  width: 100%;
+  display: flex;
+  padding: 0 100px;
+  box-sizing: border-box;
+}
+
+.section-content-center {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 100px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.section:nth-child(1) .section-content {
+  flex-direction: row;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.leftSection {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
+  margin-left: 90px;
+  margin-top: -80px;
+}
+
+.rightSection {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.leftImage,
+.rightImage,
+.centerImage {
+  opacity: 0;
+  transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+.leftImage {
+  transform: translateX(-50px);
+}
+
+.rightImage {
+  transform: translateX(50px);
+}
+
+.centerImage {
+  transform: translateY(50px);
+}
+
+.section.visible .leftImage,
+.section.visible .rightImage,
+.section.visible .centerImage {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.title,
+.subTitle,
+.sectionTitle,
+.sectionContent,
+.startBtn {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+.section.visible .title,
+.section.visible .subTitle,
+.section.visible .sectionTitle,
+.section.visible .sectionContent,
+.section.visible .startBtn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #262626;
+}
+
+.subTitle {
+  font-size: 1.5rem;
+  color: #606060;
+  margin-bottom: 30px;
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.sectionContent {
+  font-size: 1.5rem;
+  color: #606060;
+}
+
+.startBtn {
+  padding: 10px 20px;
+  font-size: 14px;
+  color: white;
+  background-color: #ff5e00;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: opacity 1s ease-out, transform 1s ease-out,
+    background-color 0.2s ease;
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.section.visible .startBtn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section1-btn:hover {
+  background-color: #ffa500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.section1-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.section6-btn {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(270deg, #ff5e00, #ffa500, #ff5e00);
+  background-size: 200% 200%;
+  animation: sparkle 3s ease infinite;
+}
+
+.section6-btn:hover {
+  background: linear-gradient(270deg, #ffa500, #ffa500, #ffa500);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.section6-btn:active {
+  transform: scale(0.98);
+}
+
+@keyframes sparkle {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.lawImage {
+  width: 300px;
+  height: auto;
+  margin-right: 130px;
+  margin-top: -50px;
+}
+
+/* 스크롤바 스타일링 */
+.landing-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.landing-container::-webkit-scrollbar-thumb {
+  background-color: #ffa500;
+  border-radius: 4px;
+}
+
+.landing-container::-webkit-scrollbar-thumb:hover {
+  background-color: #ff5e00;
+}
+
+/* 슬라이더 컨테이너 */
+.slider {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  margin-top: 50px;
+}
+
+/* 슬라이더 트랙 */
+.slideTrack {
+  display: flex;
+  width: calc(250px * 12); /* 이미지 너비 * 이미지 개수 */
+  animation: scroll 20s linear infinite;
+}
+
+/* 슬라이드 */
+.slide {
+  width: 250px;
+  flex-shrink: 0;
+  margin-right: 20px;
+}
+
+.slideImage {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+/* 슬라이더 애니메이션 */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(
+      calc(-250px * 6 - 120px)
+    ); /* 이미지 너비 * 이미지 개수 / 2 + 여백 조정 */
+  }
+}
+
+.title {
+  font-size: 28px;
+  margin-bottom: 5px;
+}
+
+.subTitle {
+  font-size: 18px;
+  margin-top: 10px;
+  margin-bottom: 70px;
+}
+
+.landing2left {
+  position: relative;
+}
+
+.searchifimg1 {
+  position: absolute;
+  bottom: 80px;
+  right: 80px;
+  width: 400px;
+  height: auto;
+}
+
+.searchifimg2 {
+  position: absolute;
+  top: 80px;
+  left: 80px;
+  width: 400px;
+  height: auto;
+}
+
+.sectiontitle2 {
+  font-size: 28px;
+}
+
+.sectioncontent2 {
+  font-size: 18px;
+}
+
+.section3 {
+  font: 28px;
+}
+
+.sectioncontent3 {
+  font-size: 18px;
+}
+
+.landingsection3 {
+  position: relative;
+}
+
+.magazinepage {
+  position: absolute;
+  width: 400px;
+  top: 80px;
+  left: 140px;
+  border: 1px solid lightgray;
+
+  height: auto;
+}
+.magazinepage2 {
+  position: absolute;
+  width: 400px;
+  height: auto;
+  border: 1px solid lightgray;
+}
+.magazinepage3 {
+  position: absolute;
+  right: 90px;
+  bottom: 80px;
+  width: 400px;
+  height: auto;
+  /* box-shadow: black; */
+  border: 1px solid lightgray;
+}
+
+.forthsection {
+  width: 100%;
+  position: relative;
+}
+
+.landingsection4 {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  position: relative;
+  left: 100px;
+}
+
+.sectiontitle4 {
+  font-size: 28px;
+  text-align: start;
+}
+
+.sectioncontent4 {
+  font-size: 18px;
+  text-align: start;
+}
+
+.landingimgbox4 {
+  position: relative;
+}
+
+.landingimg4-1 {
+  position: absolute;
+  width: 400px;
+  height: auto;
+  left: 100px;
+  bottom: 70px;
+  border: 1px solid lightgray;
+}
+
+.landingimg4-2 {
+  width: 400px;
+  height: auto;
+  position: absolute;
+  left: 270px;
+  top: -120px;
+  /* bottom: 0px; */
+  border: 1px solid lightgray;
+}
+
+.lastdesc {
+  margin-bottom: 30px;
+}

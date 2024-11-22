@@ -1,0 +1,64 @@
+.case-type-card-container {
+  margin-bottom: 40px;
+}
+
+.case-type-card-img {
+  margin-right: 20px;
+}
+
+.case-type-card-content-header {
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+}
+
+.case-type-card-content-index {
+  font-size: 14px;
+}
+
+.case-type-card-content-img {
+  width: 24px;
+  height: 24px;
+}
+
+.case-type-card-title {
+  width: 600px;
+  display: -webkit-box; /* flexbox 사용 */
+  -webkit-box-orient: vertical; /* 수직 방향으로 정렬 */
+  -webkit-line-clamp: 1; /* 표시할 줄 수 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+}
+
+.case-type-card-content {
+  width: 550px;
+  display: -webkit-box; /* flexbox 사용 */
+  -webkit-box-orient: vertical; /* 수직 방향으로 정렬 */
+  -webkit-line-clamp: 3; /* 표시할 줄 수 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+}
+
+.case-type-card-container {
+  display: flex;
+}
+
+.case-type-card-img {
+  width: 118px;
+  height: 118px;
+  min-width: 118px;
+  min-height: 118px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.case-type-card-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.case-type-card-title {
+  font-size: 24px;
+}
+
+.case-type-card-content {
+  font-size: 12px;
+}

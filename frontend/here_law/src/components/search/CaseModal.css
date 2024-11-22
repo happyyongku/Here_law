@@ -1,0 +1,74 @@
+/* CaseModal.css */
+.modal {
+  position: fixed; /* 화면에 고정되도록 설정 */
+  top: 50%; /* 화면의 수직 중앙 */
+  left: 50%; /* 화면의 수평 중앙 */
+  transform: translate(-50%, -50%); /* 정확히 중앙에 배치 */
+  z-index: 1000; /* 높은 z-index로 다른 요소 위에 표시 */
+  background-color: white; /* 모달의 배경색 */
+  padding: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* 그림자 추가로 부각 */
+  border-radius: 10px;
+  width: 470px;
+}
+
+.modal-overlay {
+  position: fixed; /* 화면 전체를 덮는 오버레이 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정 배경 */
+  z-index: 999; /* 모달보다 아래, 다른 요소보다 위 */
+}
+.case-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 25px;
+  cursor: pointer;
+}
+.case-madal-summary-title {
+  font-size: 17px;
+  color: #f55e00;
+  font-weight: bold;
+  margin-left: 180px;
+  margin-top: 22px;
+  margin-bottom: 12px;
+}
+.case-modal-pen {
+  width: 30px;
+  margin-left: 3px;
+}
+
+.case-madal-summary-content {
+  font-size: 14px;
+  margin-top: 16px;
+  padding: 10px;
+}
+.case-modal-detail-go {
+  width: 100px;
+  border: none;
+  color: #f55e00;
+  font-weight: bold;
+  border-radius: 5px;
+  padding: 3px;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 330px;
+  cursor: pointer;
+  position: relative; /* 가상 요소를 위한 상대 위치 설정 */
+  transition: color 0.3s ease, transform 0.3s ease; /* 색상 및 크기 변경 애니메이션 */
+}
+
+/* 마우스를 올렸을 때 애니메이션 효과 */
+.case-modal-detail-go:hover {
+  transform: scale(1.1); /* 살짝 확대 효과 */
+}
+
+.case-modal-arrow {
+  width: 22px;
+  margin-left: 5px;
+}

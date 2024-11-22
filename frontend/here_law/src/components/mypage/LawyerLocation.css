@@ -1,0 +1,33 @@
+.lawyer-location-container {
+  width: 550px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 15px 30px;
+}
+
+.location-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.location-title {
+  font-size: 17px;
+}
+
+.location-update {
+  font-size: 12px;
+}
+
+.location-detail {
+  font-size: 14px;
+  opacity: 60%;
+  margin-bottom: 15px;
+}
+
+.location-map {
+  width: 489px;
+  height: 175px;
+  border-radius: 10px;
+}

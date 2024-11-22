@@ -1,0 +1,126 @@
+.lawyer-info-container {
+  width: 550px;
+  background-color: white;
+  border-radius: 10px;
+  margin-top: 20px;
+  padding: 15px 30px;
+}
+
+.lawyer-profile-main {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.lawyer-profile-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.lawyer-img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background-color: beige;
+  margin-bottom: 16px;
+}
+
+.lawyer-number-things {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.number-thing {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.lawyer-common-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.user-name {
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.lawyer-description {
+  font-size: 15px;
+  color: #585757;
+  margin-bottom: 6px;
+}
+
+.lawyer-mark {
+  width: 24px;
+  height: 24px;
+  margin-right: 5px;
+}
+
+.user-point {
+  font-size: 12px;
+  margin-right: 5px;
+  margin-bottom: 6px;
+  /* opacity: 50%; */
+}
+
+.user-point-number {
+  font-size: 15px;
+  color: #ff5e00;
+  font-weight: bold;
+}
+
+.lawyer-email {
+  font-size: 13px;
+  color: #bab8b8;
+  margin-bottom: 15px;
+}
+
+.user-setting-button {
+  width: 30px;
+  height: 30px;
+}
+
+.number-size {
+  font-size: 16px;
+}
+
+.text-size {
+  font-size: 13px;
+}
+
+.profile-img-updateimg {
+  width: 21px;
+  height: 21px;
+  opacity: 60%;
+}
+
+.update-box {
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.settings-dropdown {
+  background: white;
+  border: 1px solid #d7dedd;
+  border-radius: 5px;
+  padding: 5px;
+  position: relative;
+  position: absolute;
+  z-index: 10;
+  top: 100%;
+  width: 80px;
+  color: red;
+  text-align: center;
+  font-size: 13px;
+}

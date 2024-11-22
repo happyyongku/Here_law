@@ -1,0 +1,14 @@
+.expertisecard-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.expertise-cate {
+  font-size: 13px;
+  font-weight: bold;
+  border: 1px solid black;
+  border-radius: 6px;
+  padding: 2px 5px;
+}

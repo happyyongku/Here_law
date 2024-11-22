@@ -1,0 +1,41 @@
+.case-type-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 50px 170px;
+}
+
+.case-type-title-box {
+  width: 30%;
+  margin-right: 40px;
+}
+
+.case-type-title {
+  font-size: 34px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.case-type-content {
+  font-size: 14px;
+}
+
+.case-type-content-box {
+  width: 70%;
+}
+
+.case-subscribe-button {
+  width: 125px;
+  height: 35px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  border: none;
+  background-color: rgba(255, 94, 0, 0.4);
+  font-weight: bold;
+  border-radius: 6px;
+}
+
+.case-type-lawyer-rec-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
